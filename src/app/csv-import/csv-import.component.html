@@ -8,7 +8,7 @@
 
     <div *ngFor="let header of headers">
       <label>{{ header }}</label>
-      <select (change)="onColumnMapped(header, $event)">
+      <select [(ngModel)]="mappedColumns[header]">
         <option value="">- Select Field -</option>
         <option value="bib">Bib Number</option>
         <option value="firstName">First Name</option>

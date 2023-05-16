@@ -13,7 +13,7 @@ export class RunnerComponent implements OnInit {
   constructor(private runnerDataService: RunnerDataService) { }
 
   ngOnInit(): void {
-    this.runnerDataService.getRunners().subscribe(runners => {
+    this.runnerDataService.getActiveRunners().subscribe(runners => {
       this.runnerList = runners;
     });
   }

@@ -13,7 +13,7 @@ export class BibEntryComponent {
   constructor(private runnerService: RunnerDataService) { }
 
   onSubmit(): void {
-    this.runnerService.getRunnerByBib(this.bibNumber);
+    this.runnerService.enterBib(this.bibNumber);
     this.bibNumber = '';
   }
 
