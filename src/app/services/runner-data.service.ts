@@ -18,15 +18,12 @@ export interface Runner {
 })
 export class RunnerDataService {
 
-  private runners: Runner[] = [
-    // ...existing runners
-  ];
-
+  private runners = new Map<string, Runner>();
   private runners$ = new BehaviorSubject<Runner[]>([]);
 
   constructor() {
     // Log initial runners
-    console.log('Initial runners:', this.runners);
+    console.log('Initial runners:', Array.from(this.runners.values()));
   }
 
   getRunners() {
@@ -34,7 +31,7 @@ export class RunnerDataService {
   }
 
   getRunnerByBib(bib: string) {
-    const runner = this.runners.find(r => r.bib === bib);
+    const runner = this.runners.get(bib);
     if (runner) {
       this.runners$.next([runner]);
     }
@@ -43,12 +40,15 @@ export class RunnerDataService {
     console.log('Runner found by bib:', runner);
   }
 
-  loadRunners(runners: Runner[]) {
-    this.runners = runners;
-    this.runners$.next(this.runners);
+  loadRunners(newRunners: Runner[]) {
+    newRunners.forEach(newRunner => {
+      this.runners.set(newRunner.bib, newRunner);
+    });
+
+    this.runners$.next(Array.from(this.runners.values()));
 
     // Log runners after loading
-    console.log('Runners after loading:', this.runners);
+    console.log('Runners after loading:', Array.from(this.runners.values()));
   }
 
   // Add more methods as needed to handle importing from CSV, etc.
