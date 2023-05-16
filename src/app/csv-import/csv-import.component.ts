@@ -13,8 +13,8 @@ export class CsvImportComponent {
   mappedColumns: { [key: string]: string } = {};
   possibleHeaders: { [key: string]: string[] } = {
     'bib': ['Bib', 'Bib Number', 'Bib#'],
-    'firstName': ['First Name', 'FirstName', 'first_name'],
-    'lastName': ['Last Name', 'LastName', 'last_name'],
+    'firstName': ['First Name', 'FirstName', 'first_name', 'first'],
+    'lastName': ['Last Name', 'LastName', 'last_name','last'],
     'age': ['Age', 'age', 'Age Group'],
     'gender': ['Gender', 'gender', 'Sex'],
     'town': ['Town', 'town', 'City'],
@@ -38,7 +38,7 @@ export class CsvImportComponent {
           // Automatically map columns
           for (const runnerField of Object.keys(this.possibleHeaders)) {
             const matchingHeader = headers.find(header =>
-              this.possibleHeaders[runnerField].includes(header)
+              this.possibleHeaders[runnerField].map(h => h.toLowerCase()).includes(header.toLowerCase())
             );
             if (matchingHeader !== undefined) {
               this.mappedColumns[matchingHeader] = runnerField;
@@ -56,10 +56,10 @@ export class CsvImportComponent {
   }
 
 
-  onColumnMapped(runnerField: string, event: any) {
+/*  onColumnMapped(runnerField: string, event: any) {
     const csvColumn = (event.target as HTMLSelectElement).value;
     this.mappedColumns[csvColumn] = runnerField;
-  }
+  }*/
 
   importCsv() {
     if (this.file !== null) {
