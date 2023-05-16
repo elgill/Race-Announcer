@@ -1,0 +1,26 @@
+<div>
+  <h2>Import Runners</h2>
+
+  <input type="file" (change)="onFileSelected($event)" accept=".csv">
+
+  <div *ngIf="headers">
+    <h3>Column Mapping</h3>
+
+    <div *ngFor="let header of headers">
+      <label>{{ header }}</label>
+      <select (change)="onColumnMapped(header, $event)">
+        <option value="">- Select Field -</option>
+        <option value="bib">Bib Number</option>
+        <option value="firstName">First Name</option>
+        <option value="lastName">Last Name</option>
+        <option value="age">Age</option>
+        <option value="gender">Gender</option>
+        <option value="town">Town</option>
+        <option value="state">State</option>
+        <!-- Add options for any other fields here -->
+      </select>
+    </div>
+
+    <button (click)="importCsv()">Import</button>
+  </div>
+</div>

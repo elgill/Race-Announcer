@@ -12,15 +12,22 @@ export interface Runner {
   customField1: string;
   customField2: string;
 }
+
 @Injectable({
   providedIn: 'root'
 })
 export class RunnerDataService {
 
-  private runners: Runner[] = [];
+  private runners: Runner[] = [
+    // ...existing runners
+  ];
+
   private runners$ = new BehaviorSubject<Runner[]>([]);
 
-  constructor() { }
+  constructor() {
+    // Log initial runners
+    console.log('Initial runners:', this.runners);
+  }
 
   getRunners() {
     return this.runners$.asObservable();
@@ -31,13 +38,18 @@ export class RunnerDataService {
     if (runner) {
       this.runners$.next([runner]);
     }
+
+    // Log runner found by bib
+    console.log('Runner found by bib:', runner);
   }
 
   loadRunners(runners: Runner[]) {
     this.runners = runners;
     this.runners$.next(this.runners);
+
+    // Log runners after loading
+    console.log('Runners after loading:', this.runners);
   }
 
   // Add more methods as needed to handle importing from CSV, etc.
-
 }
