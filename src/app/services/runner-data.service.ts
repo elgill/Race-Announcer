@@ -19,6 +19,7 @@ export interface Runner {
 export class RunnerDataService {
 
   private allRunners = new Map<string, Runner>();
+  private activeRunners: Runner[] = [];
   private activeRunners$ = new BehaviorSubject<Runner[]>([]);
 
   constructor() {
@@ -33,7 +34,8 @@ export class RunnerDataService {
   enterBib(bib: string) {
     const runner = this.allRunners.get(bib);
     if (runner) {
-      this.activeRunners$.next([runner]);
+      this.activeRunners.unshift(runner);  // add runner to the start of the array
+      this.activeRunners$.next(this.activeRunners);
     }
 
     // Log runner found by bib
