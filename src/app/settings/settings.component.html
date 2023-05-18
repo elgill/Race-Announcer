@@ -1,1 +1,15 @@
-<p>settings works!</p>
+<div>
+  <label>
+    Font Size: <input [(ngModel)]="settings.fontSize" type="number">
+  </label>
+  <label>
+    Font Color: <input [(ngModel)]="settings.fontColor" type="color">
+  </label>
+  <label>
+    Display Lines: <input [(ngModel)]="settings.displayLines" type="number">
+  </label>
+  <label>
+    Background Color: <input [(ngModel)]="settings.backgroundColor" type="color">
+  </label>
+  <button (click)="saveSettings()">Save Settings</button>
+</div>

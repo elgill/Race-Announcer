@@ -1,5 +1,5 @@
 <app-bib-entry></app-bib-entry>
-<table>
+<table [style.font-size.px]="settings.fontSize" [style.color]="settings.fontColor" [style.background-color]="settings.backgroundColor">
   <thead>
   <tr>
     <th>Bib</th>
@@ -14,7 +14,7 @@
   </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let runner of runnerList">
+  <tr *ngFor="let runner of runnerList; index as i" [hidden]="i >= settings.displayLines">
     <td>{{runner.bib}}</td>
     <td>{{runner.firstName}}</td>
     <td>{{runner.lastName}}</td>
