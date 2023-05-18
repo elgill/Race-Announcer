@@ -35,12 +35,35 @@ export class RunnerDataService {
     const runner = this.allRunners.get(bib);
     if (runner) {
       this.activeRunners.unshift(runner);  // add runner to the start of the array
-      this.activeRunners$.next(this.activeRunners);
+    } else {
+      // If no runner found, add a placeholder runner with the entered bib
+      this.activeRunners.unshift({
+        bib: bib,
+        firstName: 'Not Found',
+        lastName: '',
+        age: 0,
+        gender: '',
+        town: '',
+        state: '',
+        customField1: '',
+        customField2: ''
+      });
     }
+
+    this.activeRunners$.next(this.activeRunners);
 
     // Log runner found by bib
     console.log('Runner found by bib:', runner);
   }
+
+  removeLastRunner() {
+    this.activeRunners.shift();  // remove the first runner from the array
+    this.activeRunners$.next(this.activeRunners);
+
+    // Log runners after removing
+    console.log('Runners after removing:', this.activeRunners);
+  }
+
 
   loadRunners(newRunners: Runner[]) {
     newRunners.forEach(newRunner => {

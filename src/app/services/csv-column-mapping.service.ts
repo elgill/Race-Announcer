@@ -31,23 +31,6 @@ export class CsvColumnMappingService {
     });
   }
 
-
-/*  importCsv(file: File, mappedColumns: { [key: string]: string }) {
-    Papa.parse(file, {
-      header: true,
-      complete: (results) => {
-        const runners = results.data.map((row: any) => {
-          const runner: any = {};
-          for (const field in mappedColumns) {
-            runner[field] = row[mappedColumns[field]];
-          }
-          return runner;
-        });
-        this.runnerDataService.loadRunners(runners);
-      }
-    });
-  }*/
-
   importCsv(file: File, columnMappings: { [key: string]: string }): Promise<Runner[]> {
     return new Promise((resolve, reject) => {
       const runners: Runner[] = [];
@@ -87,7 +70,5 @@ export class CsvColumnMappingService {
       });
     });
   }
-
-
 
 }
