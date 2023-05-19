@@ -6,18 +6,24 @@ export interface Settings {
   fontColor: string;
   displayLines: number;
   backgroundColor: string;
+  proxyUrl: string;
+  deleteKeybind: string;
 }
+
+export const DEFAULT_SETTINGS: Settings = {
+  fontSize: 14,
+  fontColor: '#000000',
+  displayLines: 10,
+  backgroundColor: '#ffffff',
+  proxyUrl: '',
+  deleteKeybind: 'Delete'
+};
 
 @Injectable({
   providedIn: 'root'
 })
 export class SettingsService {
-  private settings: Settings = {
-    fontSize: 14,
-    fontColor: '#000000',
-    displayLines: 5,
-    backgroundColor: '#ffffff'
-  };
+  private settings: Settings = DEFAULT_SETTINGS;
 
   private settings$ = new BehaviorSubject<Settings>(this.settings);
 
@@ -47,12 +53,7 @@ export class SettingsService {
       this.settings$.next(this.settings);
     } else {
       // Default settings
-      this.settings = {
-        fontSize: 14,
-        fontColor: '#000000',
-        displayLines: 10,
-        backgroundColor: '#ffffff'
-      };
+      this.settings = DEFAULT_SETTINGS;
     }
   }
 }

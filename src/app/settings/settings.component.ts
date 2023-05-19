@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Settings, SettingsService } from '../services/settings.service';
+import {DEFAULT_SETTINGS, Settings, SettingsService} from '../services/settings.service';
 
 @Component({
   selector: 'app-settings',
@@ -7,12 +7,7 @@ import { Settings, SettingsService } from '../services/settings.service';
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent implements OnInit {
-  settings: Settings= {
-    fontSize: 14,
-    fontColor: '#000000',
-    displayLines: 5,
-    backgroundColor: '#ffffff'
-  };
+  settings: Settings= DEFAULT_SETTINGS;
 
   constructor(private settingsService: SettingsService) { }
 

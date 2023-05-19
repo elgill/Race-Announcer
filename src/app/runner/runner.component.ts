@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Runner, RunnerDataService} from '../services/runner-data.service';
-import {Settings, SettingsService} from "../services/settings.service";
+import {DEFAULT_SETTINGS, Settings, SettingsService} from "../services/settings.service";
 
 @Component({
   selector: 'app-runner',
@@ -8,12 +8,7 @@ import {Settings, SettingsService} from "../services/settings.service";
   styleUrls: ['./runner.component.css']
 })
 export class RunnerComponent implements OnInit {
-  settings: Settings= {
-    fontSize: 12,
-    fontColor: '#000000',
-    backgroundColor: '#FFFFFF',
-    displayLines: 10
-  };
+  settings: Settings= DEFAULT_SETTINGS;
 
   runnerList: Runner[] = [];
 
