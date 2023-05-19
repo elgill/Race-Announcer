@@ -40,8 +40,13 @@ export class CsvColumnMappingService {
           console.log('Raw CSV row:', results.data);  // Debug: Log raw CSV row
 
           const row = results.data as Record<string, string>; // Tell TypeScript we expect results.data to be an object with string keys and values
-
           console.log('Column Mappings: ',columnMappings);
+
+          // Skip row if it has too few fields
+          if (Object.keys(row).length < Object.keys(columnMappings).length) {
+            console.warn('Skipping row with too few fields:', row);
+            return;
+          }
 
           const runner: Runner = {
             bib: row[columnMappings['bib']],

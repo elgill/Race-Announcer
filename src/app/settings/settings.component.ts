@@ -17,6 +17,11 @@ export class SettingsComponent implements OnInit {
     });
   }
 
+  onKeydown(event: KeyboardEvent) {
+    this.settings.deleteKeybind = event.key;
+    event.preventDefault();  // prevent the default action (typing the key)
+  }
+
   saveSettings(): void {
     this.settingsService.updateSettings(this.settings);
   }

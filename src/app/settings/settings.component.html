@@ -11,5 +11,12 @@
   <label>
     Background Color: <input [(ngModel)]="settings.backgroundColor" type="color">
   </label>
+  <label>
+    Proxy URL: <input [(ngModel)]="settings.proxyUrl" type="text">
+  </label>
+  <label>
+    Delete Keybind: <input [(ngModel)]="settings.deleteKeybind" (keydown)="onKeydown($event)" type="text">
+  </label>
+
   <button (click)="saveSettings()">Save Settings</button>
 </div>
