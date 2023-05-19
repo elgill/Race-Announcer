@@ -3,7 +3,7 @@
 
   <input type="file" (change)="onFileSelected($event)" accept=".csv">
 
-  <div *ngIf="headers">
+  <div *ngIf="headers.length">
     <h3>Column Mapping</h3>
 
     <div *ngFor="let header of headers">
@@ -23,4 +23,6 @@
 
     <button (click)="importCsv()">Import</button>
   </div>
+  <p *ngIf="importStatus === 'success'" class="success-message">Import successful!</p>
+  <p class="error-message">{{ errorMessage }}</p>
 </div>

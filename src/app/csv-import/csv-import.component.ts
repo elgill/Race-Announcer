@@ -8,8 +8,10 @@ import { CsvColumnMappingService } from '../services/csv-column-mapping.service'
 })
 export class CsvImportComponent {
 
+  errorMessage: string = '';
   file: File | null = null;
   headers: string[] = [];
+  importStatus = '';
   mappedColumns: { [key: string]: string } = {};
   possibleHeaders: { [key: string]: string[] } = {
     'bib': ['Bib', 'Bib Number', 'Bib#'],
@@ -26,7 +28,9 @@ export class CsvImportComponent {
   constructor(private csvService: CsvColumnMappingService) { }
 
   onFileSelected(event: any) {
+    this.errorMessage = '';
     this.file = event.target.files[0];
+    this.importStatus = '';
     if (this.file !== null) {
       this.csvService.getHeaders(this.file)
         .then(headers => {
@@ -50,9 +54,16 @@ export class CsvImportComponent {
         })
         .catch(error => {
           console.error('Error getting headers from CSV file:', error);
-          // You could also show an error message to the user here
+          this.errorMessage = 'There was an error getting headers from the CSV file. Please verify file';
+          this.clear();
         });
+
     }
+  }
+
+  private clear(){
+    this.file = null;
+    this.headers = [];
   }
 
 
@@ -70,7 +81,18 @@ export class CsvImportComponent {
         columnMappings[runnerField] = header;
       }
 
-      this.csvService.importCsv(this.file, columnMappings);
+      this.csvService.importCsv(this.file, columnMappings)
+        .then(runners => {
+          // The promise was fulfilled, so you can do something with the runners here.
+          console.log('Import successful, runners:', runners);
+          this.importStatus = 'success';
+        })
+        .catch(error => {
+          // The promise was rejected, so you can handle the error here.
+          console.log('Import failed, error:', error);
+          this.errorMessage = 'Import failed, please verify file';
+        });
+      this.clear();
     }
   }
 
