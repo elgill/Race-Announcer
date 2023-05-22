@@ -11,7 +11,8 @@ function createWindow () {
       nodeIntegration: true,
       contextIsolation: true, //i switched
       worldSafeExecuteJavaScript: true
-    }
+    },
+    icon: __dirname + '/dist/race-announcer-angular/favicon.ico'
   })
 
   win.loadFile('dist/race-announcer-angular/index.html')
