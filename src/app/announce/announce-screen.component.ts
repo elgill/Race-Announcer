@@ -3,11 +3,11 @@ import {Runner, RunnerDataService} from '../services/runner-data.service';
 import {DEFAULT_SETTINGS, Settings, SettingsService} from "../services/settings.service";
 
 @Component({
-  selector: 'app-runner',
-  templateUrl: './runner.component.html',
-  styleUrls: ['./runner.component.css']
+  selector: 'app-announce',
+  templateUrl: './announce-screen.component.html',
+  styleUrls: ['./announce-screen.component.css']
 })
-export class RunnerComponent implements OnInit {
+export class AnnounceScreenComponent implements OnInit {
   settings: Settings= DEFAULT_SETTINGS;
 
   runnerList: Runner[] = [];

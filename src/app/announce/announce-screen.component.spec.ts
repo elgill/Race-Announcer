@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RunnerComponent } from './runner.component';
+import { AnnounceScreenComponent } from './announce-screen.component';
 
 describe('RunnerComponent', () => {
-  let component: RunnerComponent;
-  let fixture: ComponentFixture<RunnerComponent>;
+  let component: AnnounceScreenComponent;
+  let fixture: ComponentFixture<AnnounceScreenComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [RunnerComponent]
+      declarations: [AnnounceScreenComponent]
     });
-    fixture = TestBed.createComponent(RunnerComponent);
+    fixture = TestBed.createComponent(AnnounceScreenComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -14,16 +14,16 @@
   </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let runner of runnerList; index as i" [hidden]="i >= settings.displayLines">
-    <td>{{runner.bib}}</td>
-    <td>{{runner.firstName}}</td>
-    <td>{{runner.lastName}}</td>
-    <td>{{runner.age}}</td>
-    <td>{{runner.gender}}</td>
-    <td>{{runner.town}}</td>
-    <td>{{runner.state}}</td>
-    <td>{{runner.customField1}}</td>
-    <td>{{runner.customField2}}</td>
+  <tr *ngFor="let announce of runnerList; index as i" [hidden]="i >= settings.displayLines">
+    <td>{{announce.bib}}</td>
+    <td>{{announce.firstName}}</td>
+    <td>{{announce.lastName}}</td>
+    <td>{{announce.age}}</td>
+    <td>{{announce.gender}}</td>
+    <td>{{announce.town}}</td>
+    <td>{{announce.state}}</td>
+    <td>{{announce.customField1}}</td>
+    <td>{{announce.customField2}}</td>
   </tr>
   </tbody>
 </table>
