@@ -12,6 +12,7 @@ import { CsvImportComponent } from './csv-import/csv-import.component';
 import { BibScrapeUtilComponent } from './bib-scrape-util/bib-scrape-util.component';
 import { AnnounceGridComponent } from './announce/announce-grid/announce-grid.component';
 import { ErrorComponent } from './error/error.component';
+import { AnnounceFreeformComponent } from './announce/announce-test/announce-freeform.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { ErrorComponent } from './error/error.component';
     CsvImportComponent,
     BibScrapeUtilComponent,
     AnnounceGridComponent,
-    ErrorComponent
+    ErrorComponent,
+    AnnounceFreeformComponent
   ],
   imports: [
     BrowserModule,

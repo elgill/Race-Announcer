@@ -13,7 +13,7 @@ export interface Settings {
 
 export const ANNOUNCE_TEMPLATE_OPTIONS: { display: string; value: string }[] = [
   { display: 'Grid View', value: 'grid' },
-  /*{ display: 'Test View', value: 'test' },*/
+  { display: 'Freeform View', value: 'freeform' },
 ];
 
 export const DEFAULT_SETTINGS: Settings = {

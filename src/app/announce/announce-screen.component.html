@@ -1,5 +1,5 @@
 <div [ngSwitch]="settings.announceTemplate">
   <app-announce-grid *ngSwitchCase="'grid'"></app-announce-grid>
-  <!--<app-template-two *ngSwitchCase="'template2'"></app-template-two>-->
+  <app-announce-test *ngSwitchCase="'freeform'"></app-announce-test>
   <app-error *ngSwitchDefault></app-error>
 </div>
