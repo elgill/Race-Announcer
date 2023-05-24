@@ -1,0 +1,29 @@
+<app-bib-entry></app-bib-entry>
+<table [style.font-size.px]="settings.fontSize" [style.color]="settings.fontColor" [style.background-color]="settings.backgroundColor">
+  <thead>
+  <tr>
+    <th>Bib</th>
+    <th>First Name</th>
+    <th>Last Name</th>
+    <th>Age</th>
+    <th>Gender</th>
+    <th>Town</th>
+    <th>State</th>
+    <th>Custom Field 1</th>
+    <th>Custom Field 2</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let announce of runnerList; index as i" [hidden]="i >= settings.displayLines">
+    <td>{{announce.bib}}</td>
+    <td>{{announce.firstName}}</td>
+    <td>{{announce.lastName}}</td>
+    <td>{{announce.age}}</td>
+    <td>{{announce.gender}}</td>
+    <td>{{announce.town}}</td>
+    <td>{{announce.state}}</td>
+    <td>{{announce.customField1}}</td>
+    <td>{{announce.customField2}}</td>
+  </tr>
+  </tbody>
+</table>

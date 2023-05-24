@@ -10,6 +10,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { BibEntryComponent } from './bib-entry/bib-entry.component';
 import { CsvImportComponent } from './csv-import/csv-import.component';
 import { BibScrapeUtilComponent } from './bib-scrape-util/bib-scrape-util.component';
+import { AnnounceGridComponent } from './announce/announce-grid/announce-grid.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { BibScrapeUtilComponent } from './bib-scrape-util/bib-scrape-util.compon
     SettingsComponent,
     BibEntryComponent,
     CsvImportComponent,
-    BibScrapeUtilComponent
+    BibScrapeUtilComponent,
+    AnnounceGridComponent
   ],
   imports: [
     BrowserModule,
