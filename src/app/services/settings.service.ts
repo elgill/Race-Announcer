@@ -8,7 +8,13 @@ export interface Settings {
   backgroundColor: string;
   proxyUrl: string;
   deleteKeybind: string;
+  announceTemplate: string;
 }
+
+export const ANNOUNCE_TEMPLATE_OPTIONS: { display: string; value: string }[] = [
+  { display: 'Grid View', value: 'grid' },
+  /*{ display: 'Test View', value: 'test' },*/
+];
 
 export const DEFAULT_SETTINGS: Settings = {
   fontSize: 14,
@@ -16,7 +22,8 @@ export const DEFAULT_SETTINGS: Settings = {
   displayLines: 10,
   backgroundColor: '#ffffff',
   proxyUrl: '',
-  deleteKeybind: 'Delete'
+  deleteKeybind: 'Delete',
+  announceTemplate: 'grid'
 };
 
 @Injectable({

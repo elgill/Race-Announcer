@@ -29,6 +29,17 @@
       Delete Keybind: <input [(ngModel)]="settings.deleteKeybind" (keydown)="onKeydown($event)" type="text">
     </label>
   </div>
+  <div>
+    <label>
+      Announcer Screen View:
+      <select [(ngModel)]="settings.announceTemplate">
+        <option *ngFor="let templateOption of templateOptions" [value]="templateOption.value">
+          {{templateOption.display}}
+        </option>
+      </select>
+    </label>
+  </div>
+
 
   <button (click)="saveSettings()">Save Settings</button>
 </div>

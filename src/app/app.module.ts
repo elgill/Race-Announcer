@@ -11,6 +11,7 @@ import { BibEntryComponent } from './bib-entry/bib-entry.component';
 import { CsvImportComponent } from './csv-import/csv-import.component';
 import { BibScrapeUtilComponent } from './bib-scrape-util/bib-scrape-util.component';
 import { AnnounceGridComponent } from './announce/announce-grid/announce-grid.component';
+import { ErrorComponent } from './error/error.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { AnnounceGridComponent } from './announce/announce-grid/announce-grid.co
     BibEntryComponent,
     CsvImportComponent,
     BibScrapeUtilComponent,
-    AnnounceGridComponent
+    AnnounceGridComponent,
+    ErrorComponent
   ],
   imports: [
     BrowserModule,

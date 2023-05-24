@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {DEFAULT_SETTINGS, Settings, SettingsService} from '../services/settings.service';
+import {ANNOUNCE_TEMPLATE_OPTIONS, DEFAULT_SETTINGS, Settings, SettingsService} from '../services/settings.service';
 
 @Component({
   selector: 'app-settings',
@@ -8,6 +8,7 @@ import {DEFAULT_SETTINGS, Settings, SettingsService} from '../services/settings.
 })
 export class SettingsComponent implements OnInit {
   settings: Settings= DEFAULT_SETTINGS;
+  templateOptions = ANNOUNCE_TEMPLATE_OPTIONS;
 
   constructor(private settingsService: SettingsService) { }
 
