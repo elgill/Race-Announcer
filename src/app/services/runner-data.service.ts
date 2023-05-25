@@ -27,6 +27,25 @@ export class RunnerDataService {
   constructor() {
     // Log initial runners
     console.log('Initial runners:', Array.from(this.allRunners.values()));
+
+    // Load runners from localStorage
+    this.loadRunnersFromStorage();
+  }
+
+  loadRunnersFromStorage() {
+    const storedRunners = localStorage.getItem('runners');
+
+    if (storedRunners) {
+      const runnersArray: Runner[] = JSON.parse(storedRunners);
+      runnersArray.forEach(runner => {
+        this.allRunners.set(runner.bib, runner);
+      });
+    }
+  }
+
+  saveRunnersToStorage() {
+    const runnersArray = Array.from(this.allRunners.values());
+    localStorage.setItem('runners', JSON.stringify(runnersArray));
   }
 
   getActiveRunners() {
@@ -74,6 +93,9 @@ export class RunnerDataService {
 
     // Log runners after loading
     console.log('Runners after loading:', Array.from(this.allRunners.values()));
+
+    // Save runners to localStorage
+    this.saveRunnersToStorage();
   }
 
   getSortedRunners() {
@@ -87,5 +109,13 @@ export class RunnerDataService {
     const blob = new Blob([csv], {type: 'text/csv'});
 
     saveAs(blob, 'runners.csv');
+  }
+
+  clearAllRunners() {
+    this.allRunners = new Map<string, Runner>();
+    this.activeRunners = [];
+    this.activeRunners$.next(this.activeRunners);
+
+    this.saveRunnersToStorage()
   }
 }

@@ -15,6 +15,7 @@ import { ErrorComponent } from './error/error.component';
 import { AnnounceFreeformComponent } from './announce/announce-freeform/announce-freeform.component';
 import { CsvExportComponent } from './csv-export/csv-export.component';
 import { BrowseRunnersComponent } from './browse-runners/browse-runners.component';
+import { ClearRunnersComponent } from './clear-runners/clear-runners.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { BrowseRunnersComponent } from './browse-runners/browse-runners.componen
     ErrorComponent,
     AnnounceFreeformComponent,
     CsvExportComponent,
-    BrowseRunnersComponent
+    BrowseRunnersComponent,
+    ClearRunnersComponent
   ],
   imports: [
     BrowserModule,
