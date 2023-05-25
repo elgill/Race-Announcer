@@ -18,7 +18,7 @@
         <option value="town">Town</option>
         <option value="state">State</option>
         <option value="customField1">Custom Field 1</option>
-        <option value="customField2">Custom Field 1</option>
+        <option value="customField2">Custom Field 2</option>
         <!-- Add options for any other fields here -->
       </select>
     </div>
@@ -27,4 +27,6 @@
   </div>
   <p *ngIf="importStatus === 'success'" class="success-message">Import successful!</p>
   <p class="error-message">{{ errorMessage }}</p>
+
+  <app-csv-export></app-csv-export>
 </div>

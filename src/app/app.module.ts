@@ -13,6 +13,7 @@ import { BibScrapeUtilComponent } from './bib-scrape-util/bib-scrape-util.compon
 import { AnnounceGridComponent } from './announce/announce-grid/announce-grid.component';
 import { ErrorComponent } from './error/error.component';
 import { AnnounceFreeformComponent } from './announce/announce-freeform/announce-freeform.component';
+import { CsvExportComponent } from './csv-export/csv-export.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { AnnounceFreeformComponent } from './announce/announce-freeform/announce
     BibScrapeUtilComponent,
     AnnounceGridComponent,
     ErrorComponent,
-    AnnounceFreeformComponent
+    AnnounceFreeformComponent,
+    CsvExportComponent
   ],
   imports: [
     BrowserModule,

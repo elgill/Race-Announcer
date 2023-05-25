@@ -21,8 +21,8 @@ export class CsvImportComponent {
     'gender': ['Gender', 'gender', 'Sex'],
     'town': ['Town', 'town', 'City'],
     'state': ['State', 'state', 'Province'],
-    'customField1': ['Custom Field 1', 'custom_field_1', 'Custom1'],
-    'customField2': ['Custom Field 2', 'custom_field_2', 'Custom2'],
+    'customField1': ['customField1', 'Custom Field 1', 'custom_field_1', 'Custom1'],
+    'customField2': ['customField2', 'Custom Field 2', 'custom_field_2', 'Custom2'],
   };
 
   constructor(private csvService: CsvColumnMappingService) { }

@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { saveAs } from 'file-saver';
+import * as Papa from 'papaparse';
 import { BehaviorSubject } from 'rxjs';
 
 export interface Runner {
@@ -74,5 +76,11 @@ export class RunnerDataService {
     console.log('Runners after loading:', Array.from(this.allRunners.values()));
   }
 
-  // Add more methods as needed to handle importing from CSV, etc.
+  exportRunners() {
+    const runnersArray = Array.from(this.allRunners.values());
+    const csv = Papa.unparse(runnersArray);
+    const blob = new Blob([csv], {type: 'text/csv'});
+
+    saveAs(blob, 'runners.csv');
+  }
 }
