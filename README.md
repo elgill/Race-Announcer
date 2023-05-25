@@ -1,27 +1,43 @@
-# RaceAnnouncerAngular
+# RaceAnnouncer
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.0.0.
+RaceAnnouncer is a cross-platform desktop application for announcing race events. Built with Electron and Angular, RaceAnnouncer allows users to input a runner's bib number and display relevant information about the runner in real-time.
 
-## Development server
+## Features
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- Import runner data from CSV files with flexible column mapping
+- Multiple view options
+- Customize display settings, including font size, font color, number of display lines, and background color
+- Display runner details including bib number, first name, last name, age, gender, town, state, and custom fields
+- Delete incorrectly typed bib numbers from display
+- Clock to show how much time has elapsed since set race start time
+- Settings and imported runner data is persisted across sessions
+- Bib scraping utility which parses a webpage to scrape runner data out of a table
 
-## Code scaffolding
+## Installation
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Clone the repository and install dependencies:
 
-## Build
+```bash
+git clone https://github.com/elgill/Race-Announcer.git
+cd Race-Announcer
+npm install
+```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Usage
 
-## Running unit tests
+Start the application with:
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```bash
+npm start
+```
 
-## Running end-to-end tests
+Or to use Electron app:
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+```bash
+npm run build
+npm run electron
+```
 
-## Further help
+## License
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
