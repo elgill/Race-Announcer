@@ -76,6 +76,11 @@ export class RunnerDataService {
     console.log('Runners after loading:', Array.from(this.allRunners.values()));
   }
 
+  getSortedRunners() {
+    // Convert the map values to an array, sort it, and return it
+    return Array.from(this.allRunners.values()).sort((a, b) => Number(a.bib) - Number(b.bib));
+  }
+
   exportRunners() {
     const runnersArray = Array.from(this.allRunners.values());
     const csv = Papa.unparse(runnersArray);

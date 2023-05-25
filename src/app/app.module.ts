@@ -14,6 +14,7 @@ import { AnnounceGridComponent } from './announce/announce-grid/announce-grid.co
 import { ErrorComponent } from './error/error.component';
 import { AnnounceFreeformComponent } from './announce/announce-freeform/announce-freeform.component';
 import { CsvExportComponent } from './csv-export/csv-export.component';
+import { BrowseRunnersComponent } from './browse-runners/browse-runners.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { CsvExportComponent } from './csv-export/csv-export.component';
     AnnounceGridComponent,
     ErrorComponent,
     AnnounceFreeformComponent,
-    CsvExportComponent
+    CsvExportComponent,
+    BrowseRunnersComponent
   ],
   imports: [
     BrowserModule,
