@@ -39,6 +39,12 @@
       </select>
     </label>
   </div>
+  <div>
+    <label>
+      Race Start Time: <input formControlName="raceStartTime" type="datetime-local" step="0.1">
+    </label>
+  </div>
+
 
   <button (click)="saveSettings()">Save Settings</button>
   <p *ngIf="status === 'success'" class="success-message">Settings saved successfully!</p>

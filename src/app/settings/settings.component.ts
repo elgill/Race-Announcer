@@ -25,12 +25,15 @@ export class SettingsComponent implements OnInit {
       backgroundColor: [DEFAULT_SETTINGS.backgroundColor],
       proxyUrl: [DEFAULT_SETTINGS.proxyUrl],
       deleteKeybind: [DEFAULT_SETTINGS.deleteKeybind],
-      announceTemplate: [DEFAULT_SETTINGS.announceTemplate]
+      announceTemplate: [DEFAULT_SETTINGS.announceTemplate],
+      raceStartTime: [DEFAULT_SETTINGS.raceStartTime],
     });
 
     this.settingsService.getSettings().subscribe(settings => {
+      console.log('Patching Values: ',settings);
       this.settingsForm.patchValue(settings);
     });
+    console.log('Settings Initialized');
   }
 
   onKeydown(event: KeyboardEvent) {

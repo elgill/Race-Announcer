@@ -9,6 +9,7 @@ export interface Settings {
   proxyUrl: string;
   deleteKeybind: string;
   announceTemplate: string;
+  raceStartTime: string;
 }
 
 export const ANNOUNCE_TEMPLATE_OPTIONS: { display: string; value: string }[] = [
@@ -23,7 +24,8 @@ export const DEFAULT_SETTINGS: Settings = {
   backgroundColor: '#ffffff',
   proxyUrl: '',
   deleteKeybind: 'Delete',
-  announceTemplate: 'freeform'
+  announceTemplate: 'freeform',
+  raceStartTime: '',
 };
 
 @Injectable({
