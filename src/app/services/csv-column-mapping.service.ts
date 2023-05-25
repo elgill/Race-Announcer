@@ -13,6 +13,7 @@ export class CsvColumnMappingService {
     return new Promise((resolve, reject) => {
       Papa.parse(file, {
         header: true,
+        skipEmptyLines: true,
         step: (results, parser) => {
           if (results.errors.length > 0) {
             reject(results.errors);
@@ -36,15 +37,17 @@ export class CsvColumnMappingService {
       const runners: Runner[] = [];
       Papa.parse(file, {
         header: true,
+        skipEmptyLines: true,
         step: (results) => {
           console.log('Raw CSV row:', results.data);  // Debug: Log raw CSV row
 
           const row = results.data as Record<string, string>; // Tell TypeScript we expect results.data to be an object with string keys and values
           console.log('Column Mappings: ',columnMappings);
 
-          // Skip row if it has too few fields
-          if (Object.keys(row).length < Object.keys(columnMappings).length) {
-            console.warn('Skipping row with too few fields:', row);
+          // Skip row if it has too few fields or if key fields are empty
+          if (Object.keys(row).length < Object.keys(columnMappings).length ||
+            !row[columnMappings['bib']] || !row[columnMappings['firstName']] || !row[columnMappings['lastName']]) {
+            console.warn('Skipping invalid row:', row);
             return;
           }
 

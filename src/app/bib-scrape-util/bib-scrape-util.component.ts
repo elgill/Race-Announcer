@@ -103,11 +103,26 @@ export class BibScrapeUtilComponent implements OnInit {
 
       const csv = [];
       const headers = Array.from(table.querySelectorAll('th')).map(header => header.textContent);
+      headers.push('Last Name', 'First Name'); // Add new headers
       csv.push(headers.join(','));
 
       const rows = table.querySelectorAll('tr');
       rows.forEach(row => {
-        const cells = Array.from(row.querySelectorAll('td')).map(cell => cell.textContent);
+        const cells = Array.from(row.querySelectorAll('td')).map(cell => {
+          // Escape cell values that contain commas
+          const cellText = cell.textContent;
+          return (cellText!=null && cellText.includes(',')) ? `"${cellText}"` : cellText;
+        });
+
+        if (cells[1]) { // If the name cell exists
+          const nameParts = cells[1].split(', ');
+          if (nameParts.length === 2) {
+            cells.push(nameParts[0].replace("\"",""), nameParts[1].replace("\"","")); // Add last name and first name to the end of the row
+          } else {
+            cells.push('', ''); // Add empty cells if name can't be split into two parts
+          }
+        }
+
         csv.push(cells.join(','));
       });
 
@@ -115,5 +130,6 @@ export class BibScrapeUtilComponent implements OnInit {
       FileSaver.saveAs(blob, 'table_data.csv');
     });
   }
+
 }
 
