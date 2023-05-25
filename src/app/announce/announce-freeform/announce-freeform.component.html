@@ -1,4 +1,7 @@
-<app-bib-entry></app-bib-entry>
+<div class="header" [style.font-size.px]="settings.fontSize" [style.color]="settings.fontColor" [style.background-color]="settings.backgroundColor">
+  <app-bib-entry></app-bib-entry>
+  <app-race-clock></app-race-clock>
+</div>
 <div [style.font-size.px]="settings.fontSize" [style.color]="settings.fontColor" [style.background-color]="settings.backgroundColor">
   <div *ngFor="let announce of runnerList; index as i" [hidden]="i >= settings.displayLines">
     <span class="runnerAttribute">{{announce.bib}}</span>

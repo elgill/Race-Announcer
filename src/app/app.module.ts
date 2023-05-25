@@ -16,6 +16,7 @@ import { AnnounceFreeformComponent } from './announce/announce-freeform/announce
 import { CsvExportComponent } from './csv-export/csv-export.component';
 import { BrowseRunnersComponent } from './browse-runners/browse-runners.component';
 import { ClearRunnersComponent } from './clear-runners/clear-runners.component';
+import { RaceClockComponent } from './race-clock/race-clock.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { ClearRunnersComponent } from './clear-runners/clear-runners.component';
     AnnounceFreeformComponent,
     CsvExportComponent,
     BrowseRunnersComponent,
-    ClearRunnersComponent
+    ClearRunnersComponent,
+    RaceClockComponent
   ],
   imports: [
     BrowserModule,
