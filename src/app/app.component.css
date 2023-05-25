@@ -1,11 +1,9 @@
 .app-container {
-  display: flex;
-  justify-content: space-between;
-  padding: 20px;
+  padding-top: 10px;
 }
 .active {
    background-color: #ddd;
- }
+}
 nav a {
   padding: 10px;
   font-size: 1.2em;
