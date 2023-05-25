@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {ANNOUNCE_TEMPLATE_OPTIONS, DEFAULT_SETTINGS, Settings, SettingsService} from '../services/settings.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { ANNOUNCE_TEMPLATE_OPTIONS, DEFAULT_SETTINGS, Settings, SettingsService } from '../services/settings.service';
 
 @Component({
   selector: 'app-settings',
@@ -7,25 +8,40 @@ import {ANNOUNCE_TEMPLATE_OPTIONS, DEFAULT_SETTINGS, Settings, SettingsService} 
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent implements OnInit {
-  settings: Settings= DEFAULT_SETTINGS;
+  settingsForm: FormGroup = new FormGroup({});
   templateOptions = ANNOUNCE_TEMPLATE_OPTIONS;
   status: string = '';
 
-  constructor(private settingsService: SettingsService) { }
+  constructor(
+    private formBuilder: FormBuilder,
+    private settingsService: SettingsService
+  ) { }
 
   ngOnInit(): void {
+    this.settingsForm = this.formBuilder.group({
+      fontSize: [DEFAULT_SETTINGS.fontSize],
+      fontColor: [DEFAULT_SETTINGS.fontColor],
+      displayLines: [DEFAULT_SETTINGS.displayLines],
+      backgroundColor: [DEFAULT_SETTINGS.backgroundColor],
+      proxyUrl: [DEFAULT_SETTINGS.proxyUrl],
+      deleteKeybind: [DEFAULT_SETTINGS.deleteKeybind],
+      announceTemplate: [DEFAULT_SETTINGS.announceTemplate]
+    });
+
     this.settingsService.getSettings().subscribe(settings => {
-      this.settings = settings;
+      this.settingsForm.patchValue(settings);
     });
   }
 
   onKeydown(event: KeyboardEvent) {
-    this.settings.deleteKeybind = event.key;
+    this.settingsForm.get('deleteKeybind')?.setValue(event.key);
     event.preventDefault();  // prevent the default action (typing the key)
   }
 
+
   saveSettings(): void {
-    this.settingsService.updateSettings(this.settings);
-    this.status = 'success'
+    const updatedSettings = this.settingsForm.value as Settings;
+    this.settingsService.updateSettings(updatedSettings);
+    this.status = 'success';
   }
 }

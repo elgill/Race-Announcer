@@ -1,38 +1,38 @@
-<div>
+<div [formGroup]="settingsForm">
   <div>
     <label>
-      Font Size: <input [(ngModel)]="settings.fontSize" type="number">
+      Font Size: <input formControlName="fontSize" type="number">
     </label>
   </div>
   <div>
     <label>
-      Font Color: <input [(ngModel)]="settings.fontColor" type="color">
+      Font Color: <input formControlName="fontColor" type="color">
     </label>
   </div>
   <div>
     <label>
-      Display Lines: <input [(ngModel)]="settings.displayLines" type="number">
+      Display Lines: <input formControlName="displayLines" type="number">
     </label>
   </div>
   <div>
     <label>
-      Background Color: <input [(ngModel)]="settings.backgroundColor" type="color">
+      Background Color: <input formControlName="backgroundColor" type="color">
     </label>
   </div>
   <div>
     <label>
-      Proxy URL: <input [(ngModel)]="settings.proxyUrl" type="text">
+      Proxy URL: <input formControlName="proxyUrl" type="text">
     </label>
   </div>
   <div>
     <label>
-      Delete Keybind: <input [(ngModel)]="settings.deleteKeybind" (keydown)="onKeydown($event)" type="text">
+      Delete Keybind: <input formControlName="deleteKeybind" (keydown)="onKeydown($event)" type="text">
     </label>
   </div>
   <div>
     <label>
       Announcer Screen View:
-      <select [(ngModel)]="settings.announceTemplate">
+      <select formControlName="announceTemplate">
         <option *ngFor="let templateOption of templateOptions" [value]="templateOption.value">
           {{templateOption.display}}
         </option>
