@@ -9,6 +9,7 @@ import {ANNOUNCE_TEMPLATE_OPTIONS, DEFAULT_SETTINGS, Settings, SettingsService} 
 export class SettingsComponent implements OnInit {
   settings: Settings= DEFAULT_SETTINGS;
   templateOptions = ANNOUNCE_TEMPLATE_OPTIONS;
+  status: string = '';
 
   constructor(private settingsService: SettingsService) { }
 
@@ -25,5 +26,6 @@ export class SettingsComponent implements OnInit {
 
   saveSettings(): void {
     this.settingsService.updateSettings(this.settings);
+    this.status = 'success'
   }
 }

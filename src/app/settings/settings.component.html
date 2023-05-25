@@ -40,6 +40,6 @@
     </label>
   </div>
 
-
   <button (click)="saveSettings()">Save Settings</button>
+  <p *ngIf="status === 'success'" class="success-message">Settings saved successfully!</p>
 </div>

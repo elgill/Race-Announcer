@@ -17,13 +17,13 @@ export const ANNOUNCE_TEMPLATE_OPTIONS: { display: string; value: string }[] = [
 ];
 
 export const DEFAULT_SETTINGS: Settings = {
-  fontSize: 14,
+  fontSize: 32,
   fontColor: '#000000',
-  displayLines: 10,
+  displayLines: 50,
   backgroundColor: '#ffffff',
   proxyUrl: '',
   deleteKeybind: 'Delete',
-  announceTemplate: 'grid'
+  announceTemplate: 'freeform'
 };
 
 @Injectable({
