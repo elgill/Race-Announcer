@@ -1,7 +1,7 @@
 {
   "name": "race-announcer-angular",
   "productName": "Race Announcer",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "main.js",
   "scripts": {
     "ng": "ng",
@@ -27,7 +27,8 @@
       "main.js"
     ],
     "directories": {
-      "buildResources": "assets"
+      "buildResources": "assets",
+      "output": "./build"
     },
     "publish": {
       "provider": "github"
