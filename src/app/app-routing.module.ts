@@ -5,6 +5,7 @@ import { AnnounceScreenComponent } from './announce/announce-screen.component';
 import {CsvImportComponent} from "./csv-import/csv-import.component";
 import {BibScrapeUtilComponent} from "./bib-scrape-util/bib-scrape-util.component";
 import {BrowseRunnersComponent} from "./browse-runners/browse-runners.component";
+import {ConnectFileStreamComponent} from "./connect-file-stream/connect-file-stream.component";
 
 const routes: Routes = [
   { path: 'settings', component: SettingsComponent },
@@ -12,6 +13,7 @@ const routes: Routes = [
   { path: 'announce', component: AnnounceScreenComponent },
   { path: 'bibscrape', component: BibScrapeUtilComponent },
   { path: 'browse', component: BrowseRunnersComponent},
+  { path: 'connectfs', component: ConnectFileStreamComponent},
   { path: '', redirectTo: '/announce', pathMatch: 'full' },
 ];
 

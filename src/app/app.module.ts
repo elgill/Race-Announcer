@@ -17,6 +17,7 @@ import { CsvExportComponent } from './csv-export/csv-export.component';
 import { BrowseRunnersComponent } from './browse-runners/browse-runners.component';
 import { ClearRunnersComponent } from './clear-runners/clear-runners.component';
 import { RaceClockComponent } from './race-clock/race-clock.component';
+import { ConnectFileStreamComponent } from './connect-file-stream/connect-file-stream.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { RaceClockComponent } from './race-clock/race-clock.component';
     CsvExportComponent,
     BrowseRunnersComponent,
     ClearRunnersComponent,
-    RaceClockComponent
+    RaceClockComponent,
+    ConnectFileStreamComponent
   ],
   imports: [
     BrowserModule,

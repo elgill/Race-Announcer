@@ -1,7 +1,11 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow , ipcMain} = require('electron')
 const { Menu } = require('electron')
+const fs = require('fs');
 
 let win
+
+let watcher; // Keep track of the current file watcher
+let lastLineCount = 0; // Keep track of the number of lines in the file
 
 function createWindow () {
   win = new BrowserWindow({
@@ -9,7 +13,7 @@ function createWindow () {
     height: 600,
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: true, //i switched
+      contextIsolation: false,
       worldSafeExecuteJavaScript: true
     },
     icon: __dirname + '/dist/race-announcer-angular/favicon.ico'
@@ -22,6 +26,34 @@ function createWindow () {
   win.on('closed', () => {
     win = null
   })
+
+// Handle IPC message for setting the file path
+  ipcMain.on('set-file-path', (event, filePath) => {
+    // Stop watching the previous file
+    if (watcher) {
+      watcher.close();
+    }
+
+    if(filePath !== ''){
+      // Start watching the new file
+      watcher = fs.watch(filePath, (eventType, filename) => {
+        if (filename) {
+          // Read the file, parse new lines, and send them to the renderer process
+          const data = fs.readFileSync(filePath, 'utf-8');
+          const lines = data.split('\n');
+          const newLines = lines.slice(lastLineCount);
+          lastLineCount = lines.length;
+          win.webContents.send('file-updated', newLines);
+        }
+      });
+    }
+  });
+
+  app.on('before-quit', () => {
+    if (watcher) {
+      watcher.close(); // stop watching the file when the app is closing
+    }
+  });
 }
 
 app.on('ready', createWindow)
