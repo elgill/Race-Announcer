@@ -1,4 +1,4 @@
-const { app, BrowserWindow , ipcMain} = require('electron')
+const { app, BrowserWindow , ipcMain, dialog} = require('electron')
 const { Menu } = require('electron')
 const fs = require('fs');
 const chokidar = require("chokidar");
@@ -46,6 +46,19 @@ function createWindow () {
       lastLineCount = lines.length;
       win.webContents.send('file-updated', newLines);
     });
+  });
+
+  // Handle IPC message for opening file dialog
+  ipcMain.handle('open-file-dialog', async (event) => {
+    const result = await dialog.showOpenDialog(win, {
+      properties: ['openFile']
+    });
+
+    if (!result.canceled && result.filePaths.length > 0) {
+      return result.filePaths[0];
+    } else {
+      return null;
+    }
   });
 
   app.on('before-quit', () => {

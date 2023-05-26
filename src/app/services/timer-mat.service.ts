@@ -11,9 +11,8 @@ export class TimerMatService {
     private runnerDataService: RunnerDataService
   ) {
     this.fileUpdateService.getUpdates().subscribe(bibNumbers => {
-      // @ts-ignore
+      // @ts-ignore TODO
       bibNumbers.forEach(bibNumber => {
-        // Process each bib number here. For example, add the bib number to the runner data service.
         this.runnerDataService.enterBib(bibNumber);
       });
     });
