@@ -1,6 +1,7 @@
 const { app, BrowserWindow , ipcMain} = require('electron')
 const { Menu } = require('electron')
 const fs = require('fs');
+const chokidar = require("chokidar");
 
 let win
 
@@ -9,8 +10,8 @@ let lastLineCount = 0; // Keep track of the number of lines in the file
 
 function createWindow () {
   win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1200,
+    height: 800,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
@@ -34,19 +35,17 @@ function createWindow () {
       watcher.close();
     }
 
-    if(filePath !== ''){
-      // Start watching the new file
-      watcher = fs.watch(filePath, (eventType, filename) => {
-        if (filename) {
-          // Read the file, parse new lines, and send them to the renderer process
-          const data = fs.readFileSync(filePath, 'utf-8');
-          const lines = data.split('\n');
-          const newLines = lines.slice(lastLineCount);
-          lastLineCount = lines.length;
-          win.webContents.send('file-updated', newLines);
-        }
-      });
-    }
+    // Start watching the new file
+    watcher = chokidar.watch(filePath);
+
+    watcher.on('change', (path) => {
+      // Read the file, parse new lines, and send them to the renderer process
+      const data = fs.readFileSync(filePath, 'utf-8');
+      const lines = data.split('\n');
+      const newLines = lines.slice(lastLineCount);
+      lastLineCount = lines.length;
+      win.webContents.send('file-updated', newLines);
+    });
   });
 
   app.on('before-quit', () => {

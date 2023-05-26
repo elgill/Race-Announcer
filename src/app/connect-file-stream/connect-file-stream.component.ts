@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {FileUpdateService} from "../services/file-update.service";
+import {TimerMatService} from "../services/timer-mat.service";
 
 @Component({
   selector: 'app-connect-file-stream',
@@ -9,7 +10,7 @@ import {FileUpdateService} from "../services/file-update.service";
 export class ConnectFileStreamComponent {
   filePath: string = '';
 
-  constructor(private fileUpdateService: FileUpdateService) {}
+  constructor(private fileUpdateService: FileUpdateService , private timerMatService: TimerMatService) {}
 
   connect() {
     this.fileUpdateService.setFilePath(this.filePath);

@@ -25,8 +25,14 @@ export class FileUpdateService {
   }
 
   getUpdates(): Observable<any> {
+    if (!window.require) {
+      console.warn('Returning Fake FS observable since not running in electron')
+      return new Observable<any>();
+    }
+    console.log('returning observable')
     return new Observable((observer) => {
       this.ipcRenderer.on('file-updated', (event: any, data: any) => {
+        console.log("Updated File message recieved")
         observer.next(data);
         console.log("Updated File message")
       });
