@@ -18,7 +18,8 @@
   "build": {
     "appId": "dev.gillin.raceannouncer",
     "mac": {
-      "category": "public.app-category.productivity"
+      "category": "public.app-category.productivity",
+      "identity": "Chris Gillin (CPAZW3J38G)"
     },
     "win": {
       "target": "nsis"
