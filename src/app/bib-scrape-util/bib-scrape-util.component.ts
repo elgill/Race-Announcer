@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import * as FileSaver from 'file-saver';
+import {saveAs} from 'file-saver';
 import {DEFAULT_SETTINGS, Settings, SettingsService} from "../services/settings.service";
 
 @Component({
@@ -68,7 +68,7 @@ export class BibScrapeUtilComponent implements OnInit {
           });
 
           const blob = new Blob([csv.join('\n')], {type: 'text/csv;charset=utf-8'});
-          FileSaver.saveAs(blob, 'table_data.csv');
+          saveAs(blob, 'table_data.csv', { autoBom: false });
           resolve('CSV file successfully created and saved');
         },
         error: (err) => {
