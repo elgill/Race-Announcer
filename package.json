@@ -1,7 +1,9 @@
 {
   "name": "race-announcer-angular",
   "productName": "Race Announcer",
-  "version": "0.0.1",
+  "author": "Chris Gillin",
+  "description": "Cross-platform desktop application for announcing race events",
+  "version": "0.0.2",
   "main": "main.js",
   "scripts": {
     "ng": "ng",
