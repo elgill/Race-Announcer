@@ -1,5 +1,11 @@
-<div [ngSwitch]="settings.announceTemplate">
-  <app-announce-grid *ngSwitchCase="'grid'"></app-announce-grid>
-  <app-announce-freeform *ngSwitchCase="'freeform'"></app-announce-freeform>
-  <app-error *ngSwitchDefault></app-error>
+<div [style.font-size.px]="settings.fontSize" [style.color]="settings.fontColor" [style.background-color]="settings.backgroundColor">
+  <div class="header">
+    <app-bib-entry></app-bib-entry>
+    <app-race-clock></app-race-clock>
+  </div>
+  <div [ngSwitch]="settings.announceTemplate">
+    <app-announce-grid *ngSwitchCase="'grid'"></app-announce-grid>
+    <app-announce-freeform *ngSwitchCase="'freeform'"></app-announce-freeform>
+    <app-error *ngSwitchDefault></app-error>
+  </div>
 </div>

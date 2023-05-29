@@ -1,13 +1,3 @@
 .runnerAttribute {
   padding-right: 20px;
 }
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.content {
-  margin-top: 20px;
-}
