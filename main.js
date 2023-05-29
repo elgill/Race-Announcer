@@ -88,15 +88,11 @@ const template = [
     submenu: [
       {
         label: 'Open',
-        click() { /* Code to open file dialog and import CSV goes here */ }
+        click() { win.webContents.send('menu-clicked', '/settings'); }
       },
       {
-        label: 'Save',
-        click() { /* Code to save current state goes here */ }
-      },
-      {
-        label: 'Load',
-        click() { /* Code to open file dialog and load state goes here */ }
+        label: 'Import / Export',
+        click() { win.webContents.send('menu-clicked', '/import'); }
       },
       {
         label: 'Exit',
@@ -120,20 +116,15 @@ const template = [
     label: 'View',
     submenu: [
       {
+        label: 'Browse',
+        click() { win.webContents.send('menu-clicked', '/browse'); }
+      },
+      {
         label: 'Settings',
-        click() { /* Code to open SettingsComponent goes here */ }
+        click() { win.webContents.send('menu-clicked', '/settings'); }
       }
     ]
   },
-  {
-    label: 'Help',
-    submenu: [
-      {
-        label: 'About',
-        click() { /* Code to display about information goes here */ }
-      }
-    ]
-  }
 ]
 
 const menu = Menu.buildFromTemplate(template)
