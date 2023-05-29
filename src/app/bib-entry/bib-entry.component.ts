@@ -1,4 +1,4 @@
-import {Component, HostListener, OnInit} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
 import { RunnerDataService } from '../services/runner-data.service';
 import {SettingsService, Settings, DEFAULT_SETTINGS} from "../services/settings.service";
 
@@ -7,8 +7,9 @@ import {SettingsService, Settings, DEFAULT_SETTINGS} from "../services/settings.
   templateUrl: './bib-entry.component.html',
   styleUrls: ['./bib-entry.component.css']
 })
-export class BibEntryComponent implements OnInit {
+export class BibEntryComponent implements OnInit, AfterViewInit  {
 
+  @ViewChild('bibEntryInput') bibEntryInput!: ElementRef;
   bibNumber: string = '';
   settings: Settings = DEFAULT_SETTINGS;
 
@@ -21,6 +22,10 @@ export class BibEntryComponent implements OnInit {
     this.settingsService.getSettings().subscribe(settings => {
       this.settings = settings;
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.bibEntryInput.nativeElement.focus();
   }
 
   @HostListener('window:keydown', ['$event'])

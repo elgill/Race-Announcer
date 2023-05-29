@@ -1,5 +1,5 @@
 <form (submit)="onSubmit()" class="entry-form">
-  <input [(ngModel)]="bibNumber" name="bibNumber" autocomplete="off">
+  <input #bibEntryInput [(ngModel)]="bibNumber" name="bibNumber" autocomplete="off">
   <div class="button-group">
     <button type="submit">Submit</button>
     <button type="button" (click)="onRemoveLastRunnerClick()">Remove Last Runner</button>
