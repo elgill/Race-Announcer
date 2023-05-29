@@ -1,6 +1,7 @@
 <div [style.font-size.px]="settings.fontSize" [style.color]="settings.fontColor" [style.background-color]="settings.backgroundColor">
   <div class="header">
     <app-bib-entry></app-bib-entry>
+    <div *ngIf="isNumLockOff" class="num-lock-warning">Warning: Num Lock is off!</div>
     <app-race-clock></app-race-clock>
   </div>
   <div [ngSwitch]="settings.announceTemplate">

@@ -7,3 +7,11 @@
 .content {
   margin-top: 20px;
 }
+
+.num-lock-warning {
+  color: red;
+  background-color: yellow;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 10px 0;
+}

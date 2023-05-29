@@ -11,6 +11,7 @@ export class AnnounceScreenComponent implements OnInit {
   settings: Settings= DEFAULT_SETTINGS;
 
   runnerList: Runner[] = [];
+  isNumLockOff = false;
 
   constructor(
     private runnerDataService: RunnerDataService,
@@ -24,6 +25,9 @@ export class AnnounceScreenComponent implements OnInit {
 
     this.settingsService.getSettings().subscribe(settings => {
       this.settings = settings;
+    });
+    window.addEventListener('keydown', (event: KeyboardEvent) => {
+      this.isNumLockOff = event.getModifierState && !event.getModifierState('NumLock');
     });
   }
 
