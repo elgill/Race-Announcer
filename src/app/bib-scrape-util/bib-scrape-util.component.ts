@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {saveAs} from 'file-saver';
+import {saveAs} from 'file-saver-es';
 import {DEFAULT_SETTINGS, Settings, SettingsService} from "../services/settings.service";
 
 @Component({
