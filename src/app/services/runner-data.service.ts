@@ -52,6 +52,10 @@ export class RunnerDataService {
     await this.db.saveRunners(runnersArray);
   }
 
+  async getRunnersByName(firstName?: string, lastName?: string): Promise<Runner[]> {
+    return this.db.getRunnersByName(firstName, lastName);
+  }
+
   getActiveRunners() {
     return this.activeRunners$.asObservable();
   }

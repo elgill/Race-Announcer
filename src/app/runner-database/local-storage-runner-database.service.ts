@@ -22,4 +22,25 @@ export class LocalStorageRunnerDatabaseService implements RunnerDatabase {
     localStorage.setItem('runners', JSON.stringify(runners));
     return Promise.resolve();
   }
+
+  getRunnersByName(firstName?: string, lastName?: string): Promise<Runner[]> {
+    const storedRunners = localStorage.getItem('runners');
+    if (storedRunners) {
+      const allRunners: Runner[] = JSON.parse(storedRunners);
+      const lcFirstName = firstName?.toLowerCase();
+      const lcLastName = lastName?.toLowerCase();
+      return Promise.resolve(allRunners.filter(runner => {
+        if (lcFirstName && runner.firstName.toLowerCase() !== lcFirstName) {
+          return false;
+        }
+        if (lcLastName && runner.lastName.toLowerCase() !== lcLastName) {
+          return false;
+        }
+        return true;
+      }));
+    } else {
+      return Promise.resolve([]);
+    }
+  }
+
 }

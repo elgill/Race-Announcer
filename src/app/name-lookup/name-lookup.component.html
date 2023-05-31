@@ -1,0 +1,15 @@
+<div>
+  <label for="firstName">First name:</label>
+  <input id="firstName" #firstNameInput (input)="searchRunners(firstNameInput.value, lastNameInput.value)" type="text">
+</div>
+
+<div>
+  <label for="lastName">Last name:</label>
+  <input id="lastName" #lastNameInput (input)="searchRunners(firstNameInput.value, lastNameInput.value)" type="text">
+</div>
+
+<ul>
+  <li *ngFor="let runner of runners">
+    {{ runner.firstName }} {{ runner.lastName }} (Bib: {{ runner.bib }})
+  </li>
+</ul>
