@@ -31,7 +31,8 @@ export class BibScrapeUtilComponent implements OnInit {
     this.messageType = '';
     return new Promise((resolve, reject) => {
       const corsProxy = this.settings.proxyUrl;
-      const proxiedUrl = corsProxy + this.url;
+      const separator = corsProxy && !corsProxy.endsWith('/') ? '/' : '';
+      const proxiedUrl = corsProxy + separator + this.url;
       this.http.get(proxiedUrl, { responseType: 'text' }).subscribe({
         next: (html) => {
           const parser = new DOMParser();
