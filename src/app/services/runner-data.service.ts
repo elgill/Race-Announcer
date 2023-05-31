@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { saveAs } from 'file-saver-es';
 import * as Papa from 'papaparse';
 import { BehaviorSubject } from 'rxjs';
+import {RunnerDatabase} from "../runner-database/runner-database";
+import {LocalStorageRunnerDatabaseService} from "../runner-database/local-storage-runner-database.service";
 
 export interface Runner {
   bib: string;
@@ -23,29 +25,31 @@ export class RunnerDataService {
   private allRunners = new Map<string, Runner>();
   private activeRunners: Runner[] = [];
   private activeRunners$ = new BehaviorSubject<Runner[]>([]);
+  private db: RunnerDatabase;
 
   constructor() {
+    this.db = new LocalStorageRunnerDatabaseService();
     // Log initial runners
     console.log('Initial runners:', Array.from(this.allRunners.values()));
 
     // Load runners from localStorage
-    this.loadRunnersFromStorage();
+    this.loadRunnersFromRunnerDB();
   }
 
-  loadRunnersFromStorage() {
+  async loadRunnersFromRunnerDB() {
     const storedRunners = localStorage.getItem('runners');
 
     if (storedRunners) {
-      const runnersArray: Runner[] = JSON.parse(storedRunners);
+      const runnersArray: Runner[] = await this.db.loadRunners();
       runnersArray.forEach(runner => {
         this.allRunners.set(runner.bib, runner);
       });
     }
   }
 
-  saveRunnersToStorage() {
+  async saveRunnersToStorage() {
     const runnersArray = Array.from(this.allRunners.values());
-    localStorage.setItem('runners', JSON.stringify(runnersArray));
+    await this.db.saveRunners(runnersArray);
   }
 
   getActiveRunners() {
