@@ -3,6 +3,7 @@ import { saveAs } from 'file-saver-es';
 import * as Papa from 'papaparse';
 import { BehaviorSubject } from 'rxjs';
 import {RunnerDatabase} from "../runner-database/runner-database";
+import {IndexedDbRunnerDatabaseService} from "../runner-database/indexed-db-runner-database.service";
 import {LocalStorageRunnerDatabaseService} from "../runner-database/local-storage-runner-database.service";
 
 export interface Runner {
@@ -28,7 +29,13 @@ export class RunnerDataService {
   private db: RunnerDatabase;
 
   constructor() {
-    this.db = new LocalStorageRunnerDatabaseService();
+    // IDB
+    this.db = new IndexedDbRunnerDatabaseService();
+
+    //Local DB
+    //this.db = new LocalStorageRunnerDatabaseService();
+    //Pouch
+    //this.db = new PouchDBRunnerDatabaseService();
     // Log initial runners
     console.log('Initial runners:', Array.from(this.allRunners.values()));
 
@@ -125,5 +132,6 @@ export class RunnerDataService {
     this.activeRunners$.next(this.activeRunners);
 
     this.saveRunnersToStorage()
+    //TODO: This needs an explicit command in interface
   }
 }

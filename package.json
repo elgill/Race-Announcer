@@ -49,6 +49,7 @@
     "@angular/router": "^16.0.0",
     "chokidar": "^3.5.3",
     "file-saver-es": "^2.0.5",
+    "idb": "^7.1.1",
     "papaparse": "^5.4.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
