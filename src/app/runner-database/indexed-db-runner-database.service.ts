@@ -78,4 +78,17 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
     return runners;
   }
 
+  async deleteAllRunners(): Promise<void> {
+    const db = await this.dbPromise;
+    const tx = db.transaction('runners', 'readwrite');
+
+    tx.store.clear();
+
+    await tx.done;
+
+    // Clear in-memory data as well.
+    this.runners = [];
+    await this.rebuildIndex();
+  }
+
 }

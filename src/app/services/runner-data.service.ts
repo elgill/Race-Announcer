@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { saveAs } from 'file-saver-es';
+import {Injectable} from '@angular/core';
+import {saveAs} from 'file-saver-es';
 import * as Papa from 'papaparse';
-import { BehaviorSubject } from 'rxjs';
+import {BehaviorSubject} from 'rxjs';
 import {RunnerDatabase} from "../runner-database/runner-database";
 import {IndexedDbRunnerDatabaseService} from "../runner-database/indexed-db-runner-database.service";
 
@@ -61,8 +61,7 @@ export class RunnerDataService {
   generateUniqueId(): string {
     const prefix = Date.now().toString();
     const randomNum = Math.floor(Math.random() * 1000000);
-    const uniqueId = `${prefix}-${randomNum}`;
-    return uniqueId;
+    return `${prefix}-${randomNum}`;
   }
 
   getActiveRunners() {
@@ -134,7 +133,6 @@ export class RunnerDataService {
     this.activeRunners = [];
     this.activeRunners$.next(this.activeRunners);
 
-    this.saveRunnersToStorage()
-    //TODO: This needs an explicit command in interface
+    this.db.deleteAllRunners();
   }
 }

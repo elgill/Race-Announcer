@@ -43,4 +43,9 @@ export class LocalStorageRunnerDatabaseService implements RunnerDatabase {
     }
   }
 
+  deleteAllRunners(): Promise<void> {
+    localStorage.removeItem('runners');
+    return Promise.resolve();
+  }
+
 }
