@@ -10,6 +10,7 @@ export interface Settings {
   deleteKeybind: string;
   announceTemplate: string;
   raceStartTime: string;
+  numLockWarn: boolean;
 }
 
 export const ANNOUNCE_TEMPLATE_OPTIONS: { display: string; value: string }[] = [
@@ -26,6 +27,7 @@ export const DEFAULT_SETTINGS: Settings = {
   deleteKeybind: 'Delete',
   announceTemplate: 'freeform',
   raceStartTime: '',
+  numLockWarn: true,
 };
 
 @Injectable({

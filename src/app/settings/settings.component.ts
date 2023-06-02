@@ -27,6 +27,7 @@ export class SettingsComponent implements OnInit {
       deleteKeybind: [DEFAULT_SETTINGS.deleteKeybind],
       announceTemplate: [DEFAULT_SETTINGS.announceTemplate],
       raceStartTime: [DEFAULT_SETTINGS.raceStartTime],
+      numLockWarn: [DEFAULT_SETTINGS.numLockWarn],
     });
 
     this.settingsService.getSettings().subscribe(settings => {
