@@ -1,51 +1,81 @@
 import { Injectable } from '@angular/core';
+import { openDB } from 'idb';
+import * as lunr from 'lunr';
 import {RunnerDatabase} from "./runner-database";
 import {Runner} from "../services/runner-data.service";
-import {IDBPDatabase, openDB} from 'idb';
 
 @Injectable({
   providedIn: 'root'
 })
 export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
-
-  private readonly dbName = 'runnersDB';
-  private readonly storeName = 'runners';
-  private readonly dbPromise: Promise<IDBPDatabase>;
+  private dbPromise;
+  // @ts-ignore
+  private idx: lunr.Index;
+  private runners: Runner[] = [];
 
   constructor() {
-    const storeName = this.storeName;
-    this.dbPromise = openDB(this.dbName, 1, {
+    this.dbPromise = openDB('runners', 1, {
       upgrade(db) {
-        db.createObjectStore(storeName, { keyPath: 'bib' });
+        db.createObjectStore('runners', { keyPath: 'id' });
       },
+    });
+
+    this.rebuildIndex();
+  }
+
+  async rebuildIndex() {
+    const runners = this.runners;
+    this.idx = lunr(function() {
+      this.ref('id');
+      this.field('firstName');
+      this.field('lastName');
+
+      for (const doc of runners) {
+        this.add(doc);
+      }
     });
   }
 
   async loadRunners(): Promise<Runner[]> {
     const db = await this.dbPromise;
-    return db.getAll(this.storeName);
+    this.runners = await db.getAll('runners');
+    await this.rebuildIndex();
+    return this.runners;
   }
 
   async saveRunners(runners: Runner[]): Promise<void> {
     const db = await this.dbPromise;
-    const tx = db.transaction(this.storeName, 'readwrite');
+    const tx = db.transaction('runners', 'readwrite');
+
     for (const runner of runners) {
       tx.store.put(runner);
+      this.runners.push(runner);
     }
+
     await tx.done;
+    await this.rebuildIndex();
   }
 
   async getRunnersByName(firstName?: string, lastName?: string): Promise<Runner[]> {
+    let searchString = '';
+    if (firstName) {
+      searchString += `firstName:${firstName}* `;
+    }
+    if (lastName) {
+      searchString += `lastName:${lastName}* `;
+    }
+
+    const searchResults = this.idx.search(searchString.trim());
     const db = await this.dbPromise;
-    const allRunners: Runner[] = await db.getAll(this.storeName);
-    return allRunners.filter(runner => {
-      if (firstName && runner.firstName !== firstName) {
-        return false;
-      }
-      if (lastName && runner.lastName !== lastName) {
-        return false;
-      }
-      return true;
-    });
+    const runners = [];
+
+    for (const result of searchResults) {
+      const runner = await db.get('runners', result.ref);
+      runners.push(runner);
+    }
+    console.log("Search results for First:",firstName," Last:",lastName," Results:", runners)
+
+    return runners;
   }
+
 }

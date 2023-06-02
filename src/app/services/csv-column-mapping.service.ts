@@ -52,6 +52,7 @@ export class CsvColumnMappingService {
           }
 
           const runner: Runner = {
+            id: this.runnerDataService.generateUniqueId(),
             bib: row[columnMappings['bib']],
             firstName: row[columnMappings['firstName']],
             lastName: row[columnMappings['lastName']],

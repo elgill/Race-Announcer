@@ -4,9 +4,9 @@ import * as Papa from 'papaparse';
 import { BehaviorSubject } from 'rxjs';
 import {RunnerDatabase} from "../runner-database/runner-database";
 import {IndexedDbRunnerDatabaseService} from "../runner-database/indexed-db-runner-database.service";
-import {LocalStorageRunnerDatabaseService} from "../runner-database/local-storage-runner-database.service";
 
 export interface Runner {
+  id: string;
   bib: string;
   firstName: string;
   lastName: string;
@@ -32,11 +32,6 @@ export class RunnerDataService {
     // IDB
     this.db = new IndexedDbRunnerDatabaseService();
 
-    //Local DB
-    //this.db = new LocalStorageRunnerDatabaseService();
-    //Pouch
-    //this.db = new PouchDBRunnerDatabaseService();
-    // Log initial runners
     console.log('Initial runners:', Array.from(this.allRunners.values()));
 
     // Load runners from localStorage
@@ -63,6 +58,13 @@ export class RunnerDataService {
     return this.db.getRunnersByName(firstName, lastName);
   }
 
+  generateUniqueId(): string {
+    const prefix = Date.now().toString();
+    const randomNum = Math.floor(Math.random() * 1000000);
+    const uniqueId = `${prefix}-${randomNum}`;
+    return uniqueId;
+  }
+
   getActiveRunners() {
     return this.activeRunners$.asObservable();
   }
@@ -74,6 +76,7 @@ export class RunnerDataService {
     } else {
       // If no runner found, add a placeholder runner with the entered bib
       this.activeRunners.unshift({
+        id:'',
         bib: bib,
         firstName: 'Not Found',
         lastName: '',
