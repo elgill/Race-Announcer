@@ -58,7 +58,21 @@ export class SettingsService {
   private loadSettings() {
     const settingsStr = localStorage.getItem('settings');
     if (settingsStr) {
-      this.settings = JSON.parse(settingsStr);
+      const loadedSettings = JSON.parse(settingsStr) as Partial<Settings>;
+      this.settings = { ...DEFAULT_SETTINGS } as Settings;  // start with default settings
+
+      console.log("Default Settings:",DEFAULT_SETTINGS);
+      console.log("Set Settings:",loadedSettings);
+
+      // iterate through the keys of the default settings
+      for (const key of Object.keys(DEFAULT_SETTINGS) as (keyof Settings)[]) {
+        // if a key is present in the loaded settings, use its value
+        if (key in loadedSettings) {
+          console.log("Key:",key," Value:",this.settings[key]);
+          this.settings[key] = loadedSettings[key] as never;
+        }
+      }
+      console.log("Merged Settings:",this.settings);
       this.settings$.next(this.settings);
     } else {
       // Default settings
