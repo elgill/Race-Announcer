@@ -39,14 +39,10 @@ export class RunnerDataService {
   }
 
   async loadRunnersFromRunnerDB() {
-    const storedRunners = localStorage.getItem('runners');
-
-    if (storedRunners) {
-      const runnersArray: Runner[] = await this.db.loadRunners();
-      runnersArray.forEach(runner => {
-        this.allRunners.set(runner.bib, runner);
-      });
-    }
+    const runnersArray: Runner[] = await this.db.loadRunners();
+    runnersArray.forEach(runner => {
+      this.allRunners.set(runner.bib, runner);
+    });
   }
 
   async saveRunnersToStorage() {
