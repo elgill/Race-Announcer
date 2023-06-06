@@ -8,8 +8,4 @@
   <input id="lastName" #lastNameInput (input)="searchRunners(firstNameInput.value, lastNameInput.value)" type="text">
 </div>
 
-<ul>
-  <li *ngFor="let runner of runners">
-    {{ runner.firstName }} {{ runner.lastName }} (Bib: {{ runner.bib }})
-  </li>
-</ul>
+<app-runner-table [runners]="this.runners"></app-runner-table>
