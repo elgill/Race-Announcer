@@ -45,7 +45,7 @@ export class RunnerDataService {
     });
   }
 
-  async saveRunnersToStorage() {
+  async saveRunnersToDB() {
     const runnersArray = Array.from(this.allRunners.values());
     await this.db.saveRunners(runnersArray);
   }
@@ -108,7 +108,7 @@ export class RunnerDataService {
     console.log('Runners after loading:', Array.from(this.allRunners.values()));
 
     // Save runners to localStorage
-    this.saveRunnersToStorage();
+    this.saveRunnersToDB();
   }
 
   getSortedRunners() {
