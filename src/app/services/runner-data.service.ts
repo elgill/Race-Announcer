@@ -14,8 +14,7 @@ export interface Runner {
   gender: string;
   town: string;
   state: string;
-  customField1: string;
-  customField2: string;
+  customFields: Map<string, string>;
 }
 
 @Injectable({
@@ -79,8 +78,7 @@ export class RunnerDataService {
         gender: '',
         town: '',
         state: '',
-        customField1: '',
-        customField2: ''
+        customFields: new Map<string,string>
       });
     }
 

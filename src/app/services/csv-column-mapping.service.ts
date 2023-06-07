@@ -60,8 +60,9 @@ export class CsvColumnMappingService {
             gender: row[columnMappings['gender']],
             town: row[columnMappings['town']],
             state: row[columnMappings['state']],
-            customField1: row[columnMappings['customField1']],
-            customField2: row[columnMappings['customField2']]
+            customFields: new Map<string,string>
+/*            TODO customField1: row[columnMappings['customField1']],
+            customField2: row[columnMappings['customField2']]*/
           };
 
           console.log('Mapped runner:', runner);  // Debug: Log mapped runner
