@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { ANNOUNCE_TEMPLATE_OPTIONS, DEFAULT_SETTINGS, Settings, SettingsService } from '../services/settings.service';
 
 @Component({
@@ -28,12 +28,15 @@ export class SettingsComponent implements OnInit {
       announceTemplate: [DEFAULT_SETTINGS.announceTemplate],
       raceStartTime: [DEFAULT_SETTINGS.raceStartTime],
       numLockWarn: [DEFAULT_SETTINGS.numLockWarn],
+      customFields: this.formBuilder.array(
+        DEFAULT_SETTINGS.customFields.map((field) => this.formBuilder.group(field))
+      ),
     });
-
     this.settingsService.getSettings().subscribe(settings => {
       console.log('Patching Values: ',settings);
       this.settingsForm.patchValue(settings);
     });
+
     console.log('Settings Initialized');
   }
 
@@ -48,4 +51,9 @@ export class SettingsComponent implements OnInit {
     this.settingsService.updateSettings(updatedSettings);
     this.status = 'success';
   }
+
+  get customFields() {
+    return this.settingsForm.get('customFields') as FormArray;
+  }
+
 }
