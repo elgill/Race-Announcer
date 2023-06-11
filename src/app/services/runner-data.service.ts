@@ -68,18 +68,10 @@ export class RunnerDataService {
     if (runner) {
       this.activeRunners.unshift(runner);  // add runner to the start of the array
     } else {
+      let runner = bib == "" ? {...runnerBlankBib} : {...runnerNotFound};
+      runner.bib = bib;
       // If no runner found, add a placeholder runner with the entered bib
-      this.activeRunners.unshift({
-        id:'',
-        bib: bib,
-        firstName: 'Not Found',
-        lastName: '',
-        age: 0,
-        gender: '',
-        town: '',
-        state: '',
-        customFields: new Map<string,string>
-      });
+      this.activeRunners.unshift(runner);
     }
 
     this.activeRunners$.next(this.activeRunners);
@@ -129,4 +121,28 @@ export class RunnerDataService {
 
     this.db.deleteAllRunners();
   }
+}
+
+const runnerNotFound: Runner = {
+  age: 0,
+  bib: "",
+  customFields: new Map<string, string>(),
+  firstName: "Not Found",
+  gender: "",
+  id: "",
+  lastName: "",
+  state: "",
+  town: ""
+}
+
+const runnerBlankBib: Runner = {
+  age: 0,
+  bib: "",
+  customFields: new Map<string, string>(),
+  firstName: "-",
+  gender: "",
+  id: "",
+  lastName: "",
+  state: "",
+  town: ""
 }
