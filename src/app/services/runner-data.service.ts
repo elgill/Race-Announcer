@@ -32,10 +32,11 @@ export class RunnerDataService {
     // IDB
     this.db = new IndexedDbRunnerDatabaseService();
 
-    console.log('Initial runners:', Array.from(this.allRunners.values()));
-
-    // Load runners from localStorage
-    this.loadRunnersFromRunnerDB();
+    this.loadRunnersFromRunnerDB().then(() => {
+      console.log('Loaded runners from database.');
+    }).catch(err => {
+      console.error('Failed to load runners from database:', err);
+    });
   }
 
   async loadRunnersFromRunnerDB() {
@@ -98,8 +99,11 @@ export class RunnerDataService {
     // Log runners after loading
     console.log('Runners after loading:', Array.from(this.allRunners.values()));
 
-    // Save runners to localStorage
-    this.saveRunnersToDB();
+    this.saveRunnersToDB().then(() => {
+      console.log('Saved runners to database.');
+    }).catch(err => {
+      console.error('Failed to save runners to database:', err);
+    });
   }
 
   getSortedRunners() {
@@ -120,7 +124,11 @@ export class RunnerDataService {
     this.activeRunners = [];
     this.activeRunners$.next(this.activeRunners);
 
-    this.db.deleteAllRunners();
+    this.db.deleteAllRunners().then(() => {
+      console.log('Deleted all runners from database.');
+    }).catch(err => {
+      console.error('Failed to delete all runners from database:', err);
+    });
   }
 }
 
