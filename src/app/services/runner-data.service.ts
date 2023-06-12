@@ -14,7 +14,7 @@ export interface Runner {
   gender: string;
   town: string;
   state: string;
-  customFields: Map<string, string>;
+  customFields: { [key: string]: string }; // converted from Map to object
 }
 
 @Injectable({
@@ -134,7 +134,7 @@ export class RunnerDataService {
 const runnerNotFound: Runner = {
   age: 0,
   bib: "",
-  customFields: new Map<string, string>(),
+  customFields: {},
   firstName: "Not Found",
   gender: "",
   id: "",
@@ -146,7 +146,7 @@ const runnerNotFound: Runner = {
 const runnerBlankBib: Runner = {
   age: 0,
   bib: "",
-  customFields: new Map<string, string>(),
+  customFields: {},
   firstName: "-",
   gender: "",
   id: "",
