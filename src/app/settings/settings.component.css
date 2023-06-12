@@ -1,0 +1,10 @@
+.custom-field-group {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.custom-field-group h4 {
+  margin-top: 0;
+  margin-bottom: 0;
+}

@@ -50,29 +50,33 @@
       Race Start Time: <input formControlName="raceStartTime" type="datetime-local" step="0.1">
     </label>
   </div>
-
-  <div formArrayName="customFields">
-    <div *ngFor="let field of customFields.controls; let i = index" [formGroupName]="i">
-      <div>
-        <label>
-          Custom Field Name: <input formControlName="name" type="text">
-        </label>
-      </div>
-      <div>
-        <label>
-          Show in Announce Screen:
-          <input formControlName="showInAnnounce" type="checkbox">
-        </label>
-      </div>
-      <div>
-        <label>
-          Show in Browse Screen:
-          <input formControlName="showInBrowse" type="checkbox">
-        </label>
+  <div>
+    <h3>Custom Fields</h3>
+    <div formArrayName="customFields">
+      <div *ngFor="let field of customFields.controls; let i = index" [formGroupName]="i" class="custom-field-group">
+        <h4>Custom Field {{i+1}}</h4>
+        <div>
+          <label>
+            Name: <input formControlName="name" type="text">
+          </label>
+        </div>
+        <div>
+          <label>
+            Show in Announce Screen:
+            <input formControlName="showInAnnounce" type="checkbox">
+          </label>
+        </div>
+        <div>
+          <label>
+            Show in Browse Screen:
+            <input formControlName="showInBrowse" type="checkbox">
+          </label>
+        </div>
+        <button (click)="removeField(i)">Remove This Field</button>
       </div>
     </div>
+    <button (click)="addField()">Add Field</button>
   </div>
-
 
 
   <button (click)="saveSettings()">Save Settings</button>
