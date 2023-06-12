@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
 import {Runner, RunnerDataService} from './runner-data.service';
 import * as Papa from 'papaparse';
+import {SettingsService} from "./settings.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class CsvColumnMappingService {
 
-  constructor(private runnerDataService: RunnerDataService) { }
+
+  constructor(private runnerDataService: RunnerDataService,private settingsService: SettingsService) { }
 
   getHeaders(file: File): Promise<string[]> {
     return new Promise((resolve, reject) => {
@@ -62,6 +64,15 @@ export class CsvColumnMappingService {
             state: row[columnMappings['state']],
             customFields: {}
           };
+
+          // Add custom fields
+          this.settingsService.getSettings().subscribe(settings => {
+            settings.customFields.forEach(customField => {
+              if (row[columnMappings[customField.name]]) {
+                runner.customFields[customField.name] = row[columnMappings[customField.name]];
+              }
+            });
+          });
 
           console.log('Mapped runner:', runner);  // Debug: Log mapped runner
 
