@@ -8,8 +8,7 @@
     <th>Gender</th>
     <th>Town</th>
     <th>State</th>
-<!--TODO    <th>Custom Field 1</th>
-    <th>Custom Field 2</th>-->
+    <th *ngFor="let field of customFields">{{field.name}}</th>
   </tr>
   </thead>
   <tbody>
@@ -21,8 +20,9 @@
     <td>{{runner.gender}}</td>
     <td>{{runner.town}}</td>
     <td>{{runner.state}}</td>
-<!--    <td>{{runner.customField1}}</td>
-    <td>{{runner.customField2}}</td>-->
+    <td *ngFor="let field of customFields">
+      {{runner.customFields[field.name] || 'N/A'}}
+    </td>
   </tr>
   </tbody>
 </table>

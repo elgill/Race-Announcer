@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Runner, RunnerDataService} from '../services/runner-data.service';
 import {DEFAULT_SETTINGS, Settings, SettingsService} from "../services/settings.service";
+import {CustomField} from "../interfaces/custom-field";
 
 @Component({
   selector: 'app-announce',
@@ -12,6 +13,8 @@ export class AnnounceScreenComponent implements OnInit {
 
   runnerList: Runner[] = [];
   isNumLockOff = false;
+  customFields: CustomField[] = [];
+
 
   constructor(
     private runnerDataService: RunnerDataService,
@@ -29,6 +32,7 @@ export class AnnounceScreenComponent implements OnInit {
     window.addEventListener('keydown', (event: KeyboardEvent) => {
       this.isNumLockOff = event.getModifierState && !event.getModifierState('NumLock');
     });
+    this.customFields = this.settings.customFields;
   }
 
 }

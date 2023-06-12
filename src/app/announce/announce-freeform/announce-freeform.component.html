@@ -1,13 +1,14 @@
 <div>
-  <div *ngFor="let announce of runnerList; index as i" [hidden]="i >= settings.displayLines">
-    <span class="runnerAttribute">{{announce.bib}}</span>
-    <span class="runnerAttribute">{{announce.firstName}}</span>
-    <span class="runnerAttribute">{{announce.lastName}}</span>
-    <span class="runnerAttribute">{{announce.age}}</span>
-    <span class="runnerAttribute">{{announce.gender}}</span>
-    <span class="runnerAttribute">{{announce.town}}</span>
-    <span class="runnerAttribute">{{announce.state}}</span>
-<!-- TODO   <span class="runnerAttribute">{{announce.customField1}}</span>
-    <span class="runnerAttribute">{{announce.customField2}}</span>-->
+  <div *ngFor="let runner of runnerList; index as i" [hidden]="i >= settings.displayLines">
+    <span class="runnerAttribute">{{runner.bib}}</span>
+    <span class="runnerAttribute">{{runner.firstName}}</span>
+    <span class="runnerAttribute">{{runner.lastName}}</span>
+    <span class="runnerAttribute">{{runner.age}}</span>
+    <span class="runnerAttribute">{{runner.gender}}</span>
+    <span class="runnerAttribute">{{runner.town}}</span>
+    <span class="runnerAttribute">{{runner.state}}</span>
+    <span *ngFor="let field of customFields">
+      {{runner.customFields[field.name]}}
+    </span>
   </div>
 </div>

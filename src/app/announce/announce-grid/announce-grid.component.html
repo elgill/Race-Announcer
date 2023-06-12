@@ -8,21 +8,23 @@
     <th>Gender</th>
     <th>Town</th>
     <th>State</th>
-<!--  TODO  <th>Custom Field 1</th>
-    <th>Custom Field 2</th>-->
+    <th *ngFor="let field of customFields">
+      {{field.name}}
+    </th>
   </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let announce of runnerList; index as i" [hidden]="i >= settings.displayLines">
-    <td>{{announce.bib}}</td>
-    <td>{{announce.firstName}}</td>
-    <td>{{announce.lastName}}</td>
-    <td>{{announce.age}}</td>
-    <td>{{announce.gender}}</td>
-    <td>{{announce.town}}</td>
-    <td>{{announce.state}}</td>
-<!--    <td>{{announce.customField1}}</td>
-    <td>{{announce.customField2}}</td>-->
+  <tr *ngFor="let runner of runnerList; index as i" [hidden]="i >= settings.displayLines">
+    <td>{{runner.bib}}</td>
+    <td>{{runner.firstName}}</td>
+    <td>{{runner.lastName}}</td>
+    <td>{{runner.age}}</td>
+    <td>{{runner.gender}}</td>
+    <td>{{runner.town}}</td>
+    <td>{{runner.state}}</td>
+    <td *ngFor="let field of customFields">
+      {{runner.customFields[field.name]}}
+    </td>
   </tr>
   </tbody>
 </table>
