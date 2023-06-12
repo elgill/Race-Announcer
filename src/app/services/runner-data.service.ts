@@ -111,7 +111,26 @@ export class RunnerDataService {
   }
 
   exportRunners() {
-    const runnersArray = Array.from(this.allRunners.values());
+    // First, identify all unique custom field keys across all runners
+    const allCustomFieldKeys = new Set<string>();
+    this.allRunners.forEach(runner => {
+      Object.keys(runner.customFields).forEach(key => allCustomFieldKeys.add(key));
+    });
+
+    // Next, create a new representation of each runner that includes all custom fields
+    const runnersArray = Array.from(this.allRunners.values()).map(runner => {
+      const customFieldsWithDefaults: { [key: string]: string } = {};
+
+      // For each custom field key, set the value to the runner's value if it exists; otherwise, use an empty string
+      allCustomFieldKeys.forEach(key => {
+        customFieldsWithDefaults[key] = runner.customFields[key] || '';
+      });
+
+      // Merge the runner's original fields with the custom fields
+      return { ...runner, ...customFieldsWithDefaults };
+    });
+
+    // Generate CSV data from the processed runners
     const csv = Papa.unparse(runnersArray);
     const blob = new Blob([csv], {type: 'text/csv'});
 

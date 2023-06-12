@@ -21,7 +21,7 @@
     <td>{{runner.town}}</td>
     <td>{{runner.state}}</td>
     <td *ngFor="let field of customFields">
-      {{runner.customFields[field.name] || 'N/A'}}
+      {{runner.customFields[field.name]}}
     </td>
   </tr>
   </tbody>
