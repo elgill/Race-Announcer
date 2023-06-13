@@ -11,6 +11,7 @@ export class FileDialogService {
       try {
         this.ipcRenderer = window.require('electron').ipcRenderer;
       } catch (e) {
+        console.log("Error constructing file dialog")
         throw e;
       }
     } else {

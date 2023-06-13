@@ -4,19 +4,7 @@ import * as Papa from 'papaparse';
 import {BehaviorSubject} from 'rxjs';
 import {RunnerDatabase} from "../runner-database/runner-database";
 import {IndexedDbRunnerDatabaseService} from "../runner-database/indexed-db-runner-database.service";
-
-export interface Runner {
-  id: string;
-  bib: string;
-  firstName: string;
-  lastName: string;
-  age: number;
-  gender: string;
-  town: string;
-  state: string;
-  customField1: string;
-  customField2: string;
-}
+import {Runner} from "../interfaces/runner";
 
 @Injectable({
   providedIn: 'root'
@@ -112,7 +100,26 @@ export class RunnerDataService {
   }
 
   exportRunners() {
-    const runnersArray = Array.from(this.allRunners.values());
+    // First, identify all unique custom field keys across all runners
+    const allCustomFieldKeys = new Set<string>();
+    this.allRunners.forEach(runner => {
+      Object.keys(runner.customFields).forEach(key => allCustomFieldKeys.add(key));
+    });
+
+    // Next, create a new representation of each runner that includes all custom fields
+    const runnersArray = Array.from(this.allRunners.values()).map(runner => {
+      const customFieldsWithDefaults: { [key: string]: string } = {};
+
+      // For each custom field key, set the value to the runner's value if it exists; otherwise, use an empty string
+      allCustomFieldKeys.forEach(key => {
+        customFieldsWithDefaults[key] = runner.customFields[key] || '';
+      });
+
+      // Merge the runner's original fields with the custom fields
+      return { ...runner, ...customFieldsWithDefaults };
+    });
+
+    // Generate CSV data from the processed runners
     const csv = Papa.unparse(runnersArray);
     const blob = new Blob([csv], {type: 'text/csv'});
 
@@ -135,8 +142,7 @@ export class RunnerDataService {
 const runnerNotFound: Runner = {
   age: 0,
   bib: "",
-  customField1: "",
-  customField2: "",
+  customFields: {},
   firstName: "Not Found",
   gender: "",
   id: "",
@@ -148,8 +154,7 @@ const runnerNotFound: Runner = {
 const runnerBlankBib: Runner = {
   age: 0,
   bib: "",
-  customField1: "",
-  customField2: "",
+  customFields: {},
   firstName: "-",
   gender: "",
   id: "",

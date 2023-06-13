@@ -30,9 +30,7 @@ export class BibScrapeUtilComponent implements OnInit {
     this.message = '';
     this.messageType = '';
     return new Promise((resolve, reject) => {
-      const corsProxy = this.settings.proxyUrl;
-      const separator = corsProxy && !corsProxy.endsWith('/') ? '/' : '';
-      const proxiedUrl = corsProxy + separator + this.url;
+      const proxiedUrl = this.getURL();
       this.http.get(proxiedUrl, { responseType: 'text' }).subscribe({
         next: (html) => {
           const parser = new DOMParser();
@@ -53,7 +51,7 @@ export class BibScrapeUtilComponent implements OnInit {
             const cells = Array.from(row.querySelectorAll('td')).map(cell => {
               // Escape cell values that contain commas
               const cellText = cell.textContent;
-              return (cellText != null && cellText.includes(',')) ? `"${cellText}"` : cellText;
+              return (cellText?.includes(',')) ? `"${cellText}"` : cellText;
             });
 
             if (cells[1]) { // If the name cell exists
@@ -86,5 +84,11 @@ export class BibScrapeUtilComponent implements OnInit {
 
   }
 
+  private getURL() {
+    const corsProxy = this.settings.proxyUrl;
+    const separator = corsProxy && !corsProxy.endsWith('/') ? '/' : '';
+    const proxiedUrl = corsProxy + separator + this.url;
+    return proxiedUrl;
+  }
 }
 

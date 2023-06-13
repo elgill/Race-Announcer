@@ -8,8 +8,9 @@
     <th>Gender</th>
     <th>Town</th>
     <th>State</th>
-    <th>Custom Field 1</th>
-    <th>Custom Field 2</th>
+    <th *ngFor="let field of customFields">
+      <ng-container *ngIf="field.showInBrowse">{{field.name}}</ng-container>
+    </th>
   </tr>
   </thead>
   <tbody>
@@ -21,8 +22,11 @@
     <td>{{runner.gender}}</td>
     <td>{{runner.town}}</td>
     <td>{{runner.state}}</td>
-    <td>{{runner.customField1}}</td>
-    <td>{{runner.customField2}}</td>
+    <ng-container *ngFor="let field of customFields">
+      <td *ngIf="field.showInBrowse">
+        {{runner.customFields[field.name]}}
+      </td>
+    </ng-container>
   </tr>
   </tbody>
 </table>

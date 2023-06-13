@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { openDB } from 'idb';
 import * as lunr from 'lunr';
 import {RunnerDatabase} from "./runner-database";
-import {Runner} from "../services/runner-data.service";
+
+import {Runner} from "../interfaces/runner";
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,11 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
       },
     });
 
-    this.rebuildIndex();
+    this.rebuildIndex().then(() => {
+      console.log('Index Rebuilt');
+    }).catch(err => {
+      console.error('Failed to rebuild index:', err);
+    });
   }
 
   async rebuildIndex() {
@@ -48,7 +53,9 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
     const tx = db.transaction('runners', 'readwrite');
 
     for (const runner of runners) {
-      tx.store.put(runner);
+      tx.store.put(runner).then().catch(err => {
+        console.error('Failed to store runner:', err);
+      });
       this.runners.push(runner);
     }
 
@@ -82,7 +89,7 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
     const db = await this.dbPromise;
     const tx = db.transaction('runners', 'readwrite');
 
-    tx.store.clear();
+    await tx.store.clear();
 
     await tx.done;
 

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { CustomField } from "../interfaces/custom-field";
 
 export interface Settings {
   fontSize: number;
@@ -11,6 +12,7 @@ export interface Settings {
   announceTemplate: string;
   raceStartTime: string;
   numLockWarn: boolean;
+  customFields: CustomField[];
 }
 
 export const ANNOUNCE_TEMPLATE_OPTIONS: { display: string; value: string }[] = [
@@ -28,6 +30,9 @@ export const DEFAULT_SETTINGS: Settings = {
   announceTemplate: 'freeform',
   raceStartTime: '',
   numLockWarn: true,
+  customFields: [
+    { name: "CustomField1", showInAnnounce: false, showInBrowse: false }
+  ],
 };
 
 @Injectable({

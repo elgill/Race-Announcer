@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CsvColumnMappingService } from '../services/csv-column-mapping.service';
+import {DEFAULT_SETTINGS, Settings, SettingsService} from "../services/settings.service";
 
 @Component({
   selector: 'app-csv-import',
@@ -7,7 +8,7 @@ import { CsvColumnMappingService } from '../services/csv-column-mapping.service'
   styleUrls: ['./csv-import.component.css']
 })
 export class CsvImportComponent {
-
+  settings: Settings = DEFAULT_SETTINGS;
   errorMessage: string = '';
   file: File | null = null;
   headers: string[] = [];
@@ -21,11 +22,13 @@ export class CsvImportComponent {
     'gender': ['Gender', 'gender', 'Sex'],
     'town': ['Town', 'town', 'City'],
     'state': ['State', 'state', 'Province'],
-    'customField1': ['customField1', 'Custom Field 1', 'custom_field_1', 'Custom1'],
-    'customField2': ['customField2', 'Custom Field 2', 'custom_field_2', 'Custom2'],
   };
 
-  constructor(private csvService: CsvColumnMappingService) { }
+  constructor(private csvService: CsvColumnMappingService, private settingsService: SettingsService) {
+    this.settingsService.getSettings().subscribe(settings => {
+      this.settings = settings;
+    });
+  }
 
   onFileSelected(event: any) {
     this.errorMessage = '';
@@ -65,12 +68,6 @@ export class CsvImportComponent {
     this.file = null;
     this.headers = [];
   }
-
-
-/*  onColumnMapped(runnerField: string, event: any) {
-    const csvColumn = (event.target as HTMLSelectElement).value;
-    this.mappedColumns[csvColumn] = runnerField;
-  }*/
 
   importCsv() {
     if (this.file !== null) {
