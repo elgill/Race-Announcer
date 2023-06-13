@@ -9,7 +9,7 @@ import {Runner} from "../interfaces/runner";
   providedIn: 'root'
 })
 export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
-  private dbPromise;
+  private readonly dbPromise;
   // @ts-ignore
   private idx: lunr.Index;
   private runners: Runner[] = [];
@@ -66,10 +66,10 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
   async getRunnersByName(firstName?: string, lastName?: string): Promise<Runner[]> {
     let searchString = '';
     if (firstName) {
-      searchString += `firstName:${firstName}* `;
+      searchString += `+firstName:${firstName}* `;
     }
     if (lastName) {
-      searchString += `lastName:${lastName}* `;
+      searchString += `+lastName:${lastName}* `;
     }
 
     const searchResults = this.idx.search(searchString.trim());
@@ -80,7 +80,7 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
       const runner = await db.get('runners', result.ref);
       runners.push(runner);
     }
-    console.log("Search results for First:",firstName," Last:",lastName," Results:", runners)
+    console.log("Search:",searchString.trim()," First:",firstName," Last:",lastName," Results:", runners)
 
     return runners;
   }
