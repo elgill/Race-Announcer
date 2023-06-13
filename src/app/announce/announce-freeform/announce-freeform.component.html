@@ -8,7 +8,9 @@
     <span class="runnerAttribute">{{runner.town}}</span>
     <span class="runnerAttribute">{{runner.state}}</span>
     <span *ngFor="let field of customFields">
-      {{runner.customFields[field.name]}}
+      <ng-container *ngIf="field.showInAnnounce">
+        {{runner.customFields[field.name]}}
+      </ng-container>
     </span>
   </div>
 </div>

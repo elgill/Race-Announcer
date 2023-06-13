@@ -23,7 +23,9 @@
     <td>{{runner.town}}</td>
     <td>{{runner.state}}</td>
     <td *ngFor="let field of customFields">
-      {{runner.customFields[field.name]}}
+      <ng-container *ngIf="field.showInAnnounce">
+        <td>{{ runner.customFields[field.name] }}</td>
+      </ng-container>
     </td>
   </tr>
   </tbody>
