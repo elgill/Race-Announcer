@@ -8,8 +8,6 @@ import {Runner} from "../interfaces/runner";
 })
 export class LocalStorageRunnerDatabaseService implements RunnerDatabase {
 
-  constructor() { }
-
   loadRunners(): Promise<Runner[]> {
     const storedRunners = localStorage.getItem('runners');
     if (storedRunners) {

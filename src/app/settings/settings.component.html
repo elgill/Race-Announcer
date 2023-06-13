@@ -50,7 +50,7 @@
       Race Start Time: <input formControlName="raceStartTime" type="datetime-local" step="0.1">
     </label>
   </div>
-  <div>
+  <div class="custom-field-group">
     <h3>Custom Fields</h3>
     <div formArrayName="customFields">
       <div *ngFor="let field of customFields.controls; let i = index" [formGroupName]="i" class="custom-field-group">

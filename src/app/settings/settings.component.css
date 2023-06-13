@@ -1,10 +1,15 @@
 .custom-field-group {
   border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 10px;
+  padding: 5px;
+  margin-bottom: 5px;
 }
 
 .custom-field-group h4 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.custom-field-group h3 {
   margin-top: 0;
   margin-bottom: 0;
 }

@@ -11,10 +11,7 @@ export class TimerMatService {
     private runnerDataService: RunnerDataService
   ) {
     this.fileUpdateService.getUpdates().subscribe(bibNumbers => {
-      // @ts-ignore TODO
-      bibNumbers.forEach(bibNumber => {
-        this.runnerDataService.enterBib(bibNumber);
-      });
+      bibNumbers.forEach((bibNumber: any) => this.runnerDataService.enterBib(bibNumber.toString()));
     });
   }
 }
