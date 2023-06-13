@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
-import {Runner} from "../services/runner-data.service";
 import {CustomField} from "../interfaces/custom-field";
 import {SettingsService} from "../services/settings.service";
+import {Runner} from "../interfaces/runner";
 
 @Component({
   selector: 'app-runner-table',
