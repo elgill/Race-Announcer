@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { openDB } from 'idb';
 import * as lunr from 'lunr';
 import {RunnerDatabase} from "./runner-database";
-import {Runner} from "../services/runner-data.service";
+
+import {Runner} from "../interfaces/runner";
 
 @Injectable({
   providedIn: 'root'

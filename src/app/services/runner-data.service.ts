@@ -4,18 +4,7 @@ import * as Papa from 'papaparse';
 import {BehaviorSubject} from 'rxjs';
 import {RunnerDatabase} from "../runner-database/runner-database";
 import {IndexedDbRunnerDatabaseService} from "../runner-database/indexed-db-runner-database.service";
-
-export interface Runner {
-  id: string;
-  bib: string;
-  firstName: string;
-  lastName: string;
-  age: number;
-  gender: string;
-  town: string;
-  state: string;
-  customFields: { [key: string]: string }; // converted from Map to object
-}
+import {Runner} from "../interfaces/runner";
 
 @Injectable({
   providedIn: 'root'

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {Runner, RunnerDataService} from '../services/runner-data.service';
+import {RunnerDataService} from '../services/runner-data.service';
 import {DEFAULT_SETTINGS, Settings, SettingsService} from "../services/settings.service";
 import {CustomField} from "../interfaces/custom-field";
+import {Runner} from "../interfaces/runner";
 
 @Component({
   selector: 'app-announce',

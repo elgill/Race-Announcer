@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import {Runner, RunnerDataService} from './runner-data.service';
+import {RunnerDataService} from './runner-data.service';
 import * as Papa from 'papaparse';
 import {SettingsService} from "./settings.service";
+import {Runner} from "../interfaces/runner";
 
 @Injectable({
   providedIn: 'root'

@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {Runner, RunnerDataService} from "../services/runner-data.service";
+import {RunnerDataService} from "../services/runner-data.service";
+import {Runner} from "../interfaces/runner";
 
 @Component({
   selector: 'app-browse-runners',

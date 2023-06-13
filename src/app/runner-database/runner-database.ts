@@ -1,4 +1,4 @@
-import {Runner} from "../services/runner-data.service";
+import {Runner} from "../interfaces/runner";
 
 export interface RunnerDatabase {
   loadRunners(): Promise<Runner[]>;
