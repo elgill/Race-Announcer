@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {saveAs} from 'file-saver-es';
 import {DEFAULT_SETTINGS, Settings, SettingsService} from "../services/settings.service";
 
@@ -87,8 +87,7 @@ export class BibScrapeUtilComponent implements OnInit {
   private getURL() {
     const corsProxy = this.settings.proxyUrl;
     const separator = corsProxy && !corsProxy.endsWith('/') ? '/' : '';
-    const proxiedUrl = corsProxy + separator + this.url;
-    return proxiedUrl;
+    return corsProxy + separator + this.url;
   }
 }
 
