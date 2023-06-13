@@ -24,7 +24,7 @@
     <td>{{runner.state}}</td>
     <td *ngFor="let field of customFields">
       <ng-container *ngIf="field.showInAnnounce">
-        <td>{{ runner.customFields[field.name] }}</td>
+        {{ runner.customFields[field.name] }}
       </ng-container>
     </td>
   </tr>

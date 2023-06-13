@@ -7,10 +7,10 @@
     <span class="runnerAttribute">{{runner.gender}}</span>
     <span class="runnerAttribute">{{runner.town}}</span>
     <span class="runnerAttribute">{{runner.state}}</span>
-    <span *ngFor="let field of customFields">
-      <ng-container *ngIf="field.showInAnnounce">
+    <ng-container *ngFor="let field of customFields">
+      <span *ngIf="field.showInAnnounce" class="runnerAttribute">
         {{runner.customFields[field.name]}}
-      </ng-container>
-    </span>
+      </span>
+    </ng-container>
   </div>
 </div>
