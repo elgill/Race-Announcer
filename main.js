@@ -20,7 +20,6 @@ const WINDOW_CONFIG = {
 function createWindow () {
   win = new BrowserWindow(WINDOW_CONFIG)
   win.loadFile('dist/race-announcer-angular/index.html')
-  win.webContents.openDevTools()
 
   win.on('closed', () => {
     win = null
@@ -123,6 +122,15 @@ const template = [
         label: 'Settings',
         click() { win.webContents.send('menu-clicked', '/settings'); }
       }
+    ]
+  },
+  {
+    label: 'Help',
+    submenu: [
+      {
+        label: 'Developer Tools',
+        click() { win.webContents.openDevTools(); }
+      },
     ]
   },
 ]
