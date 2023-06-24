@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { RunnerDataService } from "./runner-data.service";
+import {SettingsService} from "./settings.service";
 
 @Injectable({
   providedIn: 'root'
@@ -7,14 +8,20 @@ import { RunnerDataService } from "./runner-data.service";
 export class VisualLoadTestService {
   private timeoutIds: NodeJS.Timeout[] = [];
 
-  constructor(private runnerDataService: RunnerDataService) { }
-
-  loadTest() {
-    this.runnerDataService.enterBib('101');
-  }
+  constructor(private runnerDataService: RunnerDataService, private settingsService:SettingsService) { }
 
   loadTestWithDelay(runners: { bib: string, timeElapsed: number }[], startFrom = 0) {
     this.stopLoadTest(); // Clear any existing timeouts
+
+    const startMin = Math.floor(startFrom / (1000 * 60));
+    const startSec = Math.floor(startFrom / (1000 * 60 * 60));
+    console.log('Starting Load Test starting from', startMin, 'minutes and', startSec, 'seconds');
+
+    const currentTime: Date = new Date(Date.now());
+    const startTime: Date = new Date(currentTime.getTime() - startFrom);
+
+    console.log('Race start time:', startTime.toISOString());
+    this.settingsService.setRaceStartTime(startTime.toString())
 
     runners.forEach((runner) => {
       if (runner.timeElapsed >= startFrom) {
@@ -29,5 +36,6 @@ export class VisualLoadTestService {
   stopLoadTest() {
     this.timeoutIds.forEach(clearTimeout);
     this.timeoutIds = [];
+    console.log('Load Test halted')
   }
 }

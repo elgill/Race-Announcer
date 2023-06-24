@@ -86,4 +86,9 @@ export class SettingsService {
       this.settings = DEFAULT_SETTINGS;
     }
   }
+
+  setRaceStartTime(time: string){
+    this.settings.raceStartTime = time;
+    this.settings$.next(this.settings);
+  }
 }
