@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ElectronService} from "./services/electron.service";
 import {Router} from "@angular/router";
+import {VisualLoadTestService} from "./services/visual-load-test.service";
 
 @Component({
   selector: 'app-root',
@@ -11,7 +12,9 @@ import {Router} from "@angular/router";
 export class AppComponent implements OnInit {
   title = 'Race Announcer';
   isElectron = window.require;
-  constructor(private electronService: ElectronService, private router: Router) { }
+  constructor(private electronService: ElectronService, private router: Router, private visualLoadTestService: VisualLoadTestService) {
+    (window as any).visualLoadTestService = visualLoadTestService;
+  }
 
   ngOnInit(): void {
     this.electronService.on('menu-clicked', (event: any, route: string) => {
