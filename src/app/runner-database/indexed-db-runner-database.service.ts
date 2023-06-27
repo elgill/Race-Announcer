@@ -12,7 +12,7 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
   private readonly dbPromise;
   // @ts-ignore
   private idx: lunr.Index;
-  private runners: Runner[] = [];
+  private runners: Map<string, Runner> = new Map(); // Changed to map for O(1) retrieval
 
   constructor() {
     this.dbPromise = openDB('runners', 1, {
@@ -29,7 +29,7 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
   }
 
   async rebuildIndex() {
-    const runners = this.runners;
+    const runners = Array.from(this.runners.values());
     this.idx = lunr(function() {
       this.ref('id');
       this.field('firstName');
@@ -43,9 +43,17 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
 
   async loadRunners(): Promise<Runner[]> {
     const db = await this.dbPromise;
-    this.runners = await db.getAll('runners');
+    const runners = await db.getAll('runners');
+    this.idx = lunr(function() {
+      this.ref('id');
+      this.field('firstName');
+      this.field('lastName');
+    });
+    for (const runner of runners) {
+      this.runners.set(runner.id, runner);
+    }
     await this.rebuildIndex();
-    return this.runners;
+    return Array.from(this.runners.values());
   }
 
   async saveRunners(runners: Runner[]): Promise<void> {
@@ -56,7 +64,7 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
       tx.store.put(runner).then().catch(err => {
         console.error('Failed to store runner:', err);
       });
-      this.runners.push(runner);
+      this.runners.set(runner.id, runner);
     }
 
     await tx.done;
@@ -73,12 +81,13 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
     }
 
     const searchResults = this.idx.search(searchString.trim());
-    const db = await this.dbPromise;
     const runners = [];
 
     for (const result of searchResults) {
-      const runner = await db.get('runners', result.ref);
-      runners.push(runner);
+      const runner = this.runners.get(result.ref);
+      if(runner){
+        runners.push(runner);
+      }
     }
     console.log("Search:",searchString.trim()," First:",firstName," Last:",lastName," Results:", runners)
 
@@ -94,7 +103,7 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
     await tx.done;
 
     // Clear in-memory data as well.
-    this.runners = [];
+    this.runners.clear();
     await this.rebuildIndex();
   }
 
