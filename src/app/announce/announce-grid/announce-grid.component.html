@@ -1,4 +1,4 @@
-<table>
+<table aria-label="Runners to announce">
   <thead>
   <tr>
     <th>Bib</th>
@@ -23,9 +23,7 @@
     <td>{{runner.town}}</td>
     <td>{{runner.state}}</td>
     <td *ngFor="let field of customFields">
-      <ng-container *ngIf="field.showInAnnounce">
         {{ runner.customFields[field.name] }}
-      </ng-container>
     </td>
   </tr>
   </tbody>

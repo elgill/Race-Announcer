@@ -33,7 +33,8 @@ export class AnnounceScreenComponent implements OnInit {
     window.addEventListener('keydown', (event: KeyboardEvent) => {
       this.isNumLockOff = event.getModifierState && !event.getModifierState('NumLock');
     });
-    this.customFields = this.settings.customFields;
+
+    this.customFields = this.settings.customFields.filter(field => field.showInAnnounce)
   }
 
 }
