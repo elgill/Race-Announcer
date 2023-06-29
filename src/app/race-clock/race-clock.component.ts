@@ -33,6 +33,9 @@ export class RaceClockComponent implements OnInit, OnDestroy {
   }
 
   private calculateElapsedTime(): string {
+    if(!this.settings.raceStartTime){
+      return '00:00:00.0';
+    }
     const startTime = new Date(this.settings.raceStartTime);
     const now = new Date();
     const diffMilliseconds = now.getTime() - startTime.getTime();
