@@ -7,5 +7,5 @@ export interface Runner {
   gender: string;
   town: string;
   state: string;
-  customFields: { [key: string]: string }; // converted from Map to object
+  customFields: { [key: string]: string };
 }

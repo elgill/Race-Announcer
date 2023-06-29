@@ -1,4 +1,4 @@
-<table>
+<table aria-label="Runner Data">
   <thead>
   <tr>
     <th>BIB</th>
@@ -8,13 +8,13 @@
     <th>Gender</th>
     <th>Town</th>
     <th>State</th>
-    <th *ngFor="let field of customFields">
+    <th *ngFor="let field of customFields$ | async">
       <ng-container *ngIf="field.showInBrowse">{{field.name}}</ng-container>
     </th>
   </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let runner of runners">
+  <tr *ngFor="let runner of runners.slice(0, displayLimit)">
     <td>{{runner.bib}}</td>
     <td>{{runner.firstName}}</td>
     <td>{{runner.lastName}}</td>
@@ -22,11 +22,12 @@
     <td>{{runner.gender}}</td>
     <td>{{runner.town}}</td>
     <td>{{runner.state}}</td>
-    <ng-container *ngFor="let field of customFields">
-      <td *ngIf="field.showInBrowse">
+    <ng-container *ngFor="let field of customFields$ | async">
+      <td>
         {{runner.customFields[field.name]}}
       </td>
     </ng-container>
   </tr>
+  <button (click)="loadAll()" *ngIf="runners.length > displayLimit">Load All</button>
   </tbody>
 </table>
