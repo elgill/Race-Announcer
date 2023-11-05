@@ -12,6 +12,7 @@ export interface Settings {
   announceTemplate: string;
   raceStartTime: string;
   numLockWarn: boolean;
+  raceId: string;
   customFields: CustomField[];
 }
 
@@ -30,6 +31,7 @@ export const DEFAULT_SETTINGS: Settings = {
   announceTemplate: 'freeform',
   raceStartTime: '',
   numLockWarn: false,
+  raceId: '',
   customFields: [
     { name: "CustomField1", showInAnnounce: false, showInBrowse: false }
   ],

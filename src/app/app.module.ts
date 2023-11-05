@@ -20,6 +20,7 @@ import { RaceClockComponent } from './race-clock/race-clock.component';
 import { ConnectFileStreamComponent } from './connect-file-stream/connect-file-stream.component';
 import { NameLookupComponent } from './name-lookup/name-lookup.component';
 import { RunnerTableComponent } from './runner-table/runner-table.component';
+import { AutoImportComponent } from './auto-import/auto-import.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { RunnerTableComponent } from './runner-table/runner-table.component';
     RaceClockComponent,
     ConnectFileStreamComponent,
     NameLookupComponent,
-    RunnerTableComponent
+    RunnerTableComponent,
+    AutoImportComponent
   ],
   imports: [
     BrowserModule,

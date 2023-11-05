@@ -137,6 +137,10 @@ export class RunnerDataService {
       console.error('Failed to delete all runners from database:', err);
     });
   }
+
+  autoImportRunners() {
+    return "";
+  }
 }
 
 const runnerNotFound: Runner = {

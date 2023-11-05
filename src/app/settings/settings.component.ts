@@ -28,6 +28,7 @@ export class SettingsComponent implements OnInit {
       announceTemplate: [DEFAULT_SETTINGS.announceTemplate],
       raceStartTime: [DEFAULT_SETTINGS.raceStartTime],
       numLockWarn: [DEFAULT_SETTINGS.numLockWarn],
+      raceId: [DEFAULT_SETTINGS.raceId],
       customFields: this.formBuilder.array([])
     });
     this.settingsService.getSettings().subscribe(settings => {
