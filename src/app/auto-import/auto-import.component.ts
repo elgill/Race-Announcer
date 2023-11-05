@@ -9,8 +9,10 @@ import {DEFAULT_SETTINGS, SettingsService, Settings} from "../services/settings.
   styleUrls: ['./auto-import.component.css']
 })
 export class AutoImportComponent {
-  private importStatus = '';
   private settings: Settings= DEFAULT_SETTINGS;
+
+  importStatus = '';
+
   constructor(private runnerDataService: RunnerDataService,private bibScrapeService:BibScrapeService, private settingsService: SettingsService) {
     this.settingsService.getSettings().subscribe(settings => {
       this.settings = settings;

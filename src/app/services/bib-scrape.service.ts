@@ -46,7 +46,7 @@ export class BibScrapeService {
         next: (html) => {
           const runners = this.parseHTMLToRunners(html);
           const returnStatus = this.runnerDataService.loadRunners(runners)
-          resolve('CSV file successfully created and saved');
+          resolve(returnStatus);
         },
         error: (err) => {
           reject('Error processing the request: ' + err);
