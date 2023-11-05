@@ -29,7 +29,7 @@ export const DEFAULT_SETTINGS: Settings = {
   deleteKeybind: 'Delete',
   announceTemplate: 'freeform',
   raceStartTime: '',
-  numLockWarn: true,
+  numLockWarn: false,
   customFields: [
     { name: "CustomField1", showInAnnounce: false, showInBrowse: false }
   ],
