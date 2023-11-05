@@ -5,6 +5,8 @@ import {BehaviorSubject} from 'rxjs';
 import {RunnerDatabase} from "../runner-database/runner-database";
 import {IndexedDbRunnerDatabaseService} from "../runner-database/indexed-db-runner-database.service";
 import {Runner} from "../interfaces/runner";
+import {BibScrapeService} from "./bib-scrape.service";
+import {DEFAULT_SETTINGS, SettingsService} from "./settings.service";
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +18,9 @@ export class RunnerDataService {
   private activeRunners$ = new BehaviorSubject<Runner[]>([]);
   private db: RunnerDatabase;
 
-  constructor() {
+  private settings = DEFAULT_SETTINGS;
+
+  constructor(private settingsService: SettingsService) {
     // IDB
     this.db = new IndexedDbRunnerDatabaseService();
 
@@ -24,6 +28,10 @@ export class RunnerDataService {
       console.log('Loaded runners from database.');
     }).catch(err => {
       console.error('Failed to load runners from database:', err);
+    });
+
+    this.settingsService.getSettings().subscribe(settings => {
+      this.settings = settings;
     });
   }
 
@@ -79,7 +87,7 @@ export class RunnerDataService {
   }
 
 
-  loadRunners(newRunners: Runner[]) {
+  loadRunners(newRunners: Runner[]):string {
     newRunners.forEach(newRunner => {
       this.allRunners.set(newRunner.bib, newRunner);
     });
@@ -92,6 +100,7 @@ export class RunnerDataService {
     }).catch(err => {
       console.error('Failed to save runners to database:', err);
     });
+    return '';
   }
 
   getSortedRunners() {
@@ -136,10 +145,6 @@ export class RunnerDataService {
     }).catch(err => {
       console.error('Failed to delete all runners from database:', err);
     });
-  }
-
-  autoImportRunners() {
-    return "";
   }
 }
 
