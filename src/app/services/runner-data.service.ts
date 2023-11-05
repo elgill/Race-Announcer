@@ -88,7 +88,16 @@ export class RunnerDataService {
 
 
   loadRunners(newRunners: Runner[]):string {
+    let updatedCount = 0;
+    let addedCount = 0;
+
     newRunners.forEach(newRunner => {
+      const bib = newRunner.bib;
+      if(this.allRunners.has(bib)){
+        updatedCount++;
+      } else {
+        addedCount++;
+      }
       this.allRunners.set(newRunner.bib, newRunner);
     });
 
@@ -100,7 +109,7 @@ export class RunnerDataService {
     }).catch(err => {
       console.error('Failed to save runners to database:', err);
     });
-    return '';
+    return `${updatedCount} updated, ${addedCount} added`;
   }
 
   getSortedRunners() {
