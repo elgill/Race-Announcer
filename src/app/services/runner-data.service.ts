@@ -5,7 +5,6 @@ import {BehaviorSubject} from 'rxjs';
 import {RunnerDatabase} from "../runner-database/runner-database";
 import {IndexedDbRunnerDatabaseService} from "../runner-database/indexed-db-runner-database.service";
 import {Runner} from "../interfaces/runner";
-import {BibScrapeService} from "./bib-scrape.service";
 import {DEFAULT_SETTINGS, SettingsService} from "./settings.service";
 
 @Injectable({
