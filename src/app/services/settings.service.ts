@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { CustomField } from "../interfaces/custom-field";
+import { ConfigService } from './config.service';
 
 export interface Settings {
   fontSize: number;
@@ -45,7 +46,7 @@ export class SettingsService {
 
   private settings$ = new BehaviorSubject<Settings>(this.settings);
 
-  constructor() {
+  constructor(private configService: ConfigService) {
     this.loadSettings();
   }
 
@@ -86,6 +87,8 @@ export class SettingsService {
     } else {
       // Default settings
       this.settings = DEFAULT_SETTINGS;
+      this.settings['proxyUrl']=this.configService.getProxyUrl();
+      console.log('Proxy URL: ',this.configService.getProxyUrl());
     }
   }
 
