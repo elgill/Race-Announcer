@@ -166,7 +166,7 @@ export class BibScrapeService {
           }
         }
       });
-
+      runner.id=this.runnerDataService.generateUniqueId();
       runners.push(runner);
     });
 

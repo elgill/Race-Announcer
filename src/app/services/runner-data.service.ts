@@ -43,6 +43,7 @@ export class RunnerDataService {
 
   async saveRunnersToDB() {
     const runnersArray = Array.from(this.allRunners.values());
+    console.log("Saving to database: ",runnersArray);
     await this.db.saveRunners(runnersArray);
   }
 
