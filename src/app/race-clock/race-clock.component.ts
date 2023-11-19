@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { interval, Subscription } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { startWith } from 'rxjs/operators';
 import {DEFAULT_SETTINGS, Settings, SettingsService} from "../services/settings.service";
 
 @Component({
@@ -10,8 +10,9 @@ import {DEFAULT_SETTINGS, Settings, SettingsService} from "../services/settings.
 })
 export class RaceClockComponent implements OnInit, OnDestroy {
   settings: Settings= DEFAULT_SETTINGS;
-  elapsedTime: string = '';
   private subscription: Subscription = new Subscription();
+  currentTime: Date = new Date();
+  startTime: Date = new Date();
 
   constructor(private settingsService: SettingsService) {
   }
@@ -19,36 +20,16 @@ export class RaceClockComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.settingsService.getSettings().subscribe(settings => {
       this.settings = settings;
+      this.startTime = new Date(this.settings.raceStartTime);
     });
 
     this.subscription = interval(10).pipe(
-      startWith(0),
-      map(() => this.calculateElapsedTime())
-    ).subscribe(elapsedTime => this.elapsedTime = elapsedTime);
+      startWith(0)
+    ).subscribe(() => this.currentTime = new Date());
   }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
-
-  private calculateElapsedTime(): string {
-    if(!this.settings.raceStartTime){
-      return '00:00:00.0';
-    }
-    const startTime = new Date(this.settings.raceStartTime);
-    const now = new Date();
-    const diffMilliseconds = now.getTime() - startTime.getTime();
-    const hours = Math.floor(diffMilliseconds / 3600000);
-    const minutes = Math.floor((diffMilliseconds % 3600000) / 60000);
-    const seconds = Math.floor((diffMilliseconds % 60000) / 1000);
-    const tenthsOfSecond = Math.floor((diffMilliseconds % 1000) / 100);
-    let elapsedTime = '';
-    if (hours > 0) {
-      elapsedTime += `${hours.toString().padStart(2, '0')}:`;
-    }
-    elapsedTime += `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${tenthsOfSecond}`;
-    return elapsedTime;
-  }
-
 
 }

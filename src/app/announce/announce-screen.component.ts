@@ -30,7 +30,11 @@ export class AnnounceScreenComponent implements OnInit {
 
     this.settingsService.getSettings().subscribe(settings => {
       this.settings = settings;
-      this.runStartTime = new Date(settings.raceStartTime);
+      if(settings.raceStartTime){
+        this.runStartTime = new Date(settings.raceStartTime);
+      } else {
+        this.runStartTime = undefined
+      }
     });
     window.addEventListener('keydown', (event: KeyboardEvent) => {
       this.isNumLockOff = event.getModifierState && !event.getModifierState('NumLock');
