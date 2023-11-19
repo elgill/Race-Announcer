@@ -62,29 +62,41 @@ export class RunnerDataService {
   }
 
   enterBib(bib: string) {
-    const runner = this.allRunners.get(bib);
-    if (runner) {
-      this.activeRunners.unshift(runner);  // add runner to the start of the array
-    } else {
-      let runner = bib == "" ? {...runnerBlankBib} : {...runnerNotFound};
+    let runner = this.allRunners.get(bib);
+    if (!runner) {
+      runner = bib === "" ? {...runnerBlankBib} : {...runnerNotFound};
       runner.bib = bib;
-      // If no runner found, add a placeholder runner with the entered bib
-      this.activeRunners.unshift(runner);
     }
 
-    this.activeRunners$.next(this.activeRunners);
+    // Set the current time only if timeEntered is not already set
+    if (!runner.timeEntered) {
+      runner.timeEntered = new Date();
+    }
 
-    // Log runner found by bib
-    console.log('Runner found by bib:', runner);
+    this.activeRunners.unshift(runner); // Add runner to the start of the array
+    this.activeRunners$.next(this.activeRunners);
+    console.log('Runner entered:', runner);
   }
 
   removeLastRunner() {
-    this.activeRunners.shift();  // remove the first runner from the array
+    if (this.activeRunners.length > 0) {
+      // Capture the runner being removed
+      let runnerBeingRemoved = this.activeRunners[0];
+
+      // Clear the timeEntered attribute
+      runnerBeingRemoved.timeEntered = undefined;
+
+      // Now remove the runner from the array
+      this.activeRunners.shift();
+    }
+
+    // Update the observable with the new list of active runners
     this.activeRunners$.next(this.activeRunners);
 
     // Log runners after removing
     console.log('Runners after removing:', this.activeRunners);
   }
+
 
 
   loadRunners(newRunners: Runner[]):string {

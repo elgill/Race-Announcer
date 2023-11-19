@@ -9,6 +9,7 @@ export interface Runner {
   gender: string;
   town: string;
   state: string;
+  timeEntered?: Date;
   customFields: { [key: string]: string };
 }
 

@@ -7,6 +7,7 @@
   <div [ngSwitch]="settings.announceTemplate">
     <app-announce-grid *ngSwitchCase="'grid'"></app-announce-grid>
     <app-announce-freeform *ngSwitchCase="'freeform'"></app-announce-freeform>
+    <app-announce-timer *ngSwitchCase="'timer'"></app-announce-timer>
     <app-error *ngSwitchDefault></app-error>
   </div>
 </div>

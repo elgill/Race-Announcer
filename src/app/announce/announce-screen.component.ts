@@ -11,6 +11,7 @@ import {Runner} from "../interfaces/runner";
 })
 export class AnnounceScreenComponent implements OnInit {
   settings: Settings= DEFAULT_SETTINGS;
+  runStartTime: Date | undefined;
 
   runnerList: Runner[] = [];
   isNumLockOff = false;
@@ -29,6 +30,7 @@ export class AnnounceScreenComponent implements OnInit {
 
     this.settingsService.getSettings().subscribe(settings => {
       this.settings = settings;
+      this.runStartTime = new Date(settings.raceStartTime);
     });
     window.addEventListener('keydown', (event: KeyboardEvent) => {
       this.isNumLockOff = event.getModifierState && !event.getModifierState('NumLock');

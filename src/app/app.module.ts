@@ -21,6 +21,8 @@ import { ConnectFileStreamComponent } from './connect-file-stream/connect-file-s
 import { NameLookupComponent } from './name-lookup/name-lookup.component';
 import { RunnerTableComponent } from './runner-table/runner-table.component';
 import { AutoImportComponent } from './auto-import/auto-import.component';
+import { AnnounceTimerComponent } from './announce/announce-timer/announce-timer.component';
+import { TimeDurationPipe } from './time-duration.pipe';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,9 @@ import { AutoImportComponent } from './auto-import/auto-import.component';
     ConnectFileStreamComponent,
     NameLookupComponent,
     RunnerTableComponent,
-    AutoImportComponent
+    AutoImportComponent,
+    AnnounceTimerComponent,
+    TimeDurationPipe
   ],
   imports: [
     BrowserModule,

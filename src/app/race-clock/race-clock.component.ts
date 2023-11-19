@@ -10,7 +10,6 @@ import {DEFAULT_SETTINGS, Settings, SettingsService} from "../services/settings.
 })
 export class RaceClockComponent implements OnInit, OnDestroy {
   settings: Settings= DEFAULT_SETTINGS;
-  //startTime: string = ''; // The start time in ISO 8601 format
   elapsedTime: string = '';
   private subscription: Subscription = new Subscription();
 
