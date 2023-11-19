@@ -1,15 +1,30 @@
-<div>
-  <div *ngFor="let runner of runnerList; index as i" [hidden]="i >= settings.displayLines">
-    <span class="runnerAttribute">{{ runStartTime | timeDuration:runner.timeEntered }}</span>
-    <span class="runnerAttribute">{{runner.bib}}</span>
-    <span class="runnerAttribute">{{runner.firstName}}</span>
-    <span class="runnerAttribute">{{runner.lastName}}</span>
-    <span class="runnerAttribute">{{runner.age}}</span>
-    <span class="runnerAttribute">{{runner.gender}}</span>
-    <ng-container *ngFor="let field of customFields">
-      <span class="runnerAttribute">
-        {{runner.customFields[field.name]}}
-      </span>
-    </ng-container>
-  </div>
-</div>
+<table aria-label="Runners to announce">
+  <thead>
+  <tr>
+    <th>Time</th>
+    <th>Bib</th>
+    <th>First Name</th>
+    <th>Last Name</th>
+    <th>Age</th>
+    <th>Gender</th>
+    <th *ngFor="let field of customFields">
+      {{field.name}}
+    </th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let runner of reverseRunnerList; index as i" [hidden]="i >= settings.displayLines">
+    <td>{{ runStartTime | timeDuration:runner.timeEntered }}</td>
+    <td>{{runner.bib}}</td>
+
+
+    <td>{{runner.firstName}}</td>
+    <td>{{runner.lastName}}</td>
+    <td>{{runner.age}}</td>
+    <td>{{runner.gender}}</td>
+    <td *ngFor="let field of customFields">
+      {{ runner.customFields[field.name] }}
+    </td>
+  </tr>
+  </tbody>
+</table>

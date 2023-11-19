@@ -14,6 +14,7 @@ export class AnnounceScreenComponent implements OnInit {
   runStartTime: Date | undefined;
 
   runnerList: Runner[] = [];
+  reverseRunnerList: Runner[] = [];
   isNumLockOff = false;
   customFields: CustomField[] = [];
 
@@ -26,6 +27,7 @@ export class AnnounceScreenComponent implements OnInit {
   ngOnInit(): void {
     this.runnerDataService.getActiveRunners().subscribe(runners => {
       this.runnerList = runners;
+      this.reverseRunnerList = [...runners].reverse();
     });
 
     this.settingsService.getSettings().subscribe(settings => {
