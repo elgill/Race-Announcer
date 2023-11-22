@@ -133,11 +133,15 @@ export class BibScrapeService {
         customFields: {}
       };
 
+      const standardFields = new Set(['bib', 'name', 'age', 'gender', 'city', 'state']);
+
+
       cells.forEach((cell, cellIndex) => {
         // Find the title corresponding to this cell's index
         const title = headers[cellIndex];
         if(cell.textContent != null) {
-          switch (title) {
+          if (standardFields.has(title)) {
+            switch (title) {
             case 'bib':
               runner.bib = cell.textContent.trim();
               break;
@@ -163,6 +167,10 @@ export class BibScrapeService {
             // Add cases for other columns as necessary
             default:
               break;
+          }
+          } else {
+            // Custom field processing
+            runner.customFields[title] = cell.textContent.trim();
           }
         }
       });
