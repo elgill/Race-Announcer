@@ -31,6 +31,9 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
   async rebuildIndex() {
     const runners = Array.from(this.runners.values());
     this.idx = lunr(function() {
+      this.pipeline.remove(lunr.stemmer);
+      this.searchPipeline.remove(lunr.stemmer);
+
       this.ref('id');
       this.field('firstName');
       this.field('lastName');
@@ -45,6 +48,10 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
     const db = await this.dbPromise;
     const runners = await db.getAll('runners');
     this.idx = lunr(function() {
+      // Use the pipeline without the stemmer
+      this.pipeline.remove(lunr.stemmer);
+      this.searchPipeline.remove(lunr.stemmer);
+
       this.ref('id');
       this.field('firstName');
       this.field('lastName');
