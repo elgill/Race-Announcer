@@ -142,32 +142,32 @@ export class BibScrapeService {
         if(cell.textContent != null) {
           if (standardFields.has(title)) {
             switch (title) {
-            case 'bib':
-              runner.bib = cell.textContent.trim();
-              break;
-            case 'name': // Assuming the name is in one column, split it
-              const nameParts = cell.textContent.trim().split(', ');
-              if (nameParts.length === 2) {
-                runner.lastName = nameParts[0];
-                runner.firstName = nameParts[1];
-              }
-              break;
-            case 'age':
-              runner.age = parseInt(cell.textContent.trim(), 10);
-              break;
-            case 'gender':
-              runner.gender = cell.textContent.trim();
-              break;
-            case 'city':
-              runner.town = cell.textContent.trim();
-              break;
-            case 'state':
-              runner.state = cell.textContent.trim();
-              break;
-            // Add cases for other columns as necessary
-            default:
-              break;
-          }
+              case 'bib':
+                runner.bib = cell.textContent.trim();
+                break;
+              case 'name': // Assuming the name is in one column, split it
+                const nameParts = cell.textContent.trim().split(', ');
+                if (nameParts.length === 2) {
+                  runner.lastName = nameParts[0];
+                  runner.firstName = nameParts[1];
+                }
+                break;
+              case 'age':
+                runner.age = parseInt(cell.textContent.trim(), 10);
+                break;
+              case 'gender':
+                runner.gender = cell.textContent.trim();
+                break;
+              case 'city':
+                runner.town = cell.textContent.trim();
+                break;
+              case 'state':
+                runner.state = cell.textContent.trim();
+                break;
+              // Add cases for other columns as necessary
+              default:
+                break;
+            }
           } else {
             // Custom field processing
             runner.customFields[title] = cell.textContent.trim();
