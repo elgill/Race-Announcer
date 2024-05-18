@@ -1,7 +1,5 @@
 <div>
   <p>Connection Status: {{ status }}</p>
-  <input [(ngModel)]="ip" placeholder="IP Address" />
-  <input [(ngModel)]="port" placeholder="Port" type="number" />
   <button (click)="connect()">Connect</button>
   <button (click)="disconnect()">Disconnect</button>
 

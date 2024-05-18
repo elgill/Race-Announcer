@@ -1,5 +1,6 @@
 import {Component, NgZone, OnInit} from '@angular/core';
 import {TimingBoxService} from "../services/timing-box.service";
+import {DEFAULT_SETTINGS, SettingsService} from "../services/settings.service";
 
 @Component({
   selector: 'app-connect-mat-stream',
@@ -8,13 +9,18 @@ import {TimingBoxService} from "../services/timing-box.service";
 })
 export class ConnectMatStreamComponent implements OnInit {
   records: any[] = [];
-  status: string = 'disconnected';
-  ip: string = '127.0.0.1';
-  port: number = 10001;
+  status: string = 'unknown';
+  settings = DEFAULT_SETTINGS;
 
-  constructor(private timingBoxService: TimingBoxService, private ngZone: NgZone) {}
+  constructor(private timingBoxService: TimingBoxService, private settingsService: SettingsService, private ngZone: NgZone) {}
 
   ngOnInit() {
+    this.status = this.timingBoxService.getCurrentStatus();
+
+    this.settingsService.getSettings().subscribe(settings => {
+      this.settings = settings;
+    });
+
     this.timingBoxService.getStatus().subscribe((status) => {
       this.ngZone.run(() => {
         this.status = status.status;
@@ -31,7 +37,7 @@ export class ConnectMatStreamComponent implements OnInit {
   }
 
   connect() {
-    this.timingBoxService.connect(this.ip, this.port);
+    this.timingBoxService.connect(this.settings.ip, this.settings.port);
   }
 
   disconnect() {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {RunnerDataService} from "./runner-data.service";
 
 @Injectable({
@@ -7,7 +7,7 @@ import {RunnerDataService} from "./runner-data.service";
 })
 export class TimingBoxService {
   private ipcRenderer: any;
-  private statusSubject: Subject<any> = new Subject();
+  private statusSubject: BehaviorSubject<any> = new BehaviorSubject({ status: 'disconnected' });
   private dataSubject: Subject<any> = new Subject();
 
   private runnerDataService: RunnerDataService;
@@ -53,6 +53,10 @@ export class TimingBoxService {
     this.ipcRenderer.send('disconnect-timing-box');
   }
 
+  getCurrentStatus(): any {
+    return this.statusSubject.value;
+  }
+
   getStatus(): Observable<any> {
     return this.statusSubject.asObservable();
   }
@@ -61,41 +65,3 @@ export class TimingBoxService {
     return this.dataSubject.asObservable();
   }
 }
-
-/*export class TimingBoxService {
-  private ipcRenderer: any;
-  private statusSubject: Subject<any> = new Subject();
-  private dataSubject: Subject<any> = new Subject();
-
-  constructor() {
-    if (window.require) {
-      try {
-        this.ipcRenderer = window.require('electron').ipcRenderer;
-      } catch (e) {
-        throw e;
-      }
-    } else {
-      console.warn('App not running inside Electron!');
-    }
-  }
-
-  setFilePath(filePath: string): void {
-    this.ipcRenderer.send('set-file-path', filePath);
-    console.log('Listening on file path: ',filePath)
-  }
-
-  getUpdates(): Observable<any> {
-    if (!window.require) {
-      console.warn('Returning Fake FS observable since not running in electron')
-      return new Observable<any>();
-    }
-    console.log('returning observable')
-    return new Observable((observer) => {
-      this.ipcRenderer.on('file-updated', (event: any, data: any) => {
-        console.log("Updated File message recieved")
-        observer.next(data);
-        console.log("Updated File message")
-      });
-    });
-  }
-}*/
