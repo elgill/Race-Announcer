@@ -18,12 +18,14 @@ export class TimingBoxService {
         // @ts-ignore
         this.ipcRenderer.on('timing-box-status', (event, status) => {
           this.statusSubject.next(status);
+          console.log('New Status: ', status)
         });
 
         // Listen for data updates
         // @ts-ignore
         this.ipcRenderer.on('timing-box-data', (event, data) => {
           this.dataSubject.next(data);
+          console.log('New Data: ',data)
         });
       } catch (e) {
         throw e;
