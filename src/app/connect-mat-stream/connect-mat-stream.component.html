@@ -1,5 +1,12 @@
-<button (click)="selectFile()">Locate File</button>
+<!-- src/app/components/runner-data/runner-data.component.html -->
+<div>
+  <p>Connection Status: {{ status }}</p>
+  <input [(ngModel)]="ip" placeholder="IP Address" />
+  <input [(ngModel)]="port" placeholder="Port" type="number" />
+  <button (click)="connect()">Connect</button>
+  <button (click)="disconnect()">Disconnect</button>
 
-<input type="text" [(ngModel)]="filePath" readonly>
-
-<button (click)="connect()">Connect</button>
+  <div *ngFor="let record of records">
+    <pre>{{ record | json }}</pre>
+  </div>
+</div>

@@ -1,10 +1,12 @@
 const { app, BrowserWindow, ipcMain, dialog, Menu } = require('electron');
 const fs = require('fs');
 const chokidar = require("chokidar");
+const net = require('net');
 
 let win;
 let watcher;
 let lastLineCount = 0;
+let timingBoxClient;
 
 const WINDOW_CONFIG = {
   width: 1200,
@@ -43,6 +45,41 @@ app.on('activate', () => {
 function setupIPCListeners() {
   ipcMain.on('set-file-path', handleFilePathSetting);
   ipcMain.handle('open-file-dialog', handleOpenFileDialog);
+
+  ipcMain.on('connect-timing-box', (event, { ip, port }) => {
+    connectToTimingBox(ip, port);
+  });
+
+  ipcMain.on('disconnect-timing-box', () => {
+    if (timingBoxClient) {
+      timingBoxClient.destroy();
+      timingBoxClient = null;
+    }
+  });
+}
+
+function connectToTimingBox(ip, port) {
+  timingBoxClient = new net.Socket();
+  timingBoxClient.connect(port, ip, () => {
+    console.log('Connected to timing box');
+    win.webContents.send('timing-box-status', { status: 'connected' });
+  });
+
+  timingBoxClient.on('data', (data) => {
+    const record = data.toString('utf-8');
+    const parsedRecord = record;
+    win.webContents.send('timing-box-data', parsedRecord);
+  });
+
+  timingBoxClient.on('close', () => {
+    console.log('Connection to timing box closed');
+    win.webContents.send('timing-box-status', { status: 'disconnected' });
+  });
+
+  timingBoxClient.on('error', (err) => {
+    console.error('Error connecting to timing box:', err);
+    win.webContents.send('timing-box-status', { status: 'error', message: err.message });
+  });
 }
 
 function stopFileWatching() {

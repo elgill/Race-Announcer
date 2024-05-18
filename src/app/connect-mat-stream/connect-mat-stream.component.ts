@@ -1,25 +1,34 @@
-import { Component } from '@angular/core';
-import {FileUpdateService} from "../services/file-update.service";
-import {FileDialogService} from "../services/file-dialog.service";
+import {Component, OnInit} from '@angular/core';
+import {TimingBoxService} from "../services/timing-box.service";
 
 @Component({
   selector: 'app-connect-mat-stream',
   templateUrl: './connect-mat-stream.component.html',
   styleUrls: ['./connect-mat-stream.component.css']
 })
-export class ConnectMatStreamComponent {
-  filePath: string = '';
+export class ConnectMatStreamComponent implements OnInit {
+  records: any[] = [];
+  status: string = 'disconnected';
+  ip: string = '192.168.1.100';
+  port: number = 10001;
 
-  constructor(private fileDialogService: FileDialogService, private fileUpdateService: FileUpdateService) {}
+  constructor(private timingBoxService: TimingBoxService) {}
 
-  async selectFile() {
-    const filePath = await this.fileDialogService.openFileDialog();
-    if (filePath) {
-      this.filePath = filePath;
-    }
+  ngOnInit() {
+    this.timingBoxService.getStatus().subscribe((status) => {
+      this.status = status.status;
+    });
+
+    this.timingBoxService.getData().subscribe((data) => {
+      this.records.push(data);
+    });
   }
 
   connect() {
-    this.fileUpdateService.setFilePath(this.filePath);
+    this.timingBoxService.connect(this.ip, this.port);
+  }
+
+  disconnect() {
+    this.timingBoxService.disconnect();
   }
 }

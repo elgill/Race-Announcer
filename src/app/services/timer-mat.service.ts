@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FileUpdateService } from './file-update.service';
+import { TimingBoxService } from './timing-box.service';
 import { RunnerDataService } from './runner-data.service';
 
 @Injectable({
@@ -7,7 +7,7 @@ import { RunnerDataService } from './runner-data.service';
 })
 export class TimerMatService {
   constructor(
-    private fileUpdateService: FileUpdateService,
+    private fileUpdateService: TimingBoxService,
     private runnerDataService: RunnerDataService
   ) {
     this.fileUpdateService.getUpdates().subscribe(bibNumbers => {
