@@ -29,6 +29,8 @@ export class SettingsComponent implements OnInit {
       raceStartTime: [DEFAULT_SETTINGS.raceStartTime],
       numLockWarn: [DEFAULT_SETTINGS.numLockWarn],
       raceId: [DEFAULT_SETTINGS.raceId],
+      ip: [DEFAULT_SETTINGS.ip],
+      port: [DEFAULT_SETTINGS.port],
       customFields: this.formBuilder.array([])
     });
     this.settingsService.getSettings().subscribe(settings => {

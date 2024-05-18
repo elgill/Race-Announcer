@@ -14,6 +14,8 @@ export interface Settings {
   raceStartTime: string;
   numLockWarn: boolean;
   raceId: string;
+  ip: string,
+  port: number,
   customFields: CustomField[];
 }
 
@@ -34,6 +36,8 @@ export const DEFAULT_SETTINGS: Settings = {
   raceStartTime: '',
   numLockWarn: false,
   raceId: '',
+  ip: '',
+  port: 10001,
   customFields: [
     { name: "division", showInAnnounce: true, showInBrowse: true },
     { name: "extra", showInAnnounce: false, showInBrowse: true },

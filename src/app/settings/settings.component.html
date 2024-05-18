@@ -37,6 +37,16 @@
   </div>
   <div>
     <label>
+      IP Address: <input formControlName="ip" type="text" placeholder="192.168.1.200">
+    </label>
+  </div>
+  <div>
+    <label>
+      Port: <input formControlName="port" type="number" placeholder="10001">
+    </label>
+  </div>
+  <div>
+    <label>
       Delete Keybind: <input formControlName="deleteKeybind" (keydown)="onKeydown($event)" type="text">
     </label>
   </div>
