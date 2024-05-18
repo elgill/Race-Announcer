@@ -68,6 +68,7 @@ function connectToTimingBox(ip, port) {
   timingBoxClient.on('data', (data) => {
     const record = data.toString('utf-8');
     const parsedRecord = record;
+    console.log('Data: ', record);
     win.webContents.send('timing-box-data', parsedRecord);
   });
 
