@@ -43,7 +43,6 @@ app.on('activate', () => {
 })
 
 function setupIPCListeners() {
-  ipcMain.on('set-file-path', handleFilePathSetting);
   ipcMain.handle('open-file-dialog', handleOpenFileDialog);
 
   ipcMain.on('connect-timing-box', (event, { ip, port }) => {
@@ -62,7 +61,7 @@ function connectToTimingBox(ip, port) {
   timingBoxClient = new net.Socket();
   timingBoxClient.connect(port, ip, () => {
     console.log('Connected to timing box');
-    win.webContents.send('timing-box-status', { status: 'connected' });
+    win.webContents.send('timing-box-status', { status: 'Connected' });
   });
 
   timingBoxClient.on('data', (data) => {
@@ -74,12 +73,12 @@ function connectToTimingBox(ip, port) {
 
   timingBoxClient.on('close', () => {
     console.log('Connection to timing box closed');
-    win.webContents.send('timing-box-status', { status: 'disconnected' });
+    win.webContents.send('timing-box-status', { status: 'Disconnected' });
   });
 
   timingBoxClient.on('error', (err) => {
     console.error('Error connecting to timing box:', err);
-    win.webContents.send('timing-box-status', { status: 'error', message: err.message });
+    win.webContents.send('timing-box-status', { status: 'Error', message: err.message });
   });
 }
 
@@ -87,23 +86,6 @@ function stopFileWatching() {
   if (watcher) {
     watcher.close();
   }
-}
-
-function handleFilePathSetting(event, filePath) {
-  stopFileWatching();
-
-  watcher = chokidar.watch(filePath);
-  watcher.on('change', handleFileChange(filePath));
-}
-
-function handleFileChange(filePath) {
-  return () => {
-    const data = fs.readFileSync(filePath, 'utf-8');
-    const lines = data.split('\n');
-    const newLines = lines.slice(lastLineCount);
-    lastLineCount = lines.length;
-    win.webContents.send('file-updated', newLines);
-  };
 }
 
 async function handleOpenFileDialog(event) {
