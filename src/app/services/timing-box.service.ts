@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
+import {RunnerDataService} from "./runner-data.service";
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +10,10 @@ export class TimingBoxService {
   private statusSubject: Subject<any> = new Subject();
   private dataSubject: Subject<any> = new Subject();
 
-  constructor() {
+  private runnerDataService: RunnerDataService;
+
+  constructor(runnerDataService: RunnerDataService) {
+    this.runnerDataService = runnerDataService;
     if (window.require) {
       try {
         this.ipcRenderer = window.require('electron').ipcRenderer;
@@ -25,7 +29,8 @@ export class TimingBoxService {
         // @ts-ignore
         this.ipcRenderer.on('timing-box-data', (event, data) => {
           this.dataSubject.next(data);
-          console.log('New Data: ',data)
+          console.log('New Data: ',data);
+          this.handleData(data);
         });
       } catch (e) {
         throw e;
@@ -33,6 +38,11 @@ export class TimingBoxService {
     } else {
       console.warn('App not running inside Electron!');
     }
+  }
+
+  handleData(data: string){
+
+    this.runnerDataService.enterBib("105");
   }
 
   connect(ip: string, port: number): void {

@@ -10,9 +10,9 @@ export class TimerMatService {
     private fileUpdateService: TimingBoxService,
     private runnerDataService: RunnerDataService
   ) {
-    this.fileUpdateService.getUpdates().subscribe(bibNumbers => {
+/*    this.fileUpdateService.getUpdates().subscribe(bibNumbers => {
       bibNumbers.forEach((bibNumber: any) => this.runnerDataService.enterBib(bibNumber.toString()));
-    });
+    });*/
   }
 }
 
