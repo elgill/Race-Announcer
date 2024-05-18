@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {RunnerDataService} from "./runner-data.service";
+import {ConnectionStatus} from "../models/connection.enum";
 
 @Injectable({
   providedIn: 'root',
 })
 export class TimingBoxService {
   private ipcRenderer: any;
-  private statusSubject: BehaviorSubject<any> = new BehaviorSubject({ status: 'disconnected' });
+  private statusSubject: BehaviorSubject<any> = new BehaviorSubject({ status: ConnectionStatus.DISCONNECTED });
   private dataSubject: Subject<any> = new Subject();
 
   private runnerDataService: RunnerDataService;
@@ -46,6 +47,10 @@ export class TimingBoxService {
   }
 
   connect(ip: string, port: number): void {
+    if(this.getCurrentStatus() === ConnectionStatus.CONNECTED || this.getCurrentStatus() === ConnectionStatus.CONNECTING){
+      return;
+    }
+    this.statusSubject.next(ConnectionStatus.CONNECTING);
     this.ipcRenderer.send('connect-timing-box', { ip, port });
   }
 

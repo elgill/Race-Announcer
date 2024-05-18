@@ -1,7 +1,9 @@
 <div>
   <p>Connection Status: {{ status }}</p>
-  <button (click)="connect()">Connect</button>
-  <button (click)="disconnect()">Disconnect</button>
+
+  <button (click)="toggleConnection()">
+    {{ status === ConnectionStatus.CONNECTED ? 'Disconnect' : 'Connect' }}
+  </button>
 
   <div *ngFor="let record of records">
     <pre>{{ record | json }}</pre>
