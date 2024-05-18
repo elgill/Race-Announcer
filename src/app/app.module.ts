@@ -17,7 +17,7 @@ import { CsvExportComponent } from './csv-export/csv-export.component';
 import { BrowseRunnersComponent } from './browse-runners/browse-runners.component';
 import { ClearRunnersComponent } from './clear-runners/clear-runners.component';
 import { RaceClockComponent } from './race-clock/race-clock.component';
-import { ConnectFileStreamComponent } from './connect-file-stream/connect-file-stream.component';
+import { ConnectMatStreamComponent } from './connect-mat-stream/connect-mat-stream.component';
 import { NameLookupComponent } from './name-lookup/name-lookup.component';
 import { RunnerTableComponent } from './runner-table/runner-table.component';
 import { AutoImportComponent } from './auto-import/auto-import.component';
@@ -39,7 +39,7 @@ import { TimeDurationPipe } from './time-duration.pipe';
     BrowseRunnersComponent,
     ClearRunnersComponent,
     RaceClockComponent,
-    ConnectFileStreamComponent,
+    ConnectMatStreamComponent,
     NameLookupComponent,
     RunnerTableComponent,
     AutoImportComponent,

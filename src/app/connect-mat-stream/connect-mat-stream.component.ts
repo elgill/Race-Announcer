@@ -1,17 +1,16 @@
 import { Component } from '@angular/core';
 import {FileUpdateService} from "../services/file-update.service";
-import {TimerMatService} from "../services/timer-mat.service";
 import {FileDialogService} from "../services/file-dialog.service";
 
 @Component({
-  selector: 'app-connect-file-stream',
-  templateUrl: './connect-file-stream.component.html',
-  styleUrls: ['./connect-file-stream.component.css']
+  selector: 'app-connect-mat-stream',
+  templateUrl: './connect-mat-stream.component.html',
+  styleUrls: ['./connect-mat-stream.component.css']
 })
-export class ConnectFileStreamComponent {
+export class ConnectMatStreamComponent {
   filePath: string = '';
 
-  constructor(private fileDialogService: FileDialogService, private fileUpdateService: FileUpdateService , private timerMatService: TimerMatService) {}
+  constructor(private fileDialogService: FileDialogService, private fileUpdateService: FileUpdateService) {}
 
   async selectFile() {
     const filePath = await this.fileDialogService.openFileDialog();

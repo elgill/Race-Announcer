@@ -5,7 +5,7 @@ import { AnnounceScreenComponent } from './announce/announce-screen.component';
 import {CsvImportComponent} from "./csv-import/csv-import.component";
 import {BibScrapeUtilComponent} from "./bib-scrape-util/bib-scrape-util.component";
 import {BrowseRunnersComponent} from "./browse-runners/browse-runners.component";
-import {ConnectFileStreamComponent} from "./connect-file-stream/connect-file-stream.component";
+import {ConnectMatStreamComponent} from "./connect-mat-stream/connect-mat-stream.component";
 import {NameLookupComponent} from "./name-lookup/name-lookup.component";
 
 const routes: Routes = [
@@ -15,7 +15,7 @@ const routes: Routes = [
   { path: 'bibscrape', component: BibScrapeUtilComponent },
   { path: 'browse', component: BrowseRunnersComponent},
   { path: 'lookup', component: NameLookupComponent},
-  { path: 'connectfs', component: ConnectFileStreamComponent},
+  { path: 'connect', component: ConnectMatStreamComponent},
   { path: '', redirectTo: '/announce', pathMatch: 'full' },
 ];
 
