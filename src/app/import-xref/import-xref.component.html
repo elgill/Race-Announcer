@@ -1,0 +1,12 @@
+<div>
+  <h2>Import XRef</h2>
+
+  <input type="file" (change)="onFileSelected($event)" accept=".csv">
+
+  <div *ngIf="file !== null">
+    <button (click)="importFile()">Import</button>
+  </div>
+
+  <p *ngIf="importStatus === 'success'" class="success-message">Import successful!</p>
+  <p class="error-message">{{ errorMessage }}</p>
+</div>

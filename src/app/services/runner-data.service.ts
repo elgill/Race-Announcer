@@ -16,6 +16,7 @@ export class RunnerDataService {
   private activeRunners: Runner[] = [];
   private activeRunners$ = new BehaviorSubject<Runner[]>([]);
   private db: RunnerDatabase;
+  private xrefData = new Map<string, string>(); // Map to store XREF data: chipId -> bib
 
   private settings = DEFAULT_SETTINGS;
 
@@ -33,6 +34,29 @@ export class RunnerDataService {
       this.settings = settings;
     });
   }
+
+  importXref(xrefArray: { bib: string, chipId: string }[]) {
+    console.log("XREF importing: ", xrefArray);
+    xrefArray.forEach(xref => {
+      this.xrefData.set(xref.chipId, xref.bib);
+    });
+    console.log("Saved XREF data in memory.");
+  }
+
+  getBibByChipId(chipId: string): string | undefined {
+    return this.xrefData.get(chipId);
+  }
+
+  getFullXrefMap() {
+    console.log("Got XREF Map: ", this.xrefData);
+    return this.xrefData;
+  }
+
+  clearXref() {
+    this.xrefData.clear();
+    console.log('Cleared all XREF data in memory.');
+  }
+
 
   async loadRunnersFromRunnerDB() {
     const runnersArray: Runner[] = await this.db.loadRunners();
@@ -160,6 +184,8 @@ export class RunnerDataService {
     this.allRunners = new Map<string, Runner>();
     this.activeRunners = [];
     this.activeRunners$.next(this.activeRunners);
+
+    this.clearXref()
 
     this.db.deleteAllRunners().then(() => {
       console.log('Deleted all runners from database.');

@@ -23,6 +23,8 @@ import { RunnerTableComponent } from './runner-table/runner-table.component';
 import { AutoImportComponent } from './auto-import/auto-import.component';
 import { AnnounceTimerComponent } from './announce/announce-timer/announce-timer.component';
 import { TimeDurationPipe } from './time-duration.pipe';
+import { ImportXrefComponent } from './import-xref/import-xref.component';
+import { ShowXrefComponent } from './show-xref/show-xref.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +46,9 @@ import { TimeDurationPipe } from './time-duration.pipe';
     RunnerTableComponent,
     AutoImportComponent,
     AnnounceTimerComponent,
-    TimeDurationPipe
+    TimeDurationPipe,
+    ImportXrefComponent,
+    ShowXrefComponent
   ],
   imports: [
     BrowserModule,

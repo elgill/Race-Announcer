@@ -1,0 +1,22 @@
+<div>
+  <button (click)="toggleXrefData()">
+    {{ showXrefData ? 'Hide XREF Data' : 'Show XREF Data' }}
+  </button>
+  <div *ngIf="showXrefData">
+    <h3>XREF Data</h3>
+    <table>
+      <thead>
+      <tr>
+        <th>Chip ID</th>
+        <th>Bib Number</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let entry of xrefData">
+        <td>{{ entry.chipId }}</td>
+        <td>{{ entry.bib }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
