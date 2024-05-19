@@ -4,8 +4,4 @@
   <button (click)="toggleConnection()">
     {{ status === ConnectionStatus.CONNECTED ? 'Disconnect' : 'Connect' }}
   </button>
-
-  <div *ngFor="let record of records">
-    <pre>{{ record | json }}</pre>
-  </div>
 </div>

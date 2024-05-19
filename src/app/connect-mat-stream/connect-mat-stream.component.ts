@@ -9,7 +9,6 @@ import {ConnectionStatus} from "../models/connection.enum";
   styleUrls: ['./connect-mat-stream.component.css']
 })
 export class ConnectMatStreamComponent implements OnInit {
-  records: any[] = [];
   status: string = ConnectionStatus.UNKNOWN;
   settings = DEFAULT_SETTINGS;
 
@@ -26,13 +25,6 @@ export class ConnectMatStreamComponent implements OnInit {
       this.ngZone.run(() => {
         this.status = status.status;
         console.log('Status updated to: ', this.status);
-      });
-    });
-
-    this.timingBoxService.getData().subscribe((data) => {
-      this.ngZone.run(() => {
-        this.records.push(data);
-        console.log('New record added: ', data);
       });
     });
   }
