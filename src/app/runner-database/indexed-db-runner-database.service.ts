@@ -15,9 +15,14 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
   private runners: Map<string, Runner> = new Map(); // Changed to map for O(1) retrieval
 
   constructor() {
-    this.dbPromise = openDB('runners', 1, {
-      upgrade(db) {
-        db.createObjectStore('runners', { keyPath: 'id' });
+    this.dbPromise = openDB('runners', 2, { // Updated version number to 2
+      upgrade(db, oldVersion) {
+        if (oldVersion < 1) {
+          db.createObjectStore('runners', { keyPath: 'id' });
+        }
+        if (oldVersion < 2) { // New store creation
+          db.createObjectStore('xref', { keyPath: 'chipId' });
+        }
       },
     });
 
@@ -26,6 +31,22 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
     }).catch(err => {
       console.error('Failed to rebuild index:', err);
     });
+  }
+
+  async loadXrefData(): Promise<{ bib: string, chipId: string }[]> {
+    const db = await this.dbPromise;
+    return (await db.getAll('xref')) as { bib: string, chipId: string }[];
+  }
+
+  async saveXrefData(xrefArray: { bib: string, chipId: string }[]): Promise<void> {
+    const db = await this.dbPromise;
+    const tx = db.transaction('xref', 'readwrite');
+    for (const xref of xrefArray) {
+      tx.store.put(xref).then().catch(err => {
+        console.error('Failed to store xref:', err);
+      });
+    }
+    await tx.done;
   }
 
   async rebuildIndex() {
@@ -104,10 +125,12 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
   async deleteAllRunners(): Promise<void> {
     const db = await this.dbPromise;
     const tx = db.transaction('runners', 'readwrite');
-
     await tx.store.clear();
-
     await tx.done;
+
+    const txXref = db.transaction('xref', 'readwrite'); // Clear XREF data
+    await txXref.store.clear();
+    await txXref.done;
 
     // Clear in-memory data as well.
     this.runners.clear();

@@ -33,6 +33,35 @@ export class RunnerDataService {
     this.settingsService.getSettings().subscribe(settings => {
       this.settings = settings;
     });
+
+    this.loadXrefDataFromDB().then(() => {
+      console.log('Loaded XREF data from database.');
+    }).catch(err => {
+      console.error('Failed to load XREF data from database:', err);
+    });
+  }
+
+  async loadXrefDataFromDB() {
+    const xrefArray: { bib: string, chipId: string }[] = await this.db.loadXrefData();
+    xrefArray.forEach(xref => {
+      this.xrefData.set(xref.chipId, xref.bib);
+    });
+  }
+
+  async saveXrefDataToDB() {
+    const xrefArray = Array.from(this.xrefData.entries()).map(([chipId, bib]) => ({ chipId, bib }));
+    await this.db.saveXrefData(xrefArray);
+  }
+
+  clearXref() {
+    this.xrefData.clear();
+    console.log('Cleared all XREF data in memory.');
+
+    this.saveXrefDataToDB().then(() => {
+      console.log('Cleared XREF data in database.');
+    }).catch(err => {
+      console.error('Failed to clear XREF data in database:', err);
+    });
   }
 
   importXref(xrefArray: { bib: string, chipId: string }[]) {
@@ -41,6 +70,8 @@ export class RunnerDataService {
       this.xrefData.set(xref.chipId, xref.bib);
     });
     console.log("Saved XREF data in memory.");
+    this.saveXrefDataToDB().then(r => console.log("Saved XREF to DB"))
+
   }
 
   getBibByChipId(chipId: string): string | undefined {
@@ -51,12 +82,6 @@ export class RunnerDataService {
     console.log("Got XREF Map: ", this.xrefData);
     return this.xrefData;
   }
-
-  clearXref() {
-    this.xrefData.clear();
-    console.log('Cleared all XREF data in memory.');
-  }
-
 
   async loadRunnersFromRunnerDB() {
     const runnersArray: Runner[] = await this.db.loadRunners();
