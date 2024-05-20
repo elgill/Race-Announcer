@@ -1,5 +1,39 @@
 <div [formGroup]="settingsForm">
   <div class="collapsible">
+    <input type="checkbox" id="race-settings" class="collapsible-checkbox">
+    <label for="race-settings" class="collapsible-label">Race Settings</label>
+    <div class="collapsible-content">
+      <div>
+        <label>
+          EF Race ID: <input formControlName="raceId" type="text" placeholder="12345">
+        </label>
+      </div>
+      <div>
+        <label>
+          Race Start Time: <input formControlName="raceStartTime" type="datetime-local" step="0.1">
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="collapsible">
+    <input type="checkbox" id="timing-box-settings" class="collapsible-checkbox">
+    <label for="timing-box-settings" class="collapsible-label">Timing Box Settings</label>
+    <div class="collapsible-content">
+      <div>
+        <label>
+          IP Address: <input formControlName="ip" type="text" placeholder="192.168.1.200">
+        </label>
+      </div>
+      <div>
+        <label>
+          Port: <input formControlName="port" type="number" placeholder="10001">
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="collapsible">
     <input type="checkbox" id="display-settings" class="collapsible-checkbox">
     <label for="display-settings" class="collapsible-label">Display Settings</label>
     <div class="collapsible-content">
@@ -31,40 +65,6 @@
               {{templateOption.display}}
             </option>
           </select>
-        </label>
-      </div>
-    </div>
-  </div>
-
-  <div class="collapsible">
-    <input type="checkbox" id="timing-box-settings" class="collapsible-checkbox">
-    <label for="timing-box-settings" class="collapsible-label">Timing Box Settings</label>
-    <div class="collapsible-content">
-      <div>
-        <label>
-          IP Address: <input formControlName="ip" type="text" placeholder="192.168.1.200">
-        </label>
-      </div>
-      <div>
-        <label>
-          Port: <input formControlName="port" type="number" placeholder="10001">
-        </label>
-      </div>
-    </div>
-  </div>
-
-  <div class="collapsible">
-    <input type="checkbox" id="race-settings" class="collapsible-checkbox">
-    <label for="race-settings" class="collapsible-label">Race Settings</label>
-    <div class="collapsible-content">
-      <div>
-        <label>
-          EF Race ID: <input formControlName="raceId" type="text" placeholder="12345">
-        </label>
-      </div>
-      <div>
-        <label>
-          Race Start Time: <input formControlName="raceStartTime" type="datetime-local" step="0.1">
         </label>
       </div>
     </div>
