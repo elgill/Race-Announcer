@@ -13,3 +13,30 @@
   margin-top: 0;
   margin-bottom: 0;
 }
+
+.collapsible {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.collapsible-label {
+  display: block;
+  background-color: #f1f1f1;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.collapsible-content {
+  padding: 10px;
+  display: none;
+}
+
+.collapsible-checkbox {
+  display: none;
+}
+
+.collapsible-checkbox:checked ~ .collapsible-content {
+  display: block;
+}

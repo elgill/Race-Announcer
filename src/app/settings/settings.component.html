@@ -1,98 +1,125 @@
 <div [formGroup]="settingsForm">
-  <div>
-    <label>
-      Font Size: <input formControlName="fontSize" type="number">
-    </label>
-  </div>
-  <div>
-    <label>
-      Font Color: <input formControlName="fontColor" type="color">
-    </label>
-  </div>
-  <div>
-    <label>
-      Display Lines: <input formControlName="displayLines" type="number">
-    </label>
-  </div>
-  <div>
-    <label>
-      Background Color: <input formControlName="backgroundColor" type="color">
-    </label>
-  </div>
-  <div>
-    <label>
-      Num Lock Warning:
-      <input formControlName="numLockWarn" type="checkbox">
-    </label>
-  </div>
-  <div>
-    <label>
-      CORS Proxy URL: <input formControlName="proxyUrl" type="text" placeholder="https://proxy.example.com/">
-    </label>
-  </div>
-  <div>
-    <label>
-      EF Race ID: <input formControlName="raceId" type="text" placeholder="12345">
-    </label>
-  </div>
-  <div>
-    <label>
-      IP Address: <input formControlName="ip" type="text" placeholder="192.168.1.200">
-    </label>
-  </div>
-  <div>
-    <label>
-      Port: <input formControlName="port" type="number" placeholder="10001">
-    </label>
-  </div>
-  <div>
-    <label>
-      Delete Keybind: <input formControlName="deleteKeybind" (keydown)="onKeydown($event)" type="text">
-    </label>
-  </div>
-  <div>
-    <label>
-      Announcer Screen View:
-      <select formControlName="announceTemplate">
-        <option *ngFor="let templateOption of templateOptions" [value]="templateOption.value">
-          {{templateOption.display}}
-        </option>
-      </select>
-    </label>
-  </div>
-  <div>
-    <label>
-      Race Start Time: <input formControlName="raceStartTime" type="datetime-local" step="0.1">
-    </label>
-  </div>
-  <div class="custom-field-group">
-    <h3>Custom Fields</h3>
-    <div formArrayName="customFields">
-      <div *ngFor="let field of customFields.controls; let i = index" [formGroupName]="i" class="custom-field-group">
-        <h4>Custom Field {{i+1}}</h4>
-        <div>
-          <label>
-            Name: <input formControlName="name" type="text">
-          </label>
-        </div>
-        <div>
-          <label>
-            Show in Announce Screen:
-            <input formControlName="showInAnnounce" type="checkbox">
-          </label>
-        </div>
-        <div>
-          <label>
-            Show in Browse Screen:
-            <input formControlName="showInBrowse" type="checkbox">
-          </label>
-        </div>
-        <button (click)="removeField(i)">Remove This Field</button>
+  <div class="collapsible">
+    <input type="checkbox" id="display-settings" class="collapsible-checkbox">
+    <label for="display-settings" class="collapsible-label">Display Settings</label>
+    <div class="collapsible-content">
+      <div>
+        <label>
+          Font Size: <input formControlName="fontSize" type="number">
+        </label>
+      </div>
+      <div>
+        <label>
+          Font Color: <input formControlName="fontColor" type="color">
+        </label>
+      </div>
+      <div>
+        <label>
+          Display Lines: <input formControlName="displayLines" type="number">
+        </label>
+      </div>
+      <div>
+        <label>
+          Background Color: <input formControlName="backgroundColor" type="color">
+        </label>
+      </div>
+      <div>
+        <label>
+          Announcer Screen View:
+          <select formControlName="announceTemplate">
+            <option *ngFor="let templateOption of templateOptions" [value]="templateOption.value">
+              {{templateOption.display}}
+            </option>
+          </select>
+        </label>
       </div>
     </div>
-    <button (click)="addField()">Add Field</button>
   </div>
 
+  <div class="collapsible">
+    <input type="checkbox" id="timing-box-settings" class="collapsible-checkbox">
+    <label for="timing-box-settings" class="collapsible-label">Timing Box Settings</label>
+    <div class="collapsible-content">
+      <div>
+        <label>
+          IP Address: <input formControlName="ip" type="text" placeholder="192.168.1.200">
+        </label>
+      </div>
+      <div>
+        <label>
+          Port: <input formControlName="port" type="number" placeholder="10001">
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="collapsible">
+    <input type="checkbox" id="race-settings" class="collapsible-checkbox">
+    <label for="race-settings" class="collapsible-label">Race Settings</label>
+    <div class="collapsible-content">
+      <div>
+        <label>
+          EF Race ID: <input formControlName="raceId" type="text" placeholder="12345">
+        </label>
+      </div>
+      <div>
+        <label>
+          Race Start Time: <input formControlName="raceStartTime" type="datetime-local" step="0.1">
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="collapsible">
+    <input type="checkbox" id="advanced-settings" class="collapsible-checkbox">
+    <label for="advanced-settings" class="collapsible-label">Advanced Settings</label>
+    <div class="collapsible-content">
+      <div>
+        <label>
+          Num Lock Warning: <input formControlName="numLockWarn" type="checkbox">
+        </label>
+      </div>
+      <div>
+        <label>
+          Delete Keybind: <input formControlName="deleteKeybind" (keydown)="onKeydown($event)" type="text">
+        </label>
+      </div>
+      <div>
+        <label>
+          CORS Proxy URL: <input formControlName="proxyUrl" type="text" placeholder="https://proxy.example.com/">
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="collapsible">
+    <input type="checkbox" id="custom-fields" class="collapsible-checkbox">
+    <label for="custom-fields" class="collapsible-label">Custom Fields</label>
+    <div class="collapsible-content">
+      <div formArrayName="customFields">
+        <div *ngFor="let field of customFields.controls; let i = index" [formGroupName]="i" class="custom-field-group">
+          <h4>Custom Field {{i + 1}}</h4>
+          <div>
+            <label>
+              Name: <input formControlName="name" type="text">
+            </label>
+          </div>
+          <div>
+            <label>
+              Show in Announce Screen: <input formControlName="showInAnnounce" type="checkbox">
+            </label>
+          </div>
+          <div>
+            <label>
+              Show in Browse Screen: <input formControlName="showInBrowse" type="checkbox">
+            </label>
+          </div>
+          <button (click)="removeField(i)">Remove This Field</button>
+        </div>
+      </div>
+      <button (click)="addField()">Add Field</button>
+    </div>
+  </div>
 
   <button (click)="saveSettings()">Save Settings</button>
   <p *ngIf="status === 'success'" class="success-message">Settings saved successfully!</p>
