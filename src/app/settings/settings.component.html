@@ -1,6 +1,6 @@
 <div [formGroup]="settingsForm">
   <div class="collapsible">
-    <input type="checkbox" id="race-settings" class="collapsible-checkbox">
+    <input type="checkbox" id="race-settings" class="collapsible-checkbox" (change)="persistState('race-settings', $event)">
     <label for="race-settings" class="collapsible-label">Race Settings</label>
     <div class="collapsible-content">
       <div>
@@ -17,7 +17,7 @@
   </div>
 
   <div class="collapsible">
-    <input type="checkbox" id="timing-box-settings" class="collapsible-checkbox">
+    <input type="checkbox" id="timing-box-settings" class="collapsible-checkbox" (change)="persistState('timing-box-settings', $event)">
     <label for="timing-box-settings" class="collapsible-label">Timing Box Settings</label>
     <div class="collapsible-content">
       <div>
@@ -34,7 +34,7 @@
   </div>
 
   <div class="collapsible">
-    <input type="checkbox" id="display-settings" class="collapsible-checkbox">
+    <input type="checkbox" id="display-settings" class="collapsible-checkbox" (change)="persistState('display-settings', $event)">
     <label for="display-settings" class="collapsible-label">Display Settings</label>
     <div class="collapsible-content">
       <div>
@@ -71,7 +71,7 @@
   </div>
 
   <div class="collapsible">
-    <input type="checkbox" id="advanced-settings" class="collapsible-checkbox">
+    <input type="checkbox" id="advanced-settings" class="collapsible-checkbox" (change)="persistState('advanced-settings', $event)">
     <label for="advanced-settings" class="collapsible-label">Advanced Settings</label>
     <div class="collapsible-content">
       <div>
@@ -93,7 +93,7 @@
   </div>
 
   <div class="collapsible">
-    <input type="checkbox" id="custom-fields" class="collapsible-checkbox">
+    <input type="checkbox" id="custom-fields" class="collapsible-checkbox" (change)="persistState('custom-fields', $event)">
     <label for="custom-fields" class="collapsible-label">Custom Fields</label>
     <div class="collapsible-content">
       <div formArrayName="customFields">

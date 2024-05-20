@@ -47,6 +47,7 @@ export class SettingsComponent implements OnInit {
       this.settingsForm.patchValue(settings);
     });
 
+    this.restoreState();
     console.log('Settings Initialized');
   }
 
@@ -76,6 +77,30 @@ export class SettingsComponent implements OnInit {
 
   removeField(index: number): void {
     this.customFields.removeAt(index);
+  }
+
+  persistState(section: string, event: Event): void {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    localStorage.setItem(section, JSON.stringify(isChecked));
+  }
+
+  restoreState(): void {
+    const sections = [
+      'race-settings',
+      'timing-box-settings',
+      'display-settings',
+      'advanced-settings',
+      'custom-fields'
+    ];
+
+    sections.forEach(section => {
+      const storedState = localStorage.getItem(section);
+      const state = storedState ? JSON.parse(storedState) : true;  // Default to true (uncollapsed)
+      const element = document.getElementById(section) as HTMLInputElement;
+      if (element) {
+        element.checked = state;
+      }
+    });
   }
 
 }
