@@ -1,11 +1,8 @@
-const { app, BrowserWindow, ipcMain, dialog, Menu } = require('electron');
-const fs = require('fs');
-const chokidar = require("chokidar");
+const { app, BrowserWindow, ipcMain, Menu } = require('electron');
 const net = require('net');
 
 let win;
 let watcher;
-let lastLineCount = 0;
 let timingBoxClient;
 
 const WINDOW_CONFIG = {
@@ -43,8 +40,6 @@ app.on('activate', () => {
 })
 
 function setupIPCListeners() {
-  ipcMain.handle('open-file-dialog', handleOpenFileDialog);
-
   ipcMain.on('connect-timing-box', (event, { ip, port }) => {
     connectToTimingBox(ip, port);
   });
@@ -87,19 +82,6 @@ function stopFileWatching() {
     watcher.close();
   }
 }
-
-async function handleOpenFileDialog(event) {
-  const result = await dialog.showOpenDialog(win, {
-    properties: ['openFile']
-  });
-
-  if (!result.canceled && result.filePaths.length > 0) {
-    return result.filePaths[0];
-  } else {
-    return null;
-  }
-}
-
 
 const template = [
   {
