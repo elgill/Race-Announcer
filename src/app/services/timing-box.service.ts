@@ -3,6 +3,8 @@ import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {RunnerDataService} from "./runner-data.service";
 import {ConnectionStatus} from "../models/connection.enum";
 import {TridentTagReadData} from "../interfaces/trident-tag-read-data";
+import {TagReadConversionService} from "./tag-read-conversion.service";
+import {ChipRead} from "../interfaces/chip-read";
 
 @Injectable({
   providedIn: 'root',
@@ -42,8 +44,20 @@ export class TimingBoxService {
     }
   }
 
-  private parseTagReadData(data: string): TridentTagReadData | null {
-    if (data.length !== 38) {
+  private parseTagReadData(data: string): ChipRead | null {
+    if (data.startsWith("aa")) {
+      const read = this.parseTridentTagData(data);
+      if (read) {
+        return TagReadConversionService.convertTridentToChipRead(read);
+      }
+    } else if (data.includes(";")){
+
+    }
+    return null;
+  }
+
+  private parseTridentTagData(data: string): TridentTagReadData | null{
+    if (data.length < 38) {
       console.warn('Invalid data format:', data);
       return null;
     }
@@ -70,11 +84,11 @@ export class TimingBoxService {
     console.log('Parsed Data: ', parsedData);
 
     // Example usage: Enter runner bib number from tagId
-    const bibNumber = this.runnerDataService.getBibByChipId(parsedData.tagId);
+    const bibNumber = this.runnerDataService.getBibByChipId(parsedData.chipCode);
     if (bibNumber) {
       this.runnerDataService.enterBib(bibNumber);
     } else {
-      console.warn('No bib number found for tag ID:', parsedData.tagId);
+      console.warn('No bib number found for tag ID:', parsedData.chipCode);
     }
   }
 
