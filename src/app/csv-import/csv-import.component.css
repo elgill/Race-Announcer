@@ -1,0 +1,20 @@
+.mapping-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  row-gap: 5px; /* Reduce vertical gaps */
+  align-items: center;
+}
+
+.mapping-row {
+  display: contents;
+}
+
+.mapping-label {
+  white-space: nowrap;
+  text-align: left;
+}
+
+.mapping-select {
+  text-align: left;
+  width: min-content;
+}

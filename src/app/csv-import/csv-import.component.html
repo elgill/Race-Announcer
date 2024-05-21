@@ -6,19 +6,21 @@
   <div *ngIf="headers.length">
     <h3>Column Mapping</h3>
 
-    <div *ngFor="let header of headers">
-      <label>{{ header }}</label>
-      <select [(ngModel)]="mappedColumns[header]">
-        <option value="">- Select Field -</option>
-        <option value="bib">Bib Number</option>
-        <option value="firstName">First Name</option>
-        <option value="lastName">Last Name</option>
-        <option value="age">Age</option>
-        <option value="gender">Gender</option>
-        <option value="town">Town</option>
-        <option value="state">State</option>
-        <option *ngFor="let field of settings.customFields" value="{{field.name}}">{{field.name}}</option>
-      </select>
+    <div class="mapping-grid">
+      <div class="mapping-row" *ngFor="let header of headers">
+        <label class="mapping-label">{{ header }}</label>
+        <select class="mapping-select" [(ngModel)]="mappedColumns[header]">
+          <option value="">-</option>
+          <option value="bib">Bib Number</option>
+          <option value="firstName">First Name</option>
+          <option value="lastName">Last Name</option>
+          <option value="age">Age</option>
+          <option value="gender">Gender</option>
+          <option value="town">Town</option>
+          <option value="state">State</option>
+          <option *ngFor="let field of settings.customFields" [value]="field.name">{{field.name}}</option>
+        </select>
+      </div>
     </div>
 
     <button (click)="importCsv()">Import</button>
