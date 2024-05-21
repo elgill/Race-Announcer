@@ -70,7 +70,11 @@ export class RunnerDataService {
       this.xrefData.set(xref.chipId, xref.bib);
     });
     console.log("Saved XREF data in memory.");
-    this.saveXrefDataToDB().then(r => console.log("Saved XREF to DB"))
+    this.saveXrefDataToDB().then(() => {
+      console.log("Saved XREF to DB")
+    }).catch(err => {
+      console.error('Failed to save XREF data in database:', err);
+    });
 
   }
 
@@ -79,7 +83,6 @@ export class RunnerDataService {
   }
 
   getFullXrefMap() {
-    console.log("Got XREF Map: ", this.xrefData);
     return this.xrefData;
   }
 
@@ -124,7 +127,6 @@ export class RunnerDataService {
 
     this.activeRunners.unshift(runner); // Add runner to the start of the array
     this.activeRunners$.next(this.activeRunners);
-    console.log('Runner entered:', runner);
   }
 
   removeLastRunner() {
@@ -141,9 +143,6 @@ export class RunnerDataService {
 
     // Update the observable with the new list of active runners
     this.activeRunners$.next(this.activeRunners);
-
-    // Log runners after removing
-    console.log('Runners after removing:', this.activeRunners);
   }
 
 

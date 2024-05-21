@@ -87,7 +87,6 @@ export class SettingsService {
       for (const key of Object.keys(DEFAULT_SETTINGS) as (keyof Settings)[]) {
         // if a key is present in the loaded settings, use its value
         if (key in loadedSettings) {
-          console.log("Key:",key," Value:",this.settings[key]);
           this.settings[key] = loadedSettings[key] as never;
         }
       }
