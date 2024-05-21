@@ -1,4 +1,4 @@
-<table aria-label="Runners to announce">
+<table aria-label="Runners to announce" style="font-size: 18px">
   <thead>
   <tr>
     <th>Time</th>
@@ -16,8 +16,6 @@
   <tr *ngFor="let runner of reverseRunnerList; index as i" [hidden]="i >= settings.displayLines">
     <td>{{ runStartTime | timeDuration:runner.timeEntered }}</td>
     <td>{{runner.bib}}</td>
-
-
     <td>{{runner.firstName}}</td>
     <td>{{runner.lastName}}</td>
     <td>{{runner.age}}</td>

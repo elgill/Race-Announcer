@@ -25,6 +25,7 @@ import { AnnounceTimerComponent } from './announce/announce-timer/announce-timer
 import { TimeDurationPipe } from './time-duration.pipe';
 import { ImportXrefComponent } from './import-xref/import-xref.component';
 import { ShowXrefComponent } from './show-xref/show-xref.component';
+import { TimerRunnerTableComponent } from './timer-runner-table/timer-runner-table.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { ShowXrefComponent } from './show-xref/show-xref.component';
     AnnounceTimerComponent,
     TimeDurationPipe,
     ImportXrefComponent,
-    ShowXrefComponent
+    ShowXrefComponent,
+    TimerRunnerTableComponent
   ],
   imports: [
     BrowserModule,

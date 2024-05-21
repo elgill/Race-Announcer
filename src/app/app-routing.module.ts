@@ -7,6 +7,7 @@ import {BibScrapeUtilComponent} from "./bib-scrape-util/bib-scrape-util.componen
 import {BrowseRunnersComponent} from "./browse-runners/browse-runners.component";
 import {ConnectMatStreamComponent} from "./connect-mat-stream/connect-mat-stream.component";
 import {NameLookupComponent} from "./name-lookup/name-lookup.component";
+import {TimerRunnerTableComponent} from "./timer-runner-table/timer-runner-table.component";
 
 const routes: Routes = [
   { path: 'settings', component: SettingsComponent },
@@ -16,6 +17,7 @@ const routes: Routes = [
   { path: 'browse', component: BrowseRunnersComponent},
   { path: 'lookup', component: NameLookupComponent},
   { path: 'connect', component: ConnectMatStreamComponent},
+  { path: 'timer', component: TimerRunnerTableComponent},
   { path: '', redirectTo: '/announce', pathMatch: 'full' },
 ];
 
