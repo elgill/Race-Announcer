@@ -15,7 +15,7 @@ export class CsvImportComponent {
   importStatus = '';
   mappedColumns: { [key: string]: string } = {};
   possibleHeaders: { [key: string]: string[] } = {
-    'bib': ['Bib', 'Bib Number', 'Bib#'],
+    'bib': ['Bib', 'Bib Number', 'Bib#', 'bib #'],
     'firstName': ['First Name', 'FirstName', 'first_name', 'first'],
     'lastName': ['Last Name', 'LastName', 'last_name','last'],
     'age': ['Age', 'age', 'Age Group'],
