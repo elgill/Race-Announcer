@@ -3,6 +3,7 @@ import {RunnerDataService} from '../services/runner-data.service';
 import {DEFAULT_SETTINGS, Settings, SettingsService} from "../services/settings.service";
 import {CustomField} from "../interfaces/custom-field";
 import {Runner} from "../interfaces/runner";
+import {ElectronService} from "../services/electron.service";
 
 @Component({
   selector: 'app-announce',
@@ -12,6 +13,7 @@ import {Runner} from "../interfaces/runner";
 export class AnnounceScreenComponent implements OnInit {
   settings: Settings= DEFAULT_SETTINGS;
   runStartTime: Date | undefined;
+  isElectron = this.electronService.isElectron;
 
   runnerList: Runner[] = [];
   reverseRunnerList: Runner[] = [];
@@ -21,7 +23,8 @@ export class AnnounceScreenComponent implements OnInit {
 
   constructor(
     private runnerDataService: RunnerDataService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private electronService: ElectronService,
   ) { }
 
   ngOnInit(): void {

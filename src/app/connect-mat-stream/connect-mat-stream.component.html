@@ -1,7 +1,6 @@
 <div>
-  <p>Connection Status: {{ status }}</p>
-
   <button (click)="toggleConnection()">
     {{ status === ConnectionStatus.CONNECTED ? 'Disconnect' : 'Connect' }}
   </button>
+  Status: {{ status }}
 </div>

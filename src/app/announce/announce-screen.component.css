@@ -15,3 +15,8 @@
   border-radius: 5px;
   margin: 10px 0;
 }
+
+#mat-connect {
+  font-size: 16px;
+  text-align: right;
+}
