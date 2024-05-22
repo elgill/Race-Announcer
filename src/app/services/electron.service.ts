@@ -7,6 +7,7 @@ import { Injectable } from '@angular/core';
 export class ElectronService {
 
   private readonly ipc: IpcRenderer | undefined;
+  isElectron = window.require;
 
   constructor() {
     if ((window as any).require) {

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { ANNOUNCE_TEMPLATE_OPTIONS, DEFAULT_SETTINGS, Settings, SettingsService } from '../services/settings.service';
+import {ElectronService} from "../services/electron.service";
 
 @Component({
   selector: 'app-settings',
@@ -11,10 +12,12 @@ export class SettingsComponent implements OnInit {
   settingsForm: FormGroup = new FormGroup({});
   templateOptions = ANNOUNCE_TEMPLATE_OPTIONS;
   status: string = '';
+  isElectron = this.electronService.isElectron;
 
   constructor(
     private formBuilder: FormBuilder,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private electronService: ElectronService
   ) { }
 
   ngOnInit(): void {
