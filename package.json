@@ -13,7 +13,9 @@
     "test": "ng test",
     "electron": "electron .",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "mac-universal-deploy": "electron-builder -p always -m --universal",
+    "win64-deploy": "electron-builder -p always -w --x64"
   },
   "build": {
     "appId": "dev.gillin.raceannouncer",
@@ -47,7 +49,6 @@
     "@angular/platform-browser": "^16.1.0",
     "@angular/platform-browser-dynamic": "^16.1.0",
     "@angular/router": "^16.1.0",
-    "chokidar": "^3.5.3",
     "file-saver-es": "^2.0.5",
     "idb": "^7.1.1",
     "lodash": "^4.17.21",
@@ -67,7 +68,7 @@
     "@types/lodash": "^4.14.195",
     "@types/lunr": "^2.3.4",
     "@types/papaparse": "^5.3.7",
-    "electron": "^24.8.5",
+    "electron": "29.0.1",
     "electron-builder": "^24.4.0",
     "jasmine-core": "~4.6.0",
     "karma": "~6.4.0",
