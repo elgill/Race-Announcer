@@ -19,6 +19,7 @@ export class RunnerDataService {
   private xrefData = new Map<string, string>(); // Map to store XREF data: chipId -> bib
 
   private settings = DEFAULT_SETTINGS;
+  private lastEntryTimes = new Map<string, Date>(); // Map to store last entry times
 
   constructor(private settingsService: SettingsService) {
     // IDB
@@ -113,7 +114,21 @@ export class RunnerDataService {
     return this.activeRunners$.asObservable();
   }
 
-  enterBib(bib: string) {
+  enterBib(bib: string, overrideMinTime = true) {
+    const now = new Date();
+    const lastEntryTime = this.lastEntryTimes.get(bib);
+    //console.log("Override Min Time: ",overrideMinTime," Last Entry Time:",lastEntryTime)
+    const minTimeMs = this.settings.minTimeMs;
+
+
+    if (!overrideMinTime && lastEntryTime) {
+      const timeSinceLastEntry = now.getTime() - lastEntryTime.getTime();
+      if (timeSinceLastEntry < minTimeMs) {
+        console.warn(`Ignoring entry for bib ${bib} because it was entered too recently.`);
+        return;
+      }
+    }
+
     let runner = this.allRunners.get(bib);
     if (!runner) {
       runner = bib === "" ? {...runnerBlankBib} : {...runnerNotFound};
@@ -127,6 +142,8 @@ export class RunnerDataService {
 
     this.activeRunners.unshift(runner); // Add runner to the start of the array
     this.activeRunners$.next(this.activeRunners);
+
+    this.lastEntryTimes.set(bib, now);
   }
 
   removeLastRunner() {

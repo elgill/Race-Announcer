@@ -15,8 +15,7 @@
       </div>
     </div>
   </div>
-
-  <div class="collapsible" *ngIf="isElectron">
+  <div class="collapsible">
     <input type="checkbox" id="timing-box-settings" class="collapsible-checkbox" (change)="persistState('timing-box-settings', $event)">
     <label for="timing-box-settings" class="collapsible-label">Timing Box Settings</label>
     <div class="collapsible-content">
@@ -28,6 +27,13 @@
       <div>
         <label>
           Port: <input formControlName="port" type="number" placeholder="10001">
+        </label>
+      </div>
+      <div>
+        <label>
+          Min Time Between Entries:
+            Minutes: <input formControlName="minTimeMinutes" type="number" min="0">
+            Seconds: <input formControlName="minTimeSeconds" type="number" min="0" max="59">
         </label>
       </div>
     </div>

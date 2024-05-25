@@ -4,6 +4,7 @@ import { CustomField } from "../interfaces/custom-field";
 import { ConfigService } from './config.service';
 
 export interface Settings {
+  minTimeMs: number;
   fontSize: number;
   fontColor: string;
   displayLines: number;
@@ -45,6 +46,7 @@ export const DEFAULT_SETTINGS: Settings = {
     { name: "t-shirt", showInAnnounce: false, showInBrowse: true },
     { name: "team", showInAnnounce: true, showInBrowse: true }
   ],
+  minTimeMs: 300000
 };
 
 @Injectable({

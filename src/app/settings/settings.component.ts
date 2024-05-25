@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { ANNOUNCE_TEMPLATE_OPTIONS, DEFAULT_SETTINGS, Settings, SettingsService } from '../services/settings.service';
-import {ElectronService} from "../services/electron.service";
+import { ElectronService } from "../services/electron.service";
 
 @Component({
   selector: 'app-settings',
@@ -34,10 +34,12 @@ export class SettingsComponent implements OnInit {
       raceId: [DEFAULT_SETTINGS.raceId],
       ip: [DEFAULT_SETTINGS.ip],
       port: [DEFAULT_SETTINGS.port],
-      customFields: this.formBuilder.array([])
+      customFields: this.formBuilder.array([]),
+      minTimeMinutes: [Math.floor(DEFAULT_SETTINGS.minTimeMs / 60000)], // Minutes part
+      minTimeSeconds: [(DEFAULT_SETTINGS.minTimeMs % 60000) / 1000]    // Seconds part
     });
     this.settingsService.getSettings().subscribe(settings => {
-      console.log('Patching Values: ',settings);
+      console.log('Patching Values: ', settings);
 
       // Reset the form array
       this.customFields.clear();
@@ -47,7 +49,11 @@ export class SettingsComponent implements OnInit {
         this.customFields.push(this.formBuilder.group(field));
       });
 
-      this.settingsForm.patchValue(settings);
+      this.settingsForm.patchValue({
+        ...settings,
+        minTimeMinutes: Math.floor(settings.minTimeMs / 60000),
+        minTimeSeconds: (settings.minTimeMs % 60000) / 1000
+      });
     });
 
     this.restoreState();
@@ -59,9 +65,9 @@ export class SettingsComponent implements OnInit {
     event.preventDefault();  // prevent the default action (typing the key)
   }
 
-
   saveSettings(): void {
     const updatedSettings = this.settingsForm.value as Settings;
+    updatedSettings.minTimeMs = (this.settingsForm.value.minTimeMinutes * 60000) + (this.settingsForm.value.minTimeSeconds * 1000);
     this.settingsService.updateSettings(updatedSettings);
     this.status = 'success';
   }
@@ -105,5 +111,4 @@ export class SettingsComponent implements OnInit {
       }
     });
   }
-
 }
