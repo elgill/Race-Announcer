@@ -3,7 +3,7 @@
   "productName": "Race Announcer",
   "author": "Chris Gillin",
   "description": "Cross-platform desktop application for announcing race events",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "main.js",
   "scripts": {
     "ng": "ng",
