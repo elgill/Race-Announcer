@@ -15,7 +15,7 @@
       </div>
     </div>
   </div>
-  <div class="collapsible">
+  <div class="collapsible" *ngIf="isElectron">
     <input type="checkbox" id="timing-box-settings" class="collapsible-checkbox" (change)="persistState('timing-box-settings', $event)">
     <label for="timing-box-settings" class="collapsible-label">Timing Box Settings</label>
     <div class="collapsible-content">

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { ANNOUNCE_TEMPLATE_OPTIONS, DEFAULT_SETTINGS, Settings, SettingsService } from '../services/settings.service';
 import { ElectronService } from "../services/electron.service";
@@ -8,7 +8,7 @@ import { ElectronService } from "../services/electron.service";
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.css']
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent implements OnInit, AfterViewInit {
   settingsForm: FormGroup = new FormGroup({});
   templateOptions = ANNOUNCE_TEMPLATE_OPTIONS;
   status: string = '';
@@ -56,8 +56,11 @@ export class SettingsComponent implements OnInit {
       });
     });
 
-    this.restoreState();
     console.log('Settings Initialized');
+  }
+
+  ngAfterViewInit(): void {
+    this.restoreState();
   }
 
   onKeydown(event: KeyboardEvent) {
@@ -108,6 +111,8 @@ export class SettingsComponent implements OnInit {
       const element = document.getElementById(section) as HTMLInputElement;
       if (element) {
         element.checked = state;
+      } else {
+        console.error("No element!: ",section)
       }
     });
   }
