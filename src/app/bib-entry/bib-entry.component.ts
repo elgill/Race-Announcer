@@ -34,7 +34,6 @@ export class BibEntryComponent implements OnInit, AfterViewInit  {
       this.onRemoveLastRunnerClick();
       this.bibNumber = '';
       event.preventDefault();
-      console.log("Bib number curren: ",this.bibNumber);
     }
   }
 
@@ -43,7 +42,8 @@ export class BibEntryComponent implements OnInit, AfterViewInit  {
   }
 
   onSubmit(): void {
-    this.runnerDataService.enterBib(this.bibNumber.toString());
+    const bib: string = this.bibNumber ? this.bibNumber : '';
+    this.runnerDataService.enterBib(bib);
     this.bibNumber = '';
   }
 
