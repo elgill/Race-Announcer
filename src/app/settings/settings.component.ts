@@ -28,6 +28,7 @@ export class SettingsComponent implements OnInit, AfterViewInit {
       backgroundColor: [DEFAULT_SETTINGS.backgroundColor],
       proxyUrl: [DEFAULT_SETTINGS.proxyUrl],
       deleteKeybind: [DEFAULT_SETTINGS.deleteKeybind],
+      pauseKeybind: [DEFAULT_SETTINGS.pauseKeybind],
       announceTemplate: [DEFAULT_SETTINGS.announceTemplate],
       raceStartTime: [DEFAULT_SETTINGS.raceStartTime],
       numLockWarn: [DEFAULT_SETTINGS.numLockWarn],
@@ -63,10 +64,11 @@ export class SettingsComponent implements OnInit, AfterViewInit {
     this.restoreState();
   }
 
-  onKeydown(event: KeyboardEvent) {
-    this.settingsForm.get('deleteKeybind')?.setValue(event.key);
+  onKeydown(event: KeyboardEvent, controlName: string) {
+    this.settingsForm.get(controlName)?.setValue(event.key);
     event.preventDefault();  // prevent the default action (typing the key)
   }
+
 
   saveSettings(): void {
     const updatedSettings = this.settingsForm.value as Settings;
@@ -112,7 +114,7 @@ export class SettingsComponent implements OnInit, AfterViewInit {
       if (element) {
         element.checked = state;
       } else {
-        console.error("No element!: ",section)
+        console.warn("No element!: ",section)
       }
     });
   }

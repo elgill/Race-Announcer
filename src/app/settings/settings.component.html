@@ -87,7 +87,12 @@
       </div>
       <div>
         <label>
-          Delete Keybind: <input formControlName="deleteKeybind" (keydown)="onKeydown($event)" type="text">
+          Delete Keybind: <input formControlName="deleteKeybind" (keydown)="onKeydown($event, 'deleteKeybind')" type="text">
+        </label>
+      </div>
+      <div>
+        <label>
+          Pause Keybind: <input formControlName="pauseKeybind" (keydown)="onKeydown($event, 'pauseKeybind')" type="text">
         </label>
       </div>
       <div>

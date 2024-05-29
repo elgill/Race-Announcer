@@ -11,6 +11,7 @@ export interface Settings {
   backgroundColor: string;
   proxyUrl: string;
   deleteKeybind: string;
+  pauseKeybind: string;
   announceTemplate: string;
   raceStartTime: string;
   numLockWarn: boolean;
@@ -33,6 +34,7 @@ export const DEFAULT_SETTINGS: Settings = {
   backgroundColor: '#ffffff',
   proxyUrl: '',
   deleteKeybind: 'Delete',
+  pauseKeybind: ' ',
   announceTemplate: 'freeform',
   raceStartTime: '',
   numLockWarn: false,
