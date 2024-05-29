@@ -117,9 +117,13 @@ export class RunnerDataService {
   enterBib(bib: string, overrideMinTime = true) {
     const now = new Date();
     const lastEntryTime = this.lastEntryTimes.get(bib);
-    //console.log("Override Min Time: ",overrideMinTime," Last Entry Time:",lastEntryTime)
     const minTimeMs = this.settings.minTimeMs;
 
+    if(!bib){
+      bib = "";
+    }
+
+    bib = bib.toString();
 
     if (!overrideMinTime && lastEntryTime) {
       const timeSinceLastEntry = now.getTime() - lastEntryTime.getTime();
