@@ -20,6 +20,8 @@ export class AnnounceScreenComponent implements OnInit {
   isNumLockOff = false;
   customFields: CustomField[] = [];
 
+  paused = false;
+  pausedQueueLength = 0;
 
   constructor(
     private runnerDataService: RunnerDataService,
@@ -46,6 +48,14 @@ export class AnnounceScreenComponent implements OnInit {
     });
 
     this.customFields = this.settings.customFields.filter(field => field.showInAnnounce)
+
+    this.runnerDataService.getPausedStatus().subscribe(paused => {
+      this.paused = paused;
+    });
+
+    this.runnerDataService.getPausedQueue().subscribe(queue => {
+      this.pausedQueueLength = queue.length;
+    });
   }
 
 }

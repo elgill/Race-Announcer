@@ -4,9 +4,13 @@
     <div *ngIf="isNumLockOff&&settings.numLockWarn" class="num-lock-warning">Warning: Num Lock is off!</div>
     <app-race-clock></app-race-clock>
   </div>
-  <div *ngIf="isElectron" id="mat-connect">
-    <app-connect-mat-stream></app-connect-mat-stream>
+  <div class="upper-info-bar">
+    <div class="pause-status"><ng-container *ngIf="paused">Paused: {{ pausedQueueLength }} entries in queue</ng-container></div>
+    <div *ngIf="isElectron" id="mat-connect">
+      <app-connect-mat-stream></app-connect-mat-stream>
+    </div>
   </div>
+
   <div [ngSwitch]="settings.announceTemplate">
     <app-announce-grid *ngSwitchCase="'grid'"></app-announce-grid>
     <app-announce-freeform *ngSwitchCase="'freeform'"></app-announce-freeform>

@@ -16,7 +16,20 @@
   margin: 10px 0;
 }
 
+.upper-info-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 #mat-connect {
   font-size: 16px;
   text-align: right;
+}
+
+.pause-status {
+  font-size: 75%;
+  font-style: italic;
+  color: red;
+  background-color: yellow;
 }

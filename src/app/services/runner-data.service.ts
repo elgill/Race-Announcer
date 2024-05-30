@@ -21,6 +21,11 @@ export class RunnerDataService {
   private settings = DEFAULT_SETTINGS;
   private lastEntryTimes = new Map<string, Date>(); // Map to store last entry times
 
+  private paused = false;
+  private paused$ = new BehaviorSubject<boolean>(this.paused)
+  private pausedQueue: Runner[] = [];
+  private pausedQueue$ = new BehaviorSubject<Runner[]>([]);
+
   constructor(private settingsService: SettingsService) {
     // IDB
     this.db = new IndexedDbRunnerDatabaseService();
@@ -40,6 +45,27 @@ export class RunnerDataService {
     }).catch(err => {
       console.error('Failed to load XREF data from database:', err);
     });
+  }
+
+  togglePause() {
+    this.paused = !this.paused;
+    this.paused$.next(this.paused);
+    if (!this.paused) {
+      this.processPausedQueue();
+    }
+  }
+
+  private processPausedQueue() {
+    this.enterBib('',true, true)
+
+    while (this.pausedQueue.length > 0) {
+      const runner = this.pausedQueue.shift();
+      if (runner) {
+        this.activeRunners.unshift(runner);
+      }
+    }
+    this.activeRunners$.next(this.activeRunners);
+    this.pausedQueue$.next(this.pausedQueue);
   }
 
   async loadXrefDataFromDB() {
@@ -114,7 +140,15 @@ export class RunnerDataService {
     return this.activeRunners$.asObservable();
   }
 
-  enterBib(bib: string, overrideMinTime = true) {
+  getPausedStatus(){
+    return this.paused$.asObservable();
+  }
+
+  getPausedQueue(){
+    return this.pausedQueue$.asObservable();
+  }
+
+  enterBib(bib: string, overrideMinTime = false, overridePause = false) {
     const now = new Date();
     const lastEntryTime = this.lastEntryTimes.get(bib);
     const minTimeMs = this.settings.minTimeMs;
@@ -144,10 +178,15 @@ export class RunnerDataService {
       runner.timeEntered = new Date();
     }
 
-    this.activeRunners.unshift(runner); // Add runner to the start of the array
-    this.activeRunners$.next(this.activeRunners);
-
     this.lastEntryTimes.set(bib, now);
+
+    if (this.paused && !overridePause) {
+      this.pausedQueue.push(runner);
+      this.pausedQueue$.next(this.pausedQueue);
+    } else {
+      this.activeRunners.unshift(runner); // Add runner to the start of the array
+    }
+    this.activeRunners$.next(this.activeRunners);
   }
 
   removeLastRunner() {

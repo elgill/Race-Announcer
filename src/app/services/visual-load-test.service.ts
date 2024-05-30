@@ -26,7 +26,7 @@ export class VisualLoadTestService {
     runners.forEach((runner) => {
       if (runner.timeElapsed >= startFrom) {
         const timeoutId = setTimeout(() => {
-          this.runnerDataService.enterBib(runner.bib);
+          this.runnerDataService.enterBib(runner.bib, true, false);
         }, runner.timeElapsed - startFrom);
         this.timeoutIds.push(timeoutId);
       }

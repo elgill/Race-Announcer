@@ -30,10 +30,15 @@ export class BibEntryComponent implements OnInit, AfterViewInit  {
 
   @HostListener('window:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
-    if (this.settings && event.key === this.settings.deleteKeybind) {
+    if(!this.settings){
+      return;
+    }
+    if (event.key === this.settings.deleteKeybind) {
       this.onRemoveLastRunnerClick();
       this.bibNumber = '';
       event.preventDefault();
+    } else if (event.key === this.settings.pauseKeybind){
+      this.runnerDataService.togglePause();
     }
   }
 
@@ -43,7 +48,7 @@ export class BibEntryComponent implements OnInit, AfterViewInit  {
 
   onSubmit(): void {
     const bib: string = this.bibNumber ? this.bibNumber : '';
-    this.runnerDataService.enterBib(bib);
+    this.runnerDataService.enterBib(bib,true, true);
     this.bibNumber = '';
   }
 
