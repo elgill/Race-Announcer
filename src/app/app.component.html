@@ -6,8 +6,7 @@
     <a routerLink="/timer" routerLinkActive="active">Timer View</a>
     <a routerLink="/settings" routerLinkActive="active">Settings</a>
     <a routerLink="/import" routerLinkActive="active">Import/Export</a>
-    <a *ngIf="isElectron" routerLink="/connect" routerLinkActive="active">Connect Mat</a>
-
+    <a *ngIf="isElectron||true" routerLink="/xref" routerLinkActive="active">XREF Manager</a>
   </nav>
 </header>
 <main class="app-container">

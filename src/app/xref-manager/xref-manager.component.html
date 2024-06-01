@@ -1,0 +1,30 @@
+<app-import-xref></app-import-xref>
+<app-show-xref></app-show-xref>
+<div>
+  <h2>Add Batch XREF Data</h2>
+
+  <div>
+    <label for="startingBibNumber">Starting Bib Number:</label>
+    <input id="startingBibNumber" type="number" [(ngModel)]="startingBibNumber">
+  </div>
+
+  <div>
+    <label for="startingChipCode">Starting Chip Code:</label>
+    <input id="startingChipCode" type="number" [(ngModel)]="startingChipCode">
+  </div>
+
+  <div>
+    <label for="numberOfEntries">How Many to Create:</label>
+    <input id="numberOfEntries" type="number" [(ngModel)]="numberOfEntries">
+  </div>
+
+  <div>
+    <label for="padWithZeros">Pad with Zeros:</label>
+    <input id="padWithZeros" type="checkbox" [(ngModel)]="padWithZeros" checked>
+  </div>
+
+  <button (click)="createXrefData()">Create</button>
+
+  <p *ngIf="importStatus === 'success'" class="success-message">Creation successful!</p>
+  <p class="error-message">{{ errorMessage }}</p>
+</div>

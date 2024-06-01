@@ -5,9 +5,9 @@ import { AnnounceScreenComponent } from './announce/announce-screen.component';
 import {CsvImportComponent} from "./csv-import/csv-import.component";
 import {BibScrapeUtilComponent} from "./bib-scrape-util/bib-scrape-util.component";
 import {BrowseRunnersComponent} from "./browse-runners/browse-runners.component";
-import {ConnectMatStreamComponent} from "./connect-mat-stream/connect-mat-stream.component";
 import {NameLookupComponent} from "./name-lookup/name-lookup.component";
 import {TimerRunnerTableComponent} from "./timer-runner-table/timer-runner-table.component";
+import {XrefManagerComponent} from "./xref-manager/xref-manager.component";
 
 const routes: Routes = [
   { path: 'settings', component: SettingsComponent },
@@ -16,7 +16,7 @@ const routes: Routes = [
   { path: 'bibscrape', component: BibScrapeUtilComponent },
   { path: 'browse', component: BrowseRunnersComponent},
   { path: 'lookup', component: NameLookupComponent},
-  { path: 'connect', component: ConnectMatStreamComponent},
+  { path: 'xref', component: XrefManagerComponent},
   { path: 'timer', component: TimerRunnerTableComponent},
   { path: '', redirectTo: '/announce', pathMatch: 'full' },
 ];
