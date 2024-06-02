@@ -44,3 +44,4 @@ Thumbs.db
 
 #environment
 /src/environments/environment.prod.ts
+githubToken.sh
