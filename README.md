@@ -4,15 +4,15 @@ RaceAnnouncer is a cross-platform desktop application for announcing race events
 
 ## Features
 
+- Connection to timing system for automattic bib number entry
 - Import runner data from CSV files with flexible column mapping
-- Multiple view options
-- Customize display settings, including font size, font color, number of display lines, and background color
+- Customizable display settings
 - Display runner details including bib number, first name, last name, age, gender, town, state, and custom fields
 - Delete incorrectly typed bib numbers from display
 - Clock to show how much time has elapsed since set race start time
 - Settings and imported runner data is persisted across sessions
-- Bib scraping utility which parses a webpage to scrape runner data out of a table
-
+- Bib scraping utility which parses bib lookup table directly into the program automattically
+  
 ## Installation
 
 Clone the repository and install dependencies:
