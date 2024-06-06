@@ -93,10 +93,13 @@ export class TimingBoxService {
   }
 
   connect(ip: string, port: number): void {
-    if(this.getCurrentStatus() === ConnectionStatus.CONNECTED || this.getCurrentStatus() === ConnectionStatus.CONNECTING){
+    const currentStatus: string = this.getCurrentStatus().status;
+
+    if(currentStatus === ConnectionStatus.CONNECTED || currentStatus === ConnectionStatus.CONNECTING){
+      console.warn("Ignoring request: Already connected or connecting..")
       return;
     }
-    this.statusSubject.next(ConnectionStatus.CONNECTING);
+    this.statusSubject.next({status: ConnectionStatus.CONNECTING});
     this.ipcRenderer.send('connect-timing-box', { ip, port });
   }
 

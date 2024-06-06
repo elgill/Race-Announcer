@@ -26,7 +26,6 @@ function createWindow () {
 
   setupIPCListeners();
 
-  app.on('before-quit', stopFileWatching);
 }
 
 app.on('ready', createWindow)
@@ -77,11 +76,6 @@ function connectToTimingBox(ip, port) {
   });
 }
 
-function stopFileWatching() {
-  if (watcher) {
-    watcher.close();
-  }
-}
 
 const template = [
   {

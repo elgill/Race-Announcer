@@ -1,4 +1,4 @@
-import {Component, NgZone, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {TimingBoxService} from "../services/timing-box.service";
 import {DEFAULT_SETTINGS, SettingsService} from "../services/settings.service";
 import {ConnectionStatus} from "../models/connection.enum";
@@ -12,7 +12,7 @@ export class ConnectMatStreamComponent implements OnInit {
   status: string = ConnectionStatus.UNKNOWN;
   settings = DEFAULT_SETTINGS;
 
-  constructor(private timingBoxService: TimingBoxService, private settingsService: SettingsService, private ngZone: NgZone) {}
+  constructor(private timingBoxService: TimingBoxService, private settingsService: SettingsService) {}
 
   ngOnInit() {
     this.status = this.timingBoxService.getCurrentStatus();
@@ -22,15 +22,14 @@ export class ConnectMatStreamComponent implements OnInit {
     });
 
     this.timingBoxService.getStatus().subscribe((status) => {
-      this.ngZone.run(() => {
-        this.status = status.status;
-        console.log('Status updated to: ', this.status);
-      });
+      this.status = status.status;
+      console.log('Angular status updated to: ', this.status);
     });
   }
 
   toggleConnection() {
-    if (this.status === ConnectionStatus.CONNECTED) {
+    //TODO Should probably unify this logic across uses
+    if (this.status === ConnectionStatus.CONNECTED || this.status === ConnectionStatus.CONNECTING) {
       this.disconnect();
     } else {
       this.connect();
