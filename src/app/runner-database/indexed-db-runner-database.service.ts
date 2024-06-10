@@ -115,7 +115,7 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
           console.error('Failed to store runner:', err);
         });
       }
-      tx.objectStore('audit').add(runner).then().catch(err => {
+      tx.objectStore('audit').put(runner).then().catch(err => {
         console.error('Failed to store runner in audit:', err);
       });
       this.runners.set(runner.bib, runner);
