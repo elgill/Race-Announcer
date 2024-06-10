@@ -205,20 +205,20 @@ export class RunnerDataService {
     this.activeRunners$.next(this.activeRunners);
   }
 
-
-
   loadRunners(newRunners: Runner[]):string {
     let updatedCount = 0;
     let addedCount = 0;
 
     newRunners.forEach(newRunner => {
       const bib = newRunner.bib;
-      if(this.allRunners.has(bib)){
+      const existingRunner = this.allRunners.get(bib);
+      if (existingRunner) {
+        this.allRunners.set(bib, { ...existingRunner, ...newRunner }); // Update the existing entry
         updatedCount++;
       } else {
+        this.allRunners.set(bib, newRunner); // Add new entry
         addedCount++;
       }
-      this.allRunners.set(newRunner.bib, newRunner);
     });
 
     // Log runners after loading
@@ -248,7 +248,6 @@ export class RunnerDataService {
     const runnersArray = Array.from(this.allRunners.values()).map(runner => {
       const customFieldsWithDefaults: { [key: string]: string } = {};
 
-      // For each custom field key, set the value to the runner's value if it exists; otherwise, use an empty string
       allCustomFieldKeys.forEach(key => {
         customFieldsWithDefaults[key] = runner.customFields[key] || '';
       });
@@ -257,7 +256,6 @@ export class RunnerDataService {
       return { ...runner, ...customFieldsWithDefaults };
     });
 
-    // Generate CSV data from the processed runners
     const csv = Papa.unparse(runnersArray);
     const blob = new Blob([csv], {type: 'text/csv'});
 

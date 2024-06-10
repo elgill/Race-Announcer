@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { openDB } from 'idb';
 import * as lunr from 'lunr';
 import {RunnerDatabase} from "./runner-database";
-
 import {Runner} from "../interfaces/runner";
 
 @Injectable({
@@ -15,13 +14,16 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
   private runners: Map<string, Runner> = new Map(); // Changed to map for O(1) retrieval
 
   constructor() {
-    this.dbPromise = openDB('runners', 2, { // Updated version number to 2
+    this.dbPromise = openDB('runners', 3, { // Updated version number to 3
       upgrade(db, oldVersion) {
         if (oldVersion < 1) {
           db.createObjectStore('runners', { keyPath: 'id' });
         }
-        if (oldVersion < 2) { // New store creation
+        if (oldVersion < 2) {
           db.createObjectStore('xref', { keyPath: 'chipId' });
+        }
+        if (oldVersion < 3) {
+          db.createObjectStore('audit', { keyPath: 'id', autoIncrement: true }); // New audit table
         }
       },
     });
@@ -69,7 +71,6 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
     const db = await this.dbPromise;
     const runners = await db.getAll('runners');
     this.idx = lunr(function() {
-      // Use the pipeline without the stemmer
       this.pipeline.remove(lunr.stemmer);
       this.searchPipeline.remove(lunr.stemmer);
 
@@ -86,11 +87,14 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
 
   async saveRunners(runners: Runner[]): Promise<void> {
     const db = await this.dbPromise;
-    const tx = db.transaction('runners', 'readwrite');
+    const tx = db.transaction(['runners', 'audit'], 'readwrite');
 
     for (const runner of runners) {
-      tx.store.put(runner).then().catch(err => {
+      tx.objectStore('runners').put(runner).then().catch(err => {
         console.error('Failed to store runner:', err);
+      });
+      tx.objectStore('audit').add(runner).then().catch(err => {
+        console.error('Failed to store runner in audit:', err);
       });
       this.runners.set(runner.id, runner);
     }
@@ -124,8 +128,8 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
 
   async deleteAllRunners(): Promise<void> {
     const db = await this.dbPromise;
-    const tx = db.transaction('runners', 'readwrite');
-    await tx.store.clear();
+    const tx = db.transaction(['runners', 'xref'], 'readwrite');
+    await tx.objectStore('runners').clear();
     await tx.done;
 
     const txXref = db.transaction('xref', 'readwrite'); // Clear XREF data
@@ -136,5 +140,4 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
     this.runners.clear();
     await this.rebuildIndex();
   }
-
 }
