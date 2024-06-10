@@ -14,8 +14,8 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
   private runners: Map<string, Runner> = new Map(); // Changed to map for O(1) retrieval
 
   constructor() {
-    this.dbPromise = openDB('runners', 3, { // Updated version number to 3
-      upgrade(db, oldVersion) {
+    this.dbPromise = openDB('runners', 4, { // Updated version number to 4
+      upgrade(db, oldVersion, newVersion, transaction) {
         if (oldVersion < 1) {
           db.createObjectStore('runners', { keyPath: 'id' });
         }
@@ -24,6 +24,23 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
         }
         if (oldVersion < 3) {
           db.createObjectStore('audit', { keyPath: 'id', autoIncrement: true }); // New audit table
+        }
+        if (oldVersion < 4) {
+          const runnersStore = db.createObjectStore('runners_new', { keyPath: 'bib' });
+          transaction.objectStore('runners').getAll().then((runners: Runner[]) => {
+            runners.forEach(runner => {
+              runnersStore.add(runner);
+            });
+          });
+          db.deleteObjectStore('runners');
+          db.createObjectStore('runners', { keyPath: 'bib' });
+          transaction.objectStore('runners_new').getAll().then((runners: Runner[]) => {
+            const runnersObjectStore = transaction.objectStore('runners');
+            runners.forEach(runner => {
+              runnersObjectStore.add(runner);
+            });
+          });
+          db.deleteObjectStore('runners_new');
         }
       },
     });
@@ -57,7 +74,7 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
       this.pipeline.remove(lunr.stemmer);
       this.searchPipeline.remove(lunr.stemmer);
 
-      this.ref('id');
+      this.ref('bib');
       this.field('firstName');
       this.field('lastName');
 
@@ -74,12 +91,12 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
       this.pipeline.remove(lunr.stemmer);
       this.searchPipeline.remove(lunr.stemmer);
 
-      this.ref('id');
+      this.ref('bib');
       this.field('firstName');
       this.field('lastName');
     });
     for (const runner of runners) {
-      this.runners.set(runner.id, runner);
+      this.runners.set(runner.bib, runner);
     }
     await this.rebuildIndex();
     return Array.from(this.runners.values());
@@ -90,13 +107,20 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
     const tx = db.transaction(['runners', 'audit'], 'readwrite');
 
     for (const runner of runners) {
-      tx.objectStore('runners').put(runner).then().catch(err => {
-        console.error('Failed to store runner:', err);
-      });
+      const existingRunner = await tx.objectStore('runners').get(runner.bib);
+      if (existingRunner) {
+        tx.objectStore('runners').put({ ...existingRunner, ...runner }).then().catch(err => {
+          console.error('Failed to update runner:', err);
+        });
+      } else {
+        tx.objectStore('runners').put(runner).then().catch(err => {
+          console.error('Failed to store runner:', err);
+        });
+      }
       tx.objectStore('audit').add(runner).then().catch(err => {
         console.error('Failed to store runner in audit:', err);
       });
-      this.runners.set(runner.id, runner);
+      this.runners.set(runner.bib, runner);
     }
 
     await tx.done;
