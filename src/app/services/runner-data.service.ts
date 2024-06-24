@@ -173,6 +173,8 @@ export class RunnerDataService {
       runner.bib = bib;
     }
 
+    runner = {...runner};
+
     // Set the current time only if timeEntered is not already set
     if (!runner.timeEntered) {
       runner.timeEntered = new Date();
@@ -191,12 +193,6 @@ export class RunnerDataService {
 
   removeLastRunner() {
     if (this.activeRunners.length > 0) {
-      // Capture the runner being removed
-      let runnerBeingRemoved = this.activeRunners[0];
-
-      // Clear the timeEntered attribute
-      runnerBeingRemoved.timeEntered = undefined;
-
       // Now remove the runner from the array
       this.activeRunners.shift();
     }
