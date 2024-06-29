@@ -1,6 +1,6 @@
 <div>
   <button (click)="toggleConnection()">
-    {{ status === ConnectionStatus.CONNECTED || status ===ConnectionStatus.CONNECTING ? 'Disconnect' : 'Connect' }}
+    {{ status === ConnectionStatus.CONNECTED || status === ConnectionStatus.CONNECTING || status === ConnectionStatus.RECONNECTING ? 'Disconnect' : 'Connect' }}
   </button>
   Status: {{ status }}
 </div>

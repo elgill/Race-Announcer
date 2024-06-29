@@ -5,6 +5,7 @@ import {ConnectionStatus} from "../models/connection.enum";
 import {TridentTagReadData} from "../interfaces/trident-tag-read-data";
 import {TagReadConversionService} from "./tag-read-conversion.service";
 import {ChipRead} from "../interfaces/chip-read";
+import {DEFAULT_SETTINGS, SettingsService} from "./settings.service";
 
 @Injectable({
   providedIn: 'root',
@@ -14,18 +15,29 @@ export class TimingBoxService {
   private statusSubject: BehaviorSubject<any> = new BehaviorSubject({ status: ConnectionStatus.DISCONNECTED });
   private dataSubject: Subject<any> = new Subject();
 
-  private runnerDataService: RunnerDataService;
+  private autoReconnectInterval: any;
+  private reconnectAttempts = 0;
+  private maxReconnectAttempts = 5;
+  private reconnectDelay = 10000; // 5 second
+  private shouldReconnect = false;
 
-  constructor(runnerDataService: RunnerDataService) {
-    this.runnerDataService = runnerDataService;
+  settings = DEFAULT_SETTINGS;
+
+
+  constructor(private runnerDataService: RunnerDataService, private settingsService: SettingsService) {
     if (window.require) {
+
       try {
         this.ipcRenderer = window.require('electron').ipcRenderer;
+        this.settingsService.getSettings().subscribe(settings => {
+          this.settings = settings;
+        });
 
         // Listen for status updates
         // @ts-ignore
         this.ipcRenderer.on('timing-box-status', (event, status) => {
           this.statusSubject.next(status);
+          this.handleStatusChange(status.status);
           console.log('New Status: ', status)
         });
 
@@ -41,6 +53,14 @@ export class TimingBoxService {
       }
     } else {
       console.warn('App not running inside Electron!');
+    }
+  }
+
+  private handleStatusChange(status: string){
+    if (status === ConnectionStatus.DISCONNECTED && this.shouldReconnect) {
+      this.startAutoReconnect(this.settings.ip, this.settings.port);
+    } else if (status === ConnectionStatus.CONNECTED){
+      this.shouldReconnect = true;
     }
   }
 
@@ -92,19 +112,69 @@ export class TimingBoxService {
     }
   }
 
+  toggleConnection(ip: string, port: number): void {
+    const currentStatus = this.getCurrentStatus().status;
+    if (currentStatus === ConnectionStatus.CONNECTED || currentStatus === ConnectionStatus.CONNECTING ||
+          currentStatus === ConnectionStatus.RECONNECTING) {
+      this.disconnect();
+    } else {
+      this.connect(ip, port);
+    }
+  }
+
   connect(ip: string, port: number): void {
     const currentStatus: string = this.getCurrentStatus().status;
 
-    if(currentStatus === ConnectionStatus.CONNECTED || currentStatus === ConnectionStatus.CONNECTING){
-      console.warn("Ignoring request: Already connected or connecting..")
+    if (currentStatus === ConnectionStatus.CONNECTED || currentStatus === ConnectionStatus.CONNECTING || currentStatus === ConnectionStatus.RECONNECTING) {
+      console.warn("Ignoring request: Already connected or connecting..");
       return;
     }
-    this.statusSubject.next({status: ConnectionStatus.CONNECTING});
+
+    this.statusSubject.next({ status: ConnectionStatus.CONNECTING });
     this.ipcRenderer.send('connect-timing-box', { ip, port });
+
+    // Start auto-reconnect
+    //this.startAutoReconnect(ip, port);
   }
 
   disconnect(): void {
+    this.shouldReconnect = false;
     this.ipcRenderer.send('disconnect-timing-box');
+    this.stopAutoReconnect();
+  }
+
+  private startAutoReconnect(ip: string, port: number): void {
+    console.log("Stop existing AutoReconnect");
+    this.stopAutoReconnect(); // Clear any existing interval
+    this.reconnectAttempts = 0;
+    this.shouldReconnect = false; // This will be reset once it connects successfully
+
+    this.autoReconnectInterval = setInterval(() => {
+      if (this.getCurrentStatus().status === ConnectionStatus.DISCONNECTED) {
+        if (this.reconnectAttempts < this.maxReconnectAttempts) {
+          console.log(`Attempting to reconnect (${this.reconnectAttempts + 1}/${this.maxReconnectAttempts})...`);
+          this.statusSubject.next({ status: ConnectionStatus.RECONNECTING });
+          this.ipcRenderer.send('connect-timing-box', { ip, port });
+          this.reconnectAttempts++;
+        } else {
+          console.log('Max reconnect attempts reached. Stopping auto-reconnect.');
+          this.stopAutoReconnect();
+        }
+      } else if (this.getCurrentStatus().status === ConnectionStatus.CONNECTED) {
+        console.log("Connected.. Stopping Auto Reconnect");
+        this.stopAutoReconnect();
+      } else {
+        console.log("Ignoring attempt at reconnect because not Connected or Disconnected");
+      }
+    }, this.reconnectDelay);
+  }
+
+  private stopAutoReconnect(): void {
+    if (this.autoReconnectInterval) {
+      console.log("Stopping Auto Reconnect");
+      clearInterval(this.autoReconnectInterval);
+      this.autoReconnectInterval = null;
+    }
   }
 
   getCurrentStatus(): any {

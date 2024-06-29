@@ -3,5 +3,6 @@ export enum ConnectionStatus {
   CONNECTING = 'Connecting..',
   DISCONNECTED = 'Disconnected',
   ERROR = 'Error',
-  UNKNOWN = 'Unknown'
+  UNKNOWN = 'Unknown',
+  RECONNECTING = 'Reconnecting..',
 }

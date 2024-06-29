@@ -28,20 +28,7 @@ export class ConnectMatStreamComponent implements OnInit {
   }
 
   toggleConnection() {
-    //TODO Should probably unify this logic across uses
-    if (this.status === ConnectionStatus.CONNECTED || this.status === ConnectionStatus.CONNECTING) {
-      this.disconnect();
-    } else {
-      this.connect();
-    }
-  }
-
-  connect() {
-    this.timingBoxService.connect(this.settings.ip, this.settings.port);
-  }
-
-  disconnect() {
-    this.timingBoxService.disconnect();
+    this.timingBoxService.toggleConnection(this.settings.ip, this.settings.port);
   }
 
   protected readonly ConnectionStatus = ConnectionStatus;
