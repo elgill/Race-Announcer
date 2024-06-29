@@ -37,7 +37,9 @@ export class SettingsComponent implements OnInit, AfterViewInit {
       port: [DEFAULT_SETTINGS.port],
       customFields: this.formBuilder.array([]),
       minTimeMinutes: [Math.floor(DEFAULT_SETTINGS.minTimeMs / 60000)], // Minutes part
-      minTimeSeconds: [(DEFAULT_SETTINGS.minTimeMs % 60000) / 1000]    // Seconds part
+      minTimeSeconds: [(DEFAULT_SETTINGS.minTimeMs % 60000) / 1000],  // Seconds part
+      numReconnectAttempts: [DEFAULT_SETTINGS.numReconnectAttempts],
+      reconnectDelay: [DEFAULT_SETTINGS.reconnectDelay / 1000]
     });
     this.settingsService.getSettings().subscribe(settings => {
       console.log('Patching Values: ', settings);
@@ -53,7 +55,8 @@ export class SettingsComponent implements OnInit, AfterViewInit {
       this.settingsForm.patchValue({
         ...settings,
         minTimeMinutes: Math.floor(settings.minTimeMs / 60000),
-        minTimeSeconds: (settings.minTimeMs % 60000) / 1000
+        minTimeSeconds: (settings.minTimeMs % 60000) / 1000,
+        reconnectDelay: settings.reconnectDelay / 1000
       });
     });
 
@@ -73,6 +76,7 @@ export class SettingsComponent implements OnInit, AfterViewInit {
   saveSettings(): void {
     const updatedSettings = this.settingsForm.value as Settings;
     updatedSettings.minTimeMs = (this.settingsForm.value.minTimeMinutes * 60000) + (this.settingsForm.value.minTimeSeconds * 1000);
+    updatedSettings.reconnectDelay = this.settingsForm.value.reconnectDelay * 1000;
     this.settingsService.updateSettings(updatedSettings);
     this.status = 'success';
   }

@@ -17,8 +17,6 @@ export class TimingBoxService {
 
   private autoReconnectInterval: any;
   private reconnectAttempts = 0;
-  private maxReconnectAttempts = 5;
-  private reconnectDelay = 10000; // 5 second
   private shouldReconnect = false;
 
   settings = DEFAULT_SETTINGS;
@@ -151,8 +149,8 @@ export class TimingBoxService {
 
     this.autoReconnectInterval = setInterval(() => {
       if (this.getCurrentStatus().status === ConnectionStatus.DISCONNECTED) {
-        if (this.reconnectAttempts < this.maxReconnectAttempts) {
-          console.log(`Attempting to reconnect (${this.reconnectAttempts + 1}/${this.maxReconnectAttempts})...`);
+        if (this.reconnectAttempts < this.settings.numReconnectAttempts) {
+          console.log(`Attempting to reconnect (${this.reconnectAttempts + 1}/${this.settings.numReconnectAttempts})...`);
           this.statusSubject.next({ status: ConnectionStatus.RECONNECTING });
           this.ipcRenderer.send('connect-timing-box', { ip, port });
           this.reconnectAttempts++;
@@ -166,7 +164,7 @@ export class TimingBoxService {
       } else {
         console.log("Ignoring attempt at reconnect because not Connected or Disconnected");
       }
-    }, this.reconnectDelay);
+    }, this.settings.reconnectDelay);
   }
 
   private stopAutoReconnect(): void {
