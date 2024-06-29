@@ -3,4 +3,5 @@
     {{ status === ConnectionStatus.CONNECTED || status === ConnectionStatus.CONNECTING || status === ConnectionStatus.RECONNECTING ? 'Disconnect' : 'Connect' }}
   </button>
   Status: {{ status }}
+  <div>{{reconnectionStatus}}</div>
 </div>

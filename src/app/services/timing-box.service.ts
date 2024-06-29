@@ -19,6 +19,8 @@ export class TimingBoxService {
   private reconnectAttempts = 0;
   private shouldReconnect = false;
 
+  private reconnectionStatus$ = new BehaviorSubject<string>("")
+
   settings = DEFAULT_SETTINGS;
 
 
@@ -59,6 +61,7 @@ export class TimingBoxService {
       this.startAutoReconnect(this.settings.ip, this.settings.port);
     } else if (status === ConnectionStatus.CONNECTED){
       this.shouldReconnect = true;
+      this.reconnectionStatus$.next("");
     }
   }
 
@@ -147,9 +150,12 @@ export class TimingBoxService {
     this.reconnectAttempts = 0;
     this.shouldReconnect = false; // This will be reset once it connects successfully
 
+    this.reconnectionStatus$.next(`Reconnecting in ${this.settings.reconnectDelay/1000}s (0/${this.settings.numReconnectAttempts})`);
+
     this.autoReconnectInterval = setInterval(() => {
       if (this.getCurrentStatus().status === ConnectionStatus.DISCONNECTED) {
         if (this.reconnectAttempts < this.settings.numReconnectAttempts) {
+          this.reconnectionStatus$.next(`Reconnecting in ${this.settings.reconnectDelay/1000}s (${this.reconnectAttempts + 1}/${this.settings.numReconnectAttempts})`);
           console.log(`Attempting to reconnect (${this.reconnectAttempts + 1}/${this.settings.numReconnectAttempts})...`);
           this.statusSubject.next({ status: ConnectionStatus.RECONNECTING });
           this.ipcRenderer.send('connect-timing-box', { ip, port });
@@ -169,6 +175,7 @@ export class TimingBoxService {
 
   private stopAutoReconnect(): void {
     if (this.autoReconnectInterval) {
+      this.reconnectionStatus$.next("");
       console.log("Stopping Auto Reconnect");
       clearInterval(this.autoReconnectInterval);
       this.autoReconnectInterval = null;
@@ -181,6 +188,14 @@ export class TimingBoxService {
 
   getStatus(): Observable<any> {
     return this.statusSubject.asObservable();
+  }
+
+  getCurrentReconnectStatus(){
+    return this.reconnectionStatus$.value;
+  }
+
+  getReconnectStatus(){
+    return this.reconnectionStatus$.asObservable();
   }
 
   getData(): Observable<any> {

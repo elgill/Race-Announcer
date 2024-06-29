@@ -10,12 +10,14 @@ import {ConnectionStatus} from "../models/connection.enum";
 })
 export class ConnectMatStreamComponent implements OnInit {
   status: string = ConnectionStatus.UNKNOWN;
+  reconnectionStatus = "";
   settings = DEFAULT_SETTINGS;
 
   constructor(private timingBoxService: TimingBoxService, private settingsService: SettingsService) {}
 
   ngOnInit() {
     this.status = this.timingBoxService.getCurrentStatus();
+    this.reconnectionStatus = this.timingBoxService.getCurrentReconnectStatus()
 
     this.settingsService.getSettings().subscribe(settings => {
       this.settings = settings;
@@ -25,6 +27,10 @@ export class ConnectMatStreamComponent implements OnInit {
       this.status = status.status;
       console.log('Angular status updated to: ', this.status);
     });
+
+    this.timingBoxService.getReconnectStatus().subscribe((status) => {
+      this.reconnectionStatus = status;
+    })
   }
 
   toggleConnection() {
