@@ -27,6 +27,7 @@ import { ImportXrefComponent } from './import-xref/import-xref.component';
 import { ShowXrefComponent } from './show-xref/show-xref.component';
 import { TimerRunnerTableComponent } from './timer-runner-table/timer-runner-table.component';
 import { XrefManagerComponent } from './xref-manager/xref-manager.component';
+import { ImportExportComponent } from './import-export/import-export.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { XrefManagerComponent } from './xref-manager/xref-manager.component';
     ImportXrefComponent,
     ShowXrefComponent,
     TimerRunnerTableComponent,
-    XrefManagerComponent
+    XrefManagerComponent,
+    ImportExportComponent
   ],
   imports: [
     BrowserModule,

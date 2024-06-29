@@ -2,7 +2,6 @@ const { app, BrowserWindow, ipcMain, Menu } = require('electron');
 const net = require('net');
 
 let win;
-let watcher;
 let timingBoxClient;
 
 const WINDOW_CONFIG = {
@@ -81,14 +80,16 @@ const template = [
   {
     label: 'File',
     submenu: [
+       {
+        label: 'Import / Export',
+        click() { win.webContents.send('menu-clicked', '/importexport'); }
+      },
+      { type: "separator" },
       {
-        label: 'Open',
+        label: 'Settings',
         click() { win.webContents.send('menu-clicked', '/settings'); }
       },
-      {
-        label: 'Import / Export',
-        click() { win.webContents.send('menu-clicked', '/import'); }
-      },
+      { type: "separator" },
       {
         label: 'Exit',
         click() { app.quit() }
@@ -114,10 +115,6 @@ const template = [
         label: 'Browse',
         click() { win.webContents.send('menu-clicked', '/browse'); }
       },
-      {
-        label: 'Settings',
-        click() { win.webContents.send('menu-clicked', '/settings'); }
-      }
     ]
   },
   {
