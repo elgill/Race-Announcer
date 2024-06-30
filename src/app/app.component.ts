@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ElectronService} from "./services/electron.service";
 import {Router} from "@angular/router";
 import {VisualLoadTestService} from "./services/visual-load-test.service";
+import {ReportingService} from "./reporting.service";
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,7 @@ import {VisualLoadTestService} from "./services/visual-load-test.service";
 export class AppComponent implements OnInit {
   title = 'Race Announcer';
   isElectron = window.require;
-  constructor(private electronService: ElectronService, private router: Router, private visualLoadTestService: VisualLoadTestService) {
+  constructor(private electronService: ElectronService, private router: Router, private visualLoadTestService: VisualLoadTestService, private reportingService: ReportingService) {
     (window as any).visualLoadTestService = visualLoadTestService;
   }
 
@@ -25,6 +26,9 @@ export class AppComponent implements OnInit {
         .catch(err => {
           console.error('Navigation failed!', err);
         });
+    });
+    this.electronService.on('report-menu-clicked', (event: any, report: string) => {
+      this.reportingService.runReport(report);
     });
   }
 }

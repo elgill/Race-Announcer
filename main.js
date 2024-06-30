@@ -25,6 +25,7 @@ function createWindow () {
 
   setupIPCListeners();
 
+  win.webContents.openDevTools();
 }
 
 app.on('ready', createWindow)
@@ -114,6 +115,15 @@ const template = [
       {
         label: 'Browse',
         click() { win.webContents.send('menu-clicked', '/browse'); }
+      },
+    ]
+  },
+  {
+    label: 'Reports',
+    submenu: [
+      {
+        label: 'Timer Report',
+        click() { win.webContents.send('report-menu-clicked', 'timer'); }
       },
     ]
   },

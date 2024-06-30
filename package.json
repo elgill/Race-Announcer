@@ -51,6 +51,8 @@
     "@angular/router": "^16.1.0",
     "file-saver-es": "^2.0.5",
     "idb": "^7.1.1",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.2",
     "lodash": "^4.17.21",
     "lunr": "^2.3.9",
     "papaparse": "^5.4.1",
