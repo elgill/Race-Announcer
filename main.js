@@ -25,7 +25,7 @@ function createWindow () {
 
   setupIPCListeners();
 
-  win.webContents.openDevTools();
+  //win.webContents.openDevTools();
 }
 
 app.on('ready', createWindow)
