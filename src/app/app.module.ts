@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms'; // Import this
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { AnnounceScreenComponent } from './announce/announce-screen.component';
@@ -29,41 +29,34 @@ import { TimerRunnerTableComponent } from './timer-runner-table/timer-runner-tab
 import { XrefManagerComponent } from './xref-manager/xref-manager.component';
 import { ImportExportComponent } from './import-export/import-export.component';
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    AnnounceScreenComponent,
-    SettingsComponent,
-    BibEntryComponent,
-    CsvImportComponent,
-    BibScrapeUtilComponent,
-    AnnounceGridComponent,
-    ErrorComponent,
-    AnnounceFreeformComponent,
-    CsvExportComponent,
-    BrowseRunnersComponent,
-    ClearRunnersComponent,
-    RaceClockComponent,
-    ConnectMatStreamComponent,
-    NameLookupComponent,
-    RunnerTableComponent,
-    AutoImportComponent,
-    AnnounceTimerComponent,
-    TimeDurationPipe,
-    ImportXrefComponent,
-    ShowXrefComponent,
-    TimerRunnerTableComponent,
-    XrefManagerComponent,
-    ImportExportComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    FormsModule,
-    HttpClientModule,
-    ReactiveFormsModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        AnnounceScreenComponent,
+        SettingsComponent,
+        BibEntryComponent,
+        CsvImportComponent,
+        BibScrapeUtilComponent,
+        AnnounceGridComponent,
+        ErrorComponent,
+        AnnounceFreeformComponent,
+        CsvExportComponent,
+        BrowseRunnersComponent,
+        ClearRunnersComponent,
+        RaceClockComponent,
+        ConnectMatStreamComponent,
+        NameLookupComponent,
+        RunnerTableComponent,
+        AutoImportComponent,
+        AnnounceTimerComponent,
+        TimeDurationPipe,
+        ImportXrefComponent,
+        ShowXrefComponent,
+        TimerRunnerTableComponent,
+        XrefManagerComponent,
+        ImportExportComponent
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        AppRoutingModule,
+        FormsModule,
+        ReactiveFormsModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule { }

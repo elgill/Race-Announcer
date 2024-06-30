@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { openDB } from 'idb';
-import * as lunr from 'lunr';
+import lunr from 'lunr';
 import {RunnerDatabase} from "./runner-database";
 import {Runner} from "../interfaces/runner";
 
@@ -14,7 +14,7 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
   private runners: Map<string, Runner> = new Map(); // Changed to map for O(1) retrieval
 
   constructor() {
-    this.dbPromise = openDB('runners', 3, { // Updated version number to 4
+    this.dbPromise = openDB('runners', 3, {
       upgrade(db, oldVersion, newVersion, transaction) {
         if (oldVersion < 1) {
           db.createObjectStore('runners', { keyPath: 'id' });

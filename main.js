@@ -17,7 +17,7 @@ const WINDOW_CONFIG = {
 
 function createWindow () {
   win = new BrowserWindow(WINDOW_CONFIG)
-  win.loadFile('dist/race-announcer-angular/index.html')
+  win.loadFile('dist/race-announcer-angular/browser/index.html')
 
   win.on('closed', () => {
     win = null
