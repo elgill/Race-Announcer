@@ -69,7 +69,7 @@ export class ReportingService {
     });
 
     (doc as any).autoTable({
-      head: tableColumn,
+      head: [tableColumn],
       body: tableRows,
       startY: 30,
     });
