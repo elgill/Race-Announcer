@@ -4,13 +4,15 @@
   "author": "Chris Gillin",
   "description": "Cross-platform desktop application for announcing race events",
   "version": "0.1.8",
-  "main": "main.js",
+  "main": "electron/main.js",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test",
+    "start:frontend": "ng serve",
+    "start:backend": "cd backend && npm run start:dev",
+    "start:electron": "electron .",
+    "start": "concurrently \"npm run start:frontend\" \"npm run start:backend\" \"wait-on http://localhost:4200 && npm run start:electron\"",
+    "build": "ng build && cd backend && npm run build",
+    "test": "ng test && cd backend && npm run test",
     "electron": "electron .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
@@ -28,8 +30,9 @@
     },
     "files": [
       "dist/**/*",
+      "backend/dist/**/*",
       "node_modules/**/*",
-      "main.js"
+      "electron/**/*"
     ],
     "directories": {
       "buildResources": "assets",
