@@ -6,6 +6,7 @@ import {TridentTagReadData} from "../interfaces/trident-tag-read-data";
 import {TagReadConversionService} from "./tag-read-conversion.service";
 import {ChipRead} from "../interfaces/chip-read";
 import {DEFAULT_SETTINGS, SettingsService} from "./settings.service";
+import {RaceResultTagReadData} from "../interfaces/race-result-tag-read-data";
 
 @Injectable({
   providedIn: 'root',
@@ -71,8 +72,11 @@ export class TimingBoxService {
       if (read) {
         return TagReadConversionService.convertTridentToChipRead(read);
       }
-    } else if (data.includes(";")){
-      // RR logic
+    } else if (data.startsWith("#P")){
+      const read = this.parseRaceResultTagData(data);
+      if (read) {
+        return TagReadConversionService.convertRaceResultToChipRead(read);
+      }
     }
     return null;
   }
@@ -96,6 +100,41 @@ export class TimingBoxService {
       recordType: data.substring(36, 38)
     };
   }
+
+  private parseRaceResultTagData(data: string): RaceResultTagReadData | null {
+    // Split the input data by semicolon
+    const parts = data.trim().split(';');
+
+    // Validate the length of the parts
+    if (parts.length < 7) {
+      console.warn('Invalid data format:', data);
+      return null;
+    }
+
+    return {
+      passingNumber: parseInt(parts[1], 10),
+      tagId: parts[2],
+      date: parts[3],
+      time: parts[4],
+      eventId: parts[5],
+      numHits: parseInt(parts[6], 10),
+      maxRssi: parts[7],
+      internalData: parts[8] || '',
+      isActive: parts[9] || '',
+      channelId: parts[10] || '',
+      loopId: parts[11] || '',
+      loopOnly: parts[12] || '',
+      wakeupCounter: parts[13] ? parseInt(parts[13], 10) : undefined,
+      battery: parts[14] ? parseFloat(parts[14]) : undefined,
+      temperature: parts[15] ? parseFloat(parts[15]) : undefined,
+      internalActiveData: parts[16] || '',
+      boxName: parts[17] || '',
+      fileNumber: parts[18] || '',
+      maxRssiAntenna: parts[19] || '',
+      boxId: parts[20] || '',
+    };
+  }
+
 
   private handleData(data: string) {
     const parsedData = this.parseTagReadData(data);
@@ -150,12 +189,12 @@ export class TimingBoxService {
     this.reconnectAttempts = 0;
     this.shouldReconnect = false; // This will be reset once it connects successfully
 
-    this.reconnectionStatus$.next(`Reconnecting in ${this.settings.reconnectDelay/1000}s (0/${this.settings.numReconnectAttempts})`);
+    this.reconnectionStatus$.next(`Reconnection Attempts: (0/${this.settings.numReconnectAttempts})`);
 
     this.autoReconnectInterval = setInterval(() => {
       if (this.getCurrentStatus().status === ConnectionStatus.DISCONNECTED) {
         if (this.reconnectAttempts < this.settings.numReconnectAttempts) {
-          this.reconnectionStatus$.next(`Reconnecting in ${this.settings.reconnectDelay/1000}s (${this.reconnectAttempts + 1}/${this.settings.numReconnectAttempts})`);
+          this.reconnectionStatus$.next(`Reconnection Attempts: (${this.reconnectAttempts + 1}/${this.settings.numReconnectAttempts})`);
           console.log(`Attempting to reconnect (${this.reconnectAttempts + 1}/${this.settings.numReconnectAttempts})...`);
           this.statusSubject.next({ status: ConnectionStatus.RECONNECTING });
           this.ipcRenderer.send('connect-timing-box', { ip, port });

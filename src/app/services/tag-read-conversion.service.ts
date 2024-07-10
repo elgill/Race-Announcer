@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {TridentTagReadData} from "../interfaces/trident-tag-read-data";
 import {ChipRead} from "../interfaces/chip-read";
+import {RaceResultTagReadData} from "../interfaces/race-result-tag-read-data";
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +28,19 @@ export class TagReadConversionService {
       antennaId: receiverId,
       chipCode: tagId,
       date: dateObj,
+    };
+  }
+
+  static convertRaceResultToChipRead(data: RaceResultTagReadData): ChipRead {
+    const { boxName, tagId, date, time , maxRssiAntenna} = data;
+
+    const dateTime = new Date(`${date}T${time}`);
+
+    return {
+      readerId: boxName,
+      antennaId: maxRssiAntenna,
+      chipCode: tagId,
+      date: dateTime,
     };
   }
 

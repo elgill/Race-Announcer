@@ -1,0 +1,22 @@
+export interface RaceResultTagReadData {
+  passingNumber: number;         // <PassingNo>
+  tagId: string;                 // <Bib/TranspCode>
+  date: string;                  // <Date>
+  time: string;                  // <Time>
+  eventId: string;               // <EventID>
+  numHits: number;               // <Hits>
+  maxRssi: string;               // <MaxRSSI>
+  internalData?: string;         // [<InternalData>]
+  isActive: string;              // <IsActive>
+  channelId: string;             // [<Channel>]
+  loopId?: string;               // [<LoopID>]
+  loopOnly?: string;             // [<LoopOnly>]
+  wakeupCounter?: number;        // [<WakeupCounter>]
+  battery?: number;              // [<Battery>]
+  temperature?: number;          // [<Temperature>]
+  internalActiveData?: string;   // [<InternalActiveData>]
+  boxName: string;               // <BoxName>
+  fileNumber: string             // <FileNumber>
+  maxRssiAntenna: string;        // [<MaxRSSIAntenna>]
+  boxId: string;                 // <BoxId>
+}

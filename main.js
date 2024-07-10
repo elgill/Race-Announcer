@@ -56,13 +56,24 @@ function connectToTimingBox(ip, port) {
   timingBoxClient.connect(port, ip, () => {
     console.log('Connected to timing box');
     win.webContents.send('timing-box-status', { status: 'Connected' });
+
+    // If RR box
+    if(port === 3601){
+        timingBoxClient.write('SETPROTOCOL;2.6\r\n');
+        timingBoxClient.write('SETPUSHPASSINGS;1;0\r\n');
+    }
+
   });
 
   timingBoxClient.on('data', (data) => {
-    const record = data.toString('utf-8');
-    const parsedRecord = record;
-    console.log('Data: ', record);
-    win.webContents.send('timing-box-data', parsedRecord);
+    const records = data.toString('utf-8').split('\r\n');
+
+    records.forEach(record => {
+      if (record.trim() !== '') {
+        console.log('Data: ', record);
+        win.webContents.send('timing-box-data', record);
+      }
+    });
   });
 
   timingBoxClient.on('close', () => {
