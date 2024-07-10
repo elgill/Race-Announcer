@@ -1,8 +1,10 @@
 const { app, BrowserWindow, ipcMain, Menu } = require('electron');
 const net = require('net');
+const startBackend = require('./start-backend');
 
 let win;
 let timingBoxClient;
+let backendProcess;
 
 const WINDOW_CONFIG = {
   width: 1200,
@@ -20,7 +22,10 @@ function createWindow () {
   win.loadFile('dist/race-announcer-angular/browser/index.html')
 
   win.on('closed', () => {
-    win = null
+    win = null;
+    if (backendProcess) {
+      backendProcess.kill();
+    }
   })
 
   setupIPCListeners();
@@ -28,9 +33,17 @@ function createWindow () {
   //win.webContents.openDevTools();
 }
 
-app.on('ready', createWindow)
+app.on('ready', () => {
+  backendProcess = startBackend();
+  createWindow();
+})
 
-app.on('window-all-closed', app.quit)
+app.on('window-all-closed', () => {
+  if (backendProcess) {
+    backendProcess.kill();
+  }
+  app.quit();
+});
 
 app.on('activate', () => {
   if (win === null) {
