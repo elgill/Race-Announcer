@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, Observable, Subject} from 'rxjs';
-import {RunnerDataService} from "./runner-data.service";
-import {ConnectionStatus} from "../models/connection.enum";
-import {TridentTagReadData} from "../interfaces/trident-tag-read-data";
-import {TagReadConversionService} from "./tag-read-conversion.service";
-import {ChipRead} from "../interfaces/chip-read";
-import {DEFAULT_SETTINGS, SettingsService} from "./settings.service";
-import {RaceResultTagReadData} from "../interfaces/race-result-tag-read-data";
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { RunnerDataService } from './runner-data.service';
+import { ConnectionStatus } from '../models/connection.enum';
+import { TridentTagReadData } from '../interfaces/trident-tag-read-data';
+import { TagReadConversionService } from './tag-read-conversion.service';
+import { ChipRead } from '../interfaces/chip-read';
+import { DEFAULT_SETTINGS, SettingsService } from './settings.service';
+import { RaceResultTagReadData } from '../interfaces/race-result-tag-read-data';
+import { WebSocketService } from './web-socket.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TimingBoxService {
-  private ipcRenderer: any;
   private statusSubject: BehaviorSubject<any> = new BehaviorSubject({ status: ConnectionStatus.DISCONNECTED });
   private dataSubject: Subject<any> = new Subject();
 
@@ -24,37 +24,28 @@ export class TimingBoxService {
 
   settings = DEFAULT_SETTINGS;
 
+  constructor(
+    private runnerDataService: RunnerDataService,
+    private settingsService: SettingsService,
+    private webSocketService: WebSocketService
+  ) {
+    this.settingsService.getSettings().subscribe((settings) => {
+      this.settings = settings;
+    });
 
-  constructor(private runnerDataService: RunnerDataService, private settingsService: SettingsService) {
-    if (window.require) {
+    // Listen for WebSocket messages
+    this.webSocketService.timingBoxStatus$.subscribe((status) => {
+      this.statusSubject.next(status);
+      this.handleStatusChange(status.status);
+      console.log('New Status: ', status);
+    });
 
-      try {
-        this.ipcRenderer = window.require('electron').ipcRenderer;
-        this.settingsService.getSettings().subscribe(settings => {
-          this.settings = settings;
-        });
-
-        // Listen for status updates
-        // @ts-ignore
-        this.ipcRenderer.on('timing-box-status', (event, status) => {
-          this.statusSubject.next(status);
-          this.handleStatusChange(status.status);
-          console.log('New Status: ', status)
-        });
-
-        // Listen for data updates
-        // @ts-ignore
-        this.ipcRenderer.on('timing-box-data', (event, data) => {
-          this.dataSubject.next(data);
-          console.log('New Data: ',data);
-          this.handleData(data);
-        });
-      } catch (e) {
-        throw e;
-      }
-    } else {
-      console.warn('App not running inside Electron!');
-    }
+    this.webSocketService.messages$.subscribe((data) => {
+      data = data.data;
+      this.dataSubject.next(data);
+      console.log('New Data: ', data);
+      this.handleData(data);
+    });
   }
 
   private handleStatusChange(status: string){
@@ -102,10 +93,8 @@ export class TimingBoxService {
   }
 
   private parseRaceResultTagData(data: string): RaceResultTagReadData | null {
-    // Split the input data by semicolon
     const parts = data.trim().split(';');
 
-    // Validate the length of the parts
     if (parts.length < 7) {
       console.warn('Invalid data format:', data);
       return null;
@@ -135,7 +124,6 @@ export class TimingBoxService {
     };
   }
 
-
   private handleData(data: string) {
     const parsedData = this.parseTagReadData(data);
     if (!parsedData) {
@@ -154,8 +142,7 @@ export class TimingBoxService {
 
   toggleConnection(ip: string, port: number): void {
     const currentStatus = this.getCurrentStatus().status;
-    if (currentStatus === ConnectionStatus.CONNECTED || currentStatus === ConnectionStatus.CONNECTING ||
-          currentStatus === ConnectionStatus.RECONNECTING) {
+    if (currentStatus === ConnectionStatus.CONNECTED || currentStatus === ConnectionStatus.CONNECTING || currentStatus === ConnectionStatus.RECONNECTING) {
       this.disconnect();
     } else {
       this.connect(ip, port);
@@ -171,7 +158,7 @@ export class TimingBoxService {
     }
 
     this.statusSubject.next({ status: ConnectionStatus.CONNECTING });
-    this.ipcRenderer.send('connect-timing-box', { ip, port });
+    this.webSocketService.sendMessage('connect-timing-box', { ip, port });
 
     // Start auto-reconnect
     //this.startAutoReconnect(ip, port);
@@ -179,7 +166,7 @@ export class TimingBoxService {
 
   disconnect(): void {
     this.shouldReconnect = false;
-    this.ipcRenderer.send('disconnect-timing-box');
+    this.webSocketService.sendMessage('disconnect-timing-box', {});
     this.stopAutoReconnect();
   }
 
@@ -197,7 +184,7 @@ export class TimingBoxService {
           this.reconnectionStatus$.next(`Reconnection Attempts: (${this.reconnectAttempts + 1}/${this.settings.numReconnectAttempts})`);
           console.log(`Attempting to reconnect (${this.reconnectAttempts + 1}/${this.settings.numReconnectAttempts})...`);
           this.statusSubject.next({ status: ConnectionStatus.RECONNECTING });
-          this.ipcRenderer.send('connect-timing-box', { ip, port });
+          this.webSocketService.sendMessage('connect-timing-box', { ip, port });
           this.reconnectAttempts++;
         } else {
           console.log('Max reconnect attempts reached. Stopping auto-reconnect.');

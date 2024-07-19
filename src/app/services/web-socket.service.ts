@@ -1,41 +1,44 @@
 import { Injectable } from '@angular/core';
-import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
+import { Socket } from 'ngx-socket-io';
 import { Subject } from 'rxjs';
-import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WebSocketService {
-  private socket$: WebSocketSubject<any>;
   private messagesSubject = new Subject<any>();
   private timingBoxStatusSubject = new Subject<any>();
 
   public messages$ = this.messagesSubject.asObservable();
   public timingBoxStatus$ = this.timingBoxStatusSubject.asObservable();
 
-  constructor() {
-    this.socket$ = webSocket(environment.webSocketUrl);
-    this.socket$.subscribe(
-      (message) => this.handleMessage(message),
-      (error) => console.error('WebSocket error:', error),
-      () => console.log('WebSocket connection closed')
-    );
+  constructor(private socket: Socket) {
+    this.socket.on('timing-box-status', (data: any) => {
+      this.timingBoxStatusSubject.next(data);
+    });
+
+    this.socket.on('timing-box-data', (data: any) => {
+      this.messagesSubject.next(data);
+    });
+
+    this.socket.on('connect', () => {
+      console.log('Connected to WebSocket server');
+    });
+
+    this.socket.on('disconnect', () => {
+      console.log('Disconnected from WebSocket server');
+    });
+
+    this.socket.on('connect_error', (error: any) => {
+      console.error('WebSocket connection error:', error);
+    });
   }
 
-  private handleMessage(message: any): void {
-    if (message.type === 'timing-box-status') {
-      this.timingBoxStatusSubject.next(message.data);
-    } else {
-      this.messagesSubject.next(message);
-    }
-  }
-
-  sendMessage(message: any): void {
-    this.socket$.next(message);
+  sendMessage(event: string, message: any): void {
+    this.socket.emit(event, message);
   }
 
   close(): void {
-    this.socket$.complete();
+    this.socket.disconnect();
   }
 }

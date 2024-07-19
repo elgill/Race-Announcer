@@ -1,5 +1,4 @@
 export const environment = {
   proxyUrl: '',
-  webSocketUrl: 'localhost',
-  webSocketPort: '3000',
+  webSocketUrl: 'http://localhost:3000',
 };

@@ -1,12 +1,11 @@
-import { WebSocketGateway, WebSocketServer, SubscribeMessage, OnGatewayInit } from '@nestjs/websockets';
-import { Server } from 'ws';
+import { WebSocketGateway, WebSocketServer, SubscribeMessage, OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect } from '@nestjs/websockets';
+import { Server, Socket } from 'socket.io';
 import { TimingBoxService } from './timing-box.service';
 import { TimingBoxEvents } from './timing-box.events';
 
-@WebSocketGateway()
-export class TimingBoxGateway implements OnGatewayInit {
-  @WebSocketServer()
-  server: Server;
+@WebSocketGateway({ cors: true })
+export class TimingBoxGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+  @WebSocketServer() server: Server;
 
   constructor(
     private timingBoxService: TimingBoxService,
@@ -23,8 +22,16 @@ export class TimingBoxGateway implements OnGatewayInit {
     });
   }
 
+  handleConnection(client: Socket) {
+    console.log(`Client connected: ${client.id}`);
+  }
+
+  handleDisconnect(client: Socket) {
+    console.log(`Client disconnected: ${client.id}`);
+  }
+
   @SubscribeMessage('connect-timing-box')
-  handleConnectTimingBox(client: any, payload: { ip: string; port: number }): void {
+  handleConnectTimingBox(client: Socket, payload: { ip: string; port: number }): void {
     this.timingBoxService.connectToTimingBox(payload.ip, payload.port);
   }
 
@@ -34,21 +41,10 @@ export class TimingBoxGateway implements OnGatewayInit {
   }
 
   private broadcastStatus(status: string, message?: string): void {
-    this.server.clients.forEach(client => {
-      client.send(JSON.stringify({
-        type: 'timing-box-status',
-        data: { status, message }
-      }));
-    });
+    this.server.emit('timing-box-status', { status, message });
   }
 
   private broadcastData(data: string): void {
-    this.server.clients.forEach(client => {
-      client.send(JSON.stringify({
-        type: 'timing-box-data',
-        data
-      }));
-    });
+    this.server.emit('timing-box-data', { data });
   }
 }
-

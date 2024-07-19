@@ -58,6 +58,7 @@
     "jspdf-autotable": "^3.8.2",
     "lodash": "^4.17.21",
     "lunr": "^2.3.9",
+    "ngx-socket-io": "^4.7.0",
     "papaparse": "^5.4.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

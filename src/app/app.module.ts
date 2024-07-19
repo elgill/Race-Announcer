@@ -28,6 +28,10 @@ import { ShowXrefComponent } from './show-xref/show-xref.component';
 import { TimerRunnerTableComponent } from './timer-runner-table/timer-runner-table.component';
 import { XrefManagerComponent } from './xref-manager/xref-manager.component';
 import { ImportExportComponent } from './import-export/import-export.component';
+import {SocketIoConfig, SocketIoModule} from "ngx-socket-io";
+import {environment} from "../environments/environment";
+
+const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
 
 @NgModule({ declarations: [
         AppComponent,
@@ -58,5 +62,7 @@ import { ImportExportComponent } from './import-export/import-export.component';
     bootstrap: [AppComponent], imports: [BrowserModule,
         AppRoutingModule,
         FormsModule,
-        ReactiveFormsModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
+        ReactiveFormsModule,
+        SocketIoModule.forRoot(config),
+  ], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule { }
