@@ -1,14 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TimingBoxGateway } from './timing-box/timing-box.gateway';
-import { TimingBoxController } from './timing-box/timing-box.controller';
-import { TimingBoxService } from './timing-box/timing-box.service';
-import { TimingBoxEvents } from './timing-box/timing-box.events';
+import { TimingBoxModule } from './timing-box/timing-box.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController, TimingBoxController],
-  providers: [AppService, TimingBoxGateway, TimingBoxService, TimingBoxEvents],
+  imports: [TimingBoxModule],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
