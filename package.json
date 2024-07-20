@@ -30,9 +30,15 @@
     },
     "files": [
       "dist/**/*",
-      "backend/dist/**/*",
-      "node_modules/**/*",
-      "electron/**/*"
+      "electron/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "backend",
+        "to": "backend",
+        "filter": ["dist/**/*", "package.json", "node_modules/**/*"]
+      }
     ],
     "directories": {
       "buildResources": "assets",
@@ -53,6 +59,7 @@
     "@angular/platform-browser-dynamic": "^18.0.5",
     "@angular/router": "^18.0.5",
     "file-saver-es": "^2.0.5",
+    "fs-extra": "^11.2.0",
     "idb": "^7.1.1",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.2",
