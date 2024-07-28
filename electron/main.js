@@ -3,7 +3,6 @@ const net = require('net');
 const startBackend = require('./start-backend');
 
 let win;
-let timingBoxClient;
 let backendProcess;
 
 const WINDOW_CONFIG = {
@@ -28,9 +27,7 @@ function createWindow () {
     }
   })
 
-  setupIPCListeners();
-
-  //win.webContents.openDevTools();
+  win.webContents.openDevTools();
 }
 
 app.on('ready', () => {
@@ -50,55 +47,6 @@ app.on('activate', () => {
     createWindow()
   }
 })
-
-function setupIPCListeners() {
-  ipcMain.on('connect-timing-box', (event, { ip, port }) => {
-    connectToTimingBox(ip, port);
-  });
-
-  ipcMain.on('disconnect-timing-box', () => {
-    if (timingBoxClient) {
-      timingBoxClient.destroy();
-      timingBoxClient = null;
-    }
-  });
-}
-
-function connectToTimingBox(ip, port) {
-  timingBoxClient = new net.Socket();
-  timingBoxClient.connect(port, ip, () => {
-    console.log('Connected to timing box');
-    win.webContents.send('timing-box-status', { status: 'Connected' });
-
-    // If RR box
-    if(port === 3601){
-        timingBoxClient.write('SETPROTOCOL;2.6\r\n');
-        timingBoxClient.write('SETPUSHPASSINGS;1;0\r\n');
-    }
-
-  });
-
-  timingBoxClient.on('data', (data) => {
-    const records = data.toString('utf-8').split('\r\n');
-
-    records.forEach(record => {
-      if (record.trim() !== '') {
-        console.log('Data: ', record);
-        win.webContents.send('timing-box-data', record);
-      }
-    });
-  });
-
-  timingBoxClient.on('close', () => {
-    console.log('Connection to timing box closed');
-    win.webContents.send('timing-box-status', { status: 'Disconnected' });
-  });
-
-  timingBoxClient.on('error', (err) => {
-    console.error('Error connecting to timing box:', err);
-    win.webContents.send('timing-box-status', { status: 'Error', message: err.message });
-  });
-}
 
 
 const template = [

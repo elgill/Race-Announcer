@@ -10,7 +10,7 @@
     "start:frontend": "ng serve",
     "start:backend": "cd backend && npm run start:dev",
     "start:electron": "electron .",
-    "start": "concurrently \"npm run start:frontend\" \"npm run start:backend\" \"wait-on http://localhost:4200 && npm run start:electron\"",
+    "start": "electron .",
     "build": "ng build && cd backend && npm run build",
     "test": "ng test && cd backend && npm run test",
     "electron": "electron .",
