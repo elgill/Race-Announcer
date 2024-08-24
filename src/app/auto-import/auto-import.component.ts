@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import {RunnerDataService} from "../services/runner-data.service";
 import {BibScrapeService} from "../services/bib-scrape.service";
 import {DEFAULT_SETTINGS, SettingsService, Settings} from "../services/settings.service";
 

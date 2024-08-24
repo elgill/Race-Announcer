@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {DEFAULT_SETTINGS, Settings, SettingsService} from '../services/settings.service';
-import { HttpClient } from '@angular/common/http';
 import {NgForOf, NgIf} from "@angular/common";
 import {RaceService} from "../services/race.service";
 
@@ -103,6 +102,7 @@ export class QuickSetupComponent implements OnInit {
       },
       (error) => {
         this.errorMessage = 'Failed to fetch races. Please try again.';
+        console.log(error);
         this.isLoading = false;
       }
     );

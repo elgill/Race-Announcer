@@ -53,6 +53,8 @@ export class BibScrapeService {
 
       const cells = row.split(',');
 
+      if (cells.length < 9) return;
+
       const runner: Runner = {
         id: this.runnerDataService.generateUniqueId(),
         bib: cells[0].trim(),
