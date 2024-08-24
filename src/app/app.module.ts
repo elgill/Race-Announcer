@@ -27,34 +27,44 @@ import { ShowXrefComponent } from './show-xref/show-xref.component';
 import { TimerRunnerTableComponent } from './timer-runner-table/timer-runner-table.component';
 import { XrefManagerComponent } from './xref-manager/xref-manager.component';
 import { ImportExportComponent } from './import-export/import-export.component';
+import {QuickSetupComponent} from "./quick-setup/quick-setup.component";
+import {RunnerInfoComponent} from "./runner-info/runner-info.component";
 
-@NgModule({ declarations: [
-        AppComponent,
-        AnnounceScreenComponent,
-        SettingsComponent,
-        BibEntryComponent,
-        CsvImportComponent,
-        AnnounceGridComponent,
-        ErrorComponent,
-        AnnounceFreeformComponent,
-        CsvExportComponent,
-        BrowseRunnersComponent,
-        ClearRunnersComponent,
-        RaceClockComponent,
-        ConnectMatStreamComponent,
-        NameLookupComponent,
-        RunnerTableComponent,
-        AutoImportComponent,
-        AnnounceTimerComponent,
-        TimeDurationPipe,
-        ImportXrefComponent,
-        ShowXrefComponent,
-        TimerRunnerTableComponent,
-        XrefManagerComponent,
-        ImportExportComponent
-    ],
-    bootstrap: [AppComponent], imports: [BrowserModule,
-        AppRoutingModule,
-        FormsModule,
-        ReactiveFormsModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
+@NgModule({
+  declarations: [
+    AppComponent,
+    AnnounceScreenComponent,
+    SettingsComponent,
+    BibEntryComponent,
+    CsvImportComponent,
+    AnnounceGridComponent,
+    ErrorComponent,
+    AnnounceFreeformComponent,
+    CsvExportComponent,
+    BrowseRunnersComponent,
+    ClearRunnersComponent,
+    RaceClockComponent,
+    ConnectMatStreamComponent,
+    NameLookupComponent,
+    RunnerTableComponent,
+    AutoImportComponent,
+    AnnounceTimerComponent,
+    TimeDurationPipe,
+    ImportXrefComponent,
+    ShowXrefComponent,
+    TimerRunnerTableComponent,
+    XrefManagerComponent,
+    ImportExportComponent,
+    QuickSetupComponent,
+    RunnerInfoComponent,
+  ],
+  bootstrap: [AppComponent], imports: [BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    ReactiveFormsModule],
+  exports: [
+    AutoImportComponent
+  ],
+  providers: [provideHttpClient(withInterceptorsFromDi())]
+})
 export class AppModule { }

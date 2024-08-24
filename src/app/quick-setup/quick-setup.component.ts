@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {DEFAULT_SETTINGS, Settings, SettingsService} from '../services/settings.service';
-import {NgForOf, NgIf} from "@angular/common";
 import {RaceService} from "../services/race.service";
 
 
@@ -16,12 +15,6 @@ interface Race {
 @Component({
   selector: 'app-quick-setup',
   templateUrl: './quick-setup.component.html',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    NgIf,
-    NgForOf
-  ],
   styleUrls: ['./quick-setup.component.css']
 })
 export class QuickSetupComponent implements OnInit {

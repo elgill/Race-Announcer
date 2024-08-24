@@ -1,3 +1,9 @@
-<h2>Scrape / Auto Import</h2>
-<button (click)="importRunners()">Scrape Runners</button>
-<p>{{importStatus}}</p>
+<div class="form-container">
+  <h2>Scrape / Auto Import</h2>
+
+  <button (click)="importRunners()" class="btn-primary">Scrape Runners</button>
+
+  <div *ngIf="importStatus" class="status-message">
+    {{ importStatus }}
+  </div>
+</div>

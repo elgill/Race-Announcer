@@ -1,0 +1,17 @@
+.form-container {
+  width: 400px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.info-group {
+  margin-top: 10px;
+}
+
+.info-group p {
+  font-size: 16px;
+  color: #333;
+}

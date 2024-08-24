@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {saveAs} from 'file-saver-es';
 import * as Papa from 'papaparse';
-import {BehaviorSubject} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {RunnerDatabase} from "../runner-database/runner-database";
 import {IndexedDbRunnerDatabaseService} from "../runner-database/indexed-db-runner-database.service";
 import {Runner} from "../interfaces/runner";
@@ -17,14 +17,16 @@ export class RunnerDataService {
   private activeRunners$ = new BehaviorSubject<Runner[]>([]);
   private db: RunnerDatabase;
   private xrefData = new Map<string, string>(); // Map to store XREF data: chipId -> bib
+  private xrefCount$ = new BehaviorSubject<number>(0); // Observable for XREF count
 
   private settings = DEFAULT_SETTINGS;
   private lastEntryTimes = new Map<string, Date>(); // Map to store last entry times
 
   private paused = false;
-  private paused$ = new BehaviorSubject<boolean>(this.paused)
+  private paused$ = new BehaviorSubject<boolean>(this.paused);
   private pausedQueue: Runner[] = [];
   private pausedQueue$ = new BehaviorSubject<Runner[]>([]);
+  private runnerCount$ = new BehaviorSubject<number>(0); // Observable for runner count
 
   constructor(private settingsService: SettingsService) {
     // IDB
@@ -32,6 +34,7 @@ export class RunnerDataService {
 
     this.loadRunnersFromRunnerDB().then(() => {
       console.log('Loaded runners from database.');
+      this.updateRunnerCount(); // Update runner count after loading
     }).catch(err => {
       console.error('Failed to load runners from database:', err);
     });
@@ -42,6 +45,7 @@ export class RunnerDataService {
 
     this.loadXrefDataFromDB().then(() => {
       console.log('Loaded XREF data from database.');
+      this.updateXrefCount(); // Update XREF count after loading
     }).catch(err => {
       console.error('Failed to load XREF data from database:', err);
     });
@@ -73,6 +77,7 @@ export class RunnerDataService {
     xrefArray.forEach(xref => {
       this.xrefData.set(xref.chipId, xref.bib);
     });
+    this.updateXrefCount(); // Update XREF count
   }
 
   async saveXrefDataToDB() {
@@ -82,6 +87,7 @@ export class RunnerDataService {
 
   clearXref() {
     this.xrefData.clear();
+    this.updateXrefCount(); // Update XREF count
     console.log('Cleared all XREF data in memory.');
 
     this.saveXrefDataToDB().then(() => {
@@ -96,9 +102,10 @@ export class RunnerDataService {
     xrefArray.forEach(xref => {
       this.xrefData.set(xref.chipId, xref.bib);
     });
-    console.log("Saved XREF data in memory.");
+    this.updateXrefCount(); // Update XREF count
+    console.log('Saved XREF data in memory.');
     this.saveXrefDataToDB().then(() => {
-      console.log("Saved XREF to DB")
+      console.log("Saved XREF to DB");
     }).catch(err => {
       console.error('Failed to save XREF data in database:', err);
     });
@@ -118,6 +125,7 @@ export class RunnerDataService {
     runnersArray.forEach(runner => {
       this.allRunners.set(runner.bib, runner);
     });
+    this.updateRunnerCount(); // Update runner count
   }
 
   async saveRunnersToDB() {
@@ -136,16 +144,32 @@ export class RunnerDataService {
     return `${prefix}-${randomNum}`;
   }
 
-  getActiveRunners() {
+  getActiveRunners(): Observable<Runner[]> {
     return this.activeRunners$.asObservable();
   }
 
-  getPausedStatus(){
+  getPausedStatus(): Observable<boolean> {
     return this.paused$.asObservable();
   }
 
-  getPausedQueue(){
+  getPausedQueue(): Observable<Runner[]> {
     return this.pausedQueue$.asObservable();
+  }
+
+  getRunnerCount(): Observable<number> {
+    return this.runnerCount$.asObservable();
+  }
+
+  getXrefCount(): Observable<number> {
+    return this.xrefCount$.asObservable();
+  }
+
+  private updateRunnerCount() {
+    this.runnerCount$.next(this.allRunners.size);
+  }
+
+  private updateXrefCount() {
+    this.xrefCount$.next(this.xrefData.size);
   }
 
   enterBib(bib: string, overrideMinTime = false, overridePause = false) {
@@ -193,15 +217,13 @@ export class RunnerDataService {
 
   removeLastRunner() {
     if (this.activeRunners.length > 0) {
-      // Now remove the runner from the array
       this.activeRunners.shift();
     }
 
-    // Update the observable with the new list of active runners
     this.activeRunners$.next(this.activeRunners);
   }
 
-  loadRunners(newRunners: Runner[]):string {
+  loadRunners(newRunners: Runner[]): string {
     let updatedCount = 0;
     let addedCount = 0;
 
@@ -217,7 +239,6 @@ export class RunnerDataService {
       }
     });
 
-    // Log runners after loading
     console.log('Runners after loading:', Array.from(this.allRunners.values()));
 
     this.saveRunnersToDB().then(() => {
@@ -225,22 +246,21 @@ export class RunnerDataService {
     }).catch(err => {
       console.error('Failed to save runners to database:', err);
     });
+
+    this.updateRunnerCount(); // Update runner count
     return `${updatedCount} updated, ${addedCount} added`;
   }
 
   getSortedRunners() {
-    // Convert the map values to an array, sort it, and return it
     return Array.from(this.allRunners.values()).sort((a, b) => Number(a.bib) - Number(b.bib));
   }
 
   exportRunners() {
-    // First, identify all unique custom field keys across all runners
     const allCustomFieldKeys = new Set<string>();
     this.allRunners.forEach(runner => {
       Object.keys(runner.customFields).forEach(key => allCustomFieldKeys.add(key));
     });
 
-    // Next, create a new representation of each runner that includes all custom fields
     const runnersArray = Array.from(this.allRunners.values()).map(runner => {
       const customFieldsWithDefaults: { [key: string]: string } = {};
 
@@ -248,28 +268,29 @@ export class RunnerDataService {
         customFieldsWithDefaults[key] = runner.customFields[key] || '';
       });
 
-      // Merge the runner's original fields with the custom fields
       return { ...runner, ...customFieldsWithDefaults };
     });
 
     const csv = Papa.unparse(runnersArray);
-    const blob = new Blob([csv], {type: 'text/csv'});
+    const blob = new Blob([csv], { type: 'text/csv' });
 
     saveAs(blob, 'runners.csv');
   }
 
   clearAllRunners() {
-    this.allRunners = new Map<string, Runner>();
+    this.allRunners.clear();
     this.activeRunners = [];
     this.activeRunners$.next(this.activeRunners);
 
-    this.clearXref()
+    this.clearXref();
 
     this.db.deleteAllRunners().then(() => {
       console.log('Deleted all runners from database.');
     }).catch(err => {
       console.error('Failed to delete all runners from database:', err);
     });
+
+    this.updateRunnerCount(); // Update runner count
   }
 }
 
