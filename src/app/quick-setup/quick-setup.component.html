@@ -1,0 +1,43 @@
+<div [formGroup]="quickSetupForm">
+  <h2>Quick Setup</h2>
+
+  <div>
+    <label for="raceId">Race ID:</label>
+    <input id="raceId" formControlName="raceId" type="text">
+  </div>
+
+  <div>
+    <label for="raceStartTime">Race Start Time:</label>
+    <input id="raceStartTime" formControlName="raceStartTime" type="datetime-local" step="0.1">
+  </div>
+
+  <div>
+    <label for="ip">IP Address:</label>
+    <input id="ip" formControlName="ip" type="text" placeholder="192.168.1.200">
+  </div>
+
+  <div>
+    <label for="port">Port:</label>
+    <input id="port" formControlName="port" type="number" placeholder="10001">
+  </div>
+
+  <button (click)="saveSettings()">Save Settings</button>
+
+  <h3>Load Race List</h3>
+  <button (click)="fetchRaces()" [disabled]="isLoading">
+    {{ isLoading ? 'Loading...' : 'Load Races' }}
+  </button>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="races.length > 0">
+    <h4>Select a Race:</h4>
+    <ul>
+      <li *ngFor="let race of races" (click)="selectRace(race)">
+        {{race.id}}: {{ race.name }} - {{ race.date }} ({{ race.location }})
+      </li>
+    </ul>
+  </div>
+</div>
