@@ -13,7 +13,7 @@ export class AutoImportComponent {
 
   importStatus = '';
 
-  constructor(private runnerDataService: RunnerDataService,private bibScrapeService:BibScrapeService, private settingsService: SettingsService) {
+  constructor(private bibScrapeService:BibScrapeService, private settingsService: SettingsService) {
     this.settingsService.getSettings().subscribe(settings => {
       this.settings = settings;
     });
@@ -21,7 +21,7 @@ export class AutoImportComponent {
 
   async importRunners() {
     this.importStatus = 'Processing...';
-    const url = "https://www.elitefeats.com/Bibs/?ID="+this.settings.raceId;
+    const url = "https://www.elitefeats.com/Bibs/?ID="+this.settings.raceId+"&csv=yesplease";
     this.importStatus = await this.bibScrapeService.processRunners(url);
 
   }
