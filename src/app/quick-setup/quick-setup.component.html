@@ -1,30 +1,30 @@
-<div [formGroup]="quickSetupForm">
+<div [formGroup]="quickSetupForm" class="form-container">
   <h2>Quick Setup</h2>
 
-  <div>
+  <div class="form-group">
     <label for="raceId">Race ID:</label>
-    <input id="raceId" formControlName="raceId" type="text">
+    <input id="raceId" formControlName="raceId" type="text" class="form-control">
   </div>
 
-  <div>
+  <div class="form-group">
     <label for="raceStartTime">Race Start Time:</label>
-    <input id="raceStartTime" formControlName="raceStartTime" type="datetime-local" step="0.1">
+    <input id="raceStartTime" formControlName="raceStartTime" type="datetime-local" step="0.1" class="form-control">
   </div>
 
-  <div>
+  <div class="form-group">
     <label for="ip">IP Address:</label>
-    <input id="ip" formControlName="ip" type="text" placeholder="192.168.1.200">
+    <input id="ip" formControlName="ip" type="text" placeholder="192.168.1.200" class="form-control">
   </div>
 
-  <div>
+  <div class="form-group">
     <label for="port">Port:</label>
-    <input id="port" formControlName="port" type="number" placeholder="10001">
+    <input id="port" formControlName="port" type="number" placeholder="10001" class="form-control">
   </div>
 
-  <button (click)="saveSettings()">Save Settings</button>
+  <button (click)="saveSettings()" class="btn-primary">Save Settings</button>
 
   <h3>Load Race List</h3>
-  <button (click)="fetchRaces()" [disabled]="isLoading">
+  <button (click)="fetchRaces()" [disabled]="isLoading" class="btn-secondary">
     {{ isLoading ? 'Loading...' : 'Load Races' }}
   </button>
 
@@ -34,9 +34,9 @@
 
   <div *ngIf="races.length > 0">
     <h4>Select a Race:</h4>
-    <ul>
-      <li *ngFor="let race of races" (click)="selectRace(race)">
-        {{race.id}}: {{ race.name }} - {{ race.date }} ({{ race.location }})
+    <ul class="race-list">
+      <li *ngFor="let race of races" (click)="selectRace(race)" class="race-item">
+        <span>{{race.id}}: {{ race.name }} - {{ race.date }} ({{ race.location }})</span>
       </li>
     </ul>
   </div>
