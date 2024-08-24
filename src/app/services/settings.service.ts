@@ -45,8 +45,6 @@ export const DEFAULT_SETTINGS: Settings = {
   port: 10001,
   customFields: [
     { name: "division", showInAnnounce: true, showInBrowse: true },
-    { name: "extra", showInAnnounce: false, showInBrowse: true },
-    { name: "status", showInAnnounce: false, showInBrowse: true },
     { name: "t-shirt", showInAnnounce: false, showInBrowse: true },
     { name: "team", showInAnnounce: true, showInBrowse: true }
   ],
