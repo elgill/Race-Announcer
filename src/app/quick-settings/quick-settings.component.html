@@ -1,0 +1,48 @@
+<div [formGroup]="quickSetupForm" class="form-container">
+  <h2>Quick Setup</h2>
+
+  <div class="form-group">
+    <label for="raceId">Race ID:</label>
+    <input id="raceId" formControlName="raceId" type="text" class="form-control">
+  </div>
+
+  <div class="form-group">
+    <label for="raceStartTime">Race Start Time:</label>
+    <input id="raceStartTime" formControlName="raceStartTime" type="datetime-local" step="0.1" class="form-control">
+  </div>
+
+  <div class="form-group">
+    <label for="ip">IP Address:</label>
+    <input id="ip" formControlName="ip" type="text" placeholder="192.168.1.200" class="form-control">
+  </div>
+
+  <div class="form-group">
+    <label for="port">Port:</label>
+    <input id="port" formControlName="port" type="number" placeholder="10001" class="form-control">
+  </div>
+
+  <button (click)="saveSettings()" class="btn-primary">Save Settings</button>
+
+  <!-- Success Message for Saved Settings -->
+  <div *ngIf="settingsSaved" class="success-message">
+    Settings have been saved successfully!
+  </div>
+
+  <h3>Load Race List</h3>
+  <button (click)="fetchRaces()" [disabled]="isLoading" class="btn-secondary">
+    {{ isLoading ? 'Loading...' : 'Load Races' }}
+  </button>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="races.length > 0">
+    <h4>Select a Race:</h4>
+    <ul class="race-list">
+      <li *ngFor="let race of races" (click)="selectRace(race)" class="race-item">
+        <span>{{ race.id }}: {{ race.name }} - {{ race.date }} ({{ race.location }})</span>
+      </li>
+    </ul>
+  </div>
+</div>

@@ -29,6 +29,7 @@ import { XrefManagerComponent } from './xref-manager/xref-manager.component';
 import { ImportExportComponent } from './import-export/import-export.component';
 import {QuickSetupComponent} from "./quick-setup/quick-setup.component";
 import {RunnerInfoComponent} from "./runner-info/runner-info.component";
+import {QuickSettingsComponent} from "./quick-settings/quick-settings.component";
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import {RunnerInfoComponent} from "./runner-info/runner-info.component";
     ImportExportComponent,
     QuickSetupComponent,
     RunnerInfoComponent,
+    QuickSettingsComponent
   ],
   bootstrap: [AppComponent], imports: [BrowserModule,
     AppRoutingModule,
