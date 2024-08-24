@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { SettingsComponent } from './settings/settings.component';
 import { AnnounceScreenComponent } from './announce/announce-screen.component';
-import {BibScrapeUtilComponent} from "./bib-scrape-util/bib-scrape-util.component";
 import {BrowseRunnersComponent} from "./browse-runners/browse-runners.component";
 import {NameLookupComponent} from "./name-lookup/name-lookup.component";
 import {TimerRunnerTableComponent} from "./timer-runner-table/timer-runner-table.component";
@@ -13,7 +12,6 @@ const routes: Routes = [
   { path: 'settings', component: SettingsComponent },
   { path: 'importexport', component: ImportExportComponent },
   { path: 'announce', component: AnnounceScreenComponent },
-  { path: 'bibscrape', component: BibScrapeUtilComponent },
   { path: 'browse', component: BrowseRunnersComponent},
   { path: 'lookup', component: NameLookupComponent},
   { path: 'xref', component: XrefManagerComponent},
