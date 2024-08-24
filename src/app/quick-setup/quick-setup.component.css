@@ -1,7 +1,7 @@
 .main-container {
   display: flex; /* Use flexbox for the main container */
   flex-wrap: wrap; /* Allow wrapping for responsive design */
-  justify-content: center; /* Center the content horizontally */
+  justify-content: left; /* Center the content horizontally */
   gap: 20px; /* Space between components */
   padding: 20px;
 }
