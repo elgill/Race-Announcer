@@ -23,6 +23,11 @@
 
   <button (click)="saveSettings()" class="btn-primary">Save Settings</button>
 
+  <!-- Success Message for Saved Settings -->
+  <div *ngIf="settingsSaved" class="success-message">
+    Settings have been saved successfully!
+  </div>
+
   <h3>Load Race List</h3>
   <button (click)="fetchRaces()" [disabled]="isLoading" class="btn-secondary">
     {{ isLoading ? 'Loading...' : 'Load Races' }}
@@ -36,7 +41,7 @@
     <h4>Select a Race:</h4>
     <ul class="race-list">
       <li *ngFor="let race of races" (click)="selectRace(race)" class="race-item">
-        <span>{{race.id}}: {{ race.name }} - {{ race.date }} ({{ race.location }})</span>
+        <span>{{ race.id }}: {{ race.name }} - {{ race.date }} ({{ race.location }})</span>
       </li>
     </ul>
   </div>

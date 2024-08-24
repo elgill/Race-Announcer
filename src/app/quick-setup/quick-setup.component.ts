@@ -31,6 +31,7 @@ export class QuickSetupComponent implements OnInit {
   errorMessage = '';
   settings = DEFAULT_SETTINGS;
   status: string = '';
+  settingsSaved: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -89,6 +90,12 @@ export class QuickSetupComponent implements OnInit {
   saveSettings(): void {
     if (this.quickSetupForm.valid) {
       this.settingsService.updateSettings(this.quickSetupForm.value as Settings);
+
+      this.settingsSaved = true;
+
+      setTimeout(() => {
+        this.settingsSaved = false;
+      }, 3000);
     }
   }
 
