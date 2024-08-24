@@ -1,3 +1,8 @@
-<h2>Clear Runners & XREF</h2>
-<button (click)="clearRunners()">Clear Runners & XREF</button>
-<p *ngIf="clearStatus === 'success'" class="success-message">Runners cleared successfully!</p>
+<div class="form-container">
+  <h2>Clear Runners & XREF</h2>
+
+  <button (click)="clearRunners()" class="btn-primary">Clear Runners</button>
+  <button (click)="clearXref()" class="btn-secondary">Clear XREF</button>
+
+  <p *ngIf="clearStatus" class="success-message">{{ clearStatus }}</p>
+</div>

@@ -282,8 +282,6 @@ export class RunnerDataService {
     this.activeRunners = [];
     this.activeRunners$.next(this.activeRunners);
 
-    this.clearXref();
-
     this.db.deleteAllRunners().then(() => {
       console.log('Deleted all runners from database.');
     }).catch(err => {
