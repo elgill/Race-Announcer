@@ -47,6 +47,7 @@ export class QuickSettingsComponent implements OnInit {
       ip: [DEFAULT_SETTINGS.ip],
       port: [DEFAULT_SETTINGS.port],
       customFields: this.formBuilder.array([]),
+      minTimeMs: DEFAULT_SETTINGS.minTimeMs,
       minTimeMinutes: [Math.floor(DEFAULT_SETTINGS.minTimeMs / 60000)], // Minutes part
       minTimeSeconds: [(DEFAULT_SETTINGS.minTimeMs % 60000) / 1000],  // Seconds part
       numReconnectAttempts: [DEFAULT_SETTINGS.numReconnectAttempts],
