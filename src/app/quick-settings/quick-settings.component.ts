@@ -47,11 +47,11 @@ export class QuickSettingsComponent implements OnInit {
       ip: [DEFAULT_SETTINGS.ip],
       port: [DEFAULT_SETTINGS.port],
       customFields: this.formBuilder.array([]),
-      minTimeMs: DEFAULT_SETTINGS.minTimeMs,
+      minTimeMs: [DEFAULT_SETTINGS.minTimeMs],
       minTimeMinutes: [Math.floor(DEFAULT_SETTINGS.minTimeMs / 60000)], // Minutes part
       minTimeSeconds: [(DEFAULT_SETTINGS.minTimeMs % 60000) / 1000],  // Seconds part
       numReconnectAttempts: [DEFAULT_SETTINGS.numReconnectAttempts],
-      reconnectDelay: [DEFAULT_SETTINGS.reconnectDelay / 1000]
+      reconnectDelay: [DEFAULT_SETTINGS.reconnectDelay]
     });
     this.settingsService.getSettings().subscribe(settings => {
       console.log('Patching Values: ', settings);
@@ -65,9 +65,6 @@ export class QuickSettingsComponent implements OnInit {
 
       this.quickSetupForm.patchValue({
         ...settings,
-        minTimeMinutes: Math.floor(settings.minTimeMs / 60000),
-        minTimeSeconds: (settings.minTimeMs % 60000) / 1000,
-        reconnectDelay: settings.reconnectDelay / 1000
       });
     });
 
