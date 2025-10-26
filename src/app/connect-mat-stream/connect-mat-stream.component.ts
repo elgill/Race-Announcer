@@ -4,9 +4,10 @@ import {DEFAULT_SETTINGS, SettingsService} from "../services/settings.service";
 import {ConnectionStatus} from "../models/connection.enum";
 
 @Component({
-  selector: 'app-connect-mat-stream',
-  templateUrl: './connect-mat-stream.component.html',
-  styleUrls: ['./connect-mat-stream.component.css']
+    selector: 'app-connect-mat-stream',
+    templateUrl: './connect-mat-stream.component.html',
+    styleUrls: ['./connect-mat-stream.component.css'],
+    standalone: false
 })
 export class ConnectMatStreamComponent implements OnInit {
   status: string = ConnectionStatus.UNKNOWN;

@@ -6,9 +6,10 @@ import {Runner} from "../interfaces/runner";
 import {ElectronService} from "../services/electron.service";
 
 @Component({
-  selector: 'app-announce',
-  templateUrl: './announce-screen.component.html',
-  styleUrls: ['./announce-screen.component.css']
+    selector: 'app-announce',
+    templateUrl: './announce-screen.component.html',
+    styleUrls: ['./announce-screen.component.css'],
+    standalone: false
 })
 export class AnnounceScreenComponent implements OnInit {
   settings: Settings= DEFAULT_SETTINGS;

@@ -3,9 +3,10 @@ import { RunnerDataService } from '../services/runner-data.service';
 import {SettingsService, Settings, DEFAULT_SETTINGS} from "../services/settings.service";
 
 @Component({
-  selector: 'app-bib-entry',
-  templateUrl: './bib-entry.component.html',
-  styleUrls: ['./bib-entry.component.css']
+    selector: 'app-bib-entry',
+    templateUrl: './bib-entry.component.html',
+    styleUrls: ['./bib-entry.component.css'],
+    standalone: false
 })
 export class BibEntryComponent implements OnInit, AfterViewInit  {
 

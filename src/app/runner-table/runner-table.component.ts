@@ -6,9 +6,10 @@ import {Observable} from "rxjs";
 import {map} from "rxjs/operators";
 
 @Component({
-  selector: 'app-runner-table',
-  templateUrl: './runner-table.component.html',
-  styleUrls: ['./runner-table.component.css']
+    selector: 'app-runner-table',
+    templateUrl: './runner-table.component.html',
+    styleUrls: ['./runner-table.component.css'],
+    standalone: false
 })
 export class RunnerTableComponent {
   @Input() runners: Runner[] = [];

@@ -3,9 +3,10 @@ import {BibScrapeService} from "../services/bib-scrape.service";
 import {DEFAULT_SETTINGS, SettingsService, Settings} from "../services/settings.service";
 
 @Component({
-  selector: 'app-auto-import',
-  templateUrl: './auto-import.component.html',
-  styleUrls: ['./auto-import.component.css']
+    selector: 'app-auto-import',
+    templateUrl: './auto-import.component.html',
+    styleUrls: ['./auto-import.component.css'],
+    standalone: false
 })
 export class AutoImportComponent {
   private settings: Settings= DEFAULT_SETTINGS;

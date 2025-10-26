@@ -4,9 +4,10 @@ import { startWith } from 'rxjs/operators';
 import {DEFAULT_SETTINGS, Settings, SettingsService} from "../services/settings.service";
 
 @Component({
-  selector: 'app-race-clock',
-  templateUrl: './race-clock.component.html',
-  styleUrls: ['./race-clock.component.css']
+    selector: 'app-race-clock',
+    templateUrl: './race-clock.component.html',
+    styleUrls: ['./race-clock.component.css'],
+    standalone: false
 })
 export class RaceClockComponent implements OnInit, OnDestroy {
   settings: Settings= DEFAULT_SETTINGS;

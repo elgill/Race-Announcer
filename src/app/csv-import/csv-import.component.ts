@@ -3,9 +3,10 @@ import { CsvColumnMappingService } from '../services/csv-column-mapping.service'
 import {DEFAULT_SETTINGS, Settings, SettingsService} from "../services/settings.service";
 
 @Component({
-  selector: 'app-csv-import',
-  templateUrl: './csv-import.component.html',
-  styleUrls: ['./csv-import.component.css']
+    selector: 'app-csv-import',
+    templateUrl: './csv-import.component.html',
+    styleUrls: ['./csv-import.component.css'],
+    standalone: false
 })
 export class CsvImportComponent {
   settings: Settings = DEFAULT_SETTINGS;

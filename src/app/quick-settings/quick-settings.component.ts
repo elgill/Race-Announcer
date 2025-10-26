@@ -11,9 +11,10 @@ interface Race {
 }
 
 @Component({
-  selector: 'app-quick-settings',
-  templateUrl: './quick-settings.component.html',
-  styleUrl: './quick-settings.component.css'
+    selector: 'app-quick-settings',
+    templateUrl: './quick-settings.component.html',
+    styleUrl: './quick-settings.component.css',
+    standalone: false
 })
 export class QuickSettingsComponent implements OnInit {
   quickSetupForm: FormGroup = new FormGroup({});

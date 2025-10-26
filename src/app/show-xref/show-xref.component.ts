@@ -3,9 +3,10 @@ import {RunnerDataService} from "../services/runner-data.service";
 
 
 @Component({
-  selector: 'app-show-xref',
-  templateUrl: './show-xref.component.html',
-  styleUrls: ['./show-xref.component.css']
+    selector: 'app-show-xref',
+    templateUrl: './show-xref.component.html',
+    styleUrls: ['./show-xref.component.css'],
+    standalone: false
 })
 export class ShowXrefComponent {
   showXrefData: boolean = false;

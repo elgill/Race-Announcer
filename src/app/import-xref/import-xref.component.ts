@@ -4,9 +4,10 @@ import * as Papa from 'papaparse';
 import { RunnerDataService } from "../services/runner-data.service";
 
 @Component({
-  selector: 'app-import-xref',
-  templateUrl: './import-xref.component.html',
-  styleUrls: ['./import-xref.component.css']
+    selector: 'app-import-xref',
+    templateUrl: './import-xref.component.html',
+    styleUrls: ['./import-xref.component.css'],
+    standalone: false
 })
 export class ImportXrefComponent {
   settings: Settings = DEFAULT_SETTINGS;

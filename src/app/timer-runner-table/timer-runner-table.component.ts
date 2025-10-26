@@ -6,9 +6,10 @@ import {SettingsService} from "../services/settings.service";
 import {map} from "rxjs/operators";
 
 @Component({
-  selector: 'app-timer-runner-table',
-  templateUrl: './timer-runner-table.component.html',
-  styleUrls: ['./timer-runner-table.component.css']
+    selector: 'app-timer-runner-table',
+    templateUrl: './timer-runner-table.component.html',
+    styleUrls: ['./timer-runner-table.component.css'],
+    standalone: false
 })
 export class TimerRunnerTableComponent {
   @Input() runners: Runner[] = [];

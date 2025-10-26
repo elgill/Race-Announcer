@@ -3,9 +3,10 @@ import {RunnerDataService} from "../services/runner-data.service";
 import {Runner} from "../interfaces/runner";
 
 @Component({
-  selector: 'app-browse-runners',
-  templateUrl: './browse-runners.component.html',
-  styleUrls: ['./browse-runners.component.css']
+    selector: 'app-browse-runners',
+    templateUrl: './browse-runners.component.html',
+    styleUrls: ['./browse-runners.component.css'],
+    standalone: false
 })
 export class BrowseRunnersComponent implements OnInit {
   runners: Runner[] = [];

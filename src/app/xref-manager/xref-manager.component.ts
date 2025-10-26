@@ -2,9 +2,10 @@ import { Component } from '@angular/core';
 import { RunnerDataService } from '../services/runner-data.service';
 
 @Component({
-  selector: 'app-xref-manager',
-  templateUrl: './xref-manager.component.html',
-  styleUrls: ['./xref-manager.component.css']
+    selector: 'app-xref-manager',
+    templateUrl: './xref-manager.component.html',
+    styleUrls: ['./xref-manager.component.css'],
+    standalone: false
 })
 export class XrefManagerComponent {
   startingBibNumber: number | null = null;

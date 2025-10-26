@@ -2,9 +2,10 @@ import { Component } from '@angular/core';
 import {RunnerDataService} from "../services/runner-data.service";
 
 @Component({
-  selector: 'app-clear-runners',
-  templateUrl: './clear-runners.component.html',
-  styleUrls: ['./clear-runners.component.css']
+    selector: 'app-clear-runners',
+    templateUrl: './clear-runners.component.html',
+    styleUrls: ['./clear-runners.component.css'],
+    standalone: false
 })
 export class ClearRunnersComponent {
   clearStatus = '';

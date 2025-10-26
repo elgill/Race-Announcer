@@ -3,9 +3,10 @@ import {RunnerDataService} from "../services/runner-data.service";
 import {Runner} from "../interfaces/runner";
 
 @Component({
-  selector: 'app-name-lookup',
-  templateUrl: './name-lookup.component.html',
-  styleUrls: ['./name-lookup.component.css']
+    selector: 'app-name-lookup',
+    templateUrl: './name-lookup.component.html',
+    styleUrls: ['./name-lookup.component.css'],
+    standalone: false
 })
 export class NameLookupComponent {
   runners: Runner[] = [];
