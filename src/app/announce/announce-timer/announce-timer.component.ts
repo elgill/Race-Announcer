@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AnnounceBaseComponent } from "../announce-base.component";
-import { CommonModule } from '@angular/common';
+
 import { TimeDurationPipe } from '../../time-duration.pipe';
 
 @Component({
@@ -8,7 +8,7 @@ import { TimeDurationPipe } from '../../time-duration.pipe';
     templateUrl: './announce-timer.component.html',
     styleUrls: ['./announce-timer.component.css'],
     standalone: true,
-    imports: [CommonModule, TimeDurationPipe]
+    imports: [TimeDurationPipe]
 })
 export class AnnounceTimerComponent extends AnnounceBaseComponent {
 

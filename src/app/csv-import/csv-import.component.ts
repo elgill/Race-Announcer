@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CsvColumnMappingService } from '../services/csv-column-mapping.service';
 import {DEFAULT_SETTINGS, Settings, SettingsService} from "../services/settings.service";
-import {CommonModule} from "@angular/common";
+
 import {FormsModule} from "@angular/forms";
 
 @Component({
@@ -9,7 +9,7 @@ import {FormsModule} from "@angular/forms";
     templateUrl: './csv-import.component.html',
     styleUrls: ['./csv-import.component.css'],
     standalone: true,
-    imports: [CommonModule, FormsModule]
+    imports: [FormsModule]
 })
 export class CsvImportComponent {
   settings: Settings = DEFAULT_SETTINGS;

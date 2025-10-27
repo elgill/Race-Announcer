@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RunnerDataService } from '../services/runner-data.service';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 import { ImportXrefComponent } from '../import-xref/import-xref.component';
 import { ShowXrefComponent } from '../show-xref/show-xref.component';
 
@@ -10,7 +10,7 @@ import { ShowXrefComponent } from '../show-xref/show-xref.component';
     templateUrl: './xref-manager.component.html',
     styleUrls: ['./xref-manager.component.css'],
     standalone: true,
-    imports: [FormsModule, CommonModule, ImportXrefComponent, ShowXrefComponent]
+    imports: [FormsModule, ImportXrefComponent, ShowXrefComponent]
 })
 export class XrefManagerComponent {
   startingBibNumber: number | null = null;

@@ -1,33 +1,41 @@
 <table aria-label="Runner Data">
   <thead>
-  <tr>
-    <th>BIB</th>
-    <th>First Name</th>
-    <th>Last Name</th>
-    <th>Age</th>
-    <th>Gender</th>
-    <th>Town</th>
-    <th>State</th>
-    <th *ngFor="let field of customFields$ | async">
-      <ng-container *ngIf="field.showInBrowse">{{field.name}}</ng-container>
-    </th>
-  </tr>
+    <tr>
+      <th>BIB</th>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Age</th>
+      <th>Gender</th>
+      <th>Town</th>
+      <th>State</th>
+      @for (field of customFields$ | async; track field) {
+        <th>
+          @if (field.showInBrowse) {
+            {{field.name}}
+          }
+        </th>
+      }
+    </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let runner of runners.slice(0, displayLimit)">
-    <td>{{runner.bib}}</td>
-    <td>{{runner.firstName}}</td>
-    <td>{{runner.lastName}}</td>
-    <td>{{runner.age}}</td>
-    <td>{{runner.gender}}</td>
-    <td>{{runner.town}}</td>
-    <td>{{runner.state}}</td>
-    <ng-container *ngFor="let field of customFields$ | async">
-      <td>
-        {{runner.customFields[field.name]}}
-      </td>
-    </ng-container>
-  </tr>
-  <button (click)="loadAll()" *ngIf="runners.length > displayLimit">Load All</button>
+    @for (runner of runners.slice(0, displayLimit); track runner) {
+      <tr>
+        <td>{{runner.bib}}</td>
+        <td>{{runner.firstName}}</td>
+        <td>{{runner.lastName}}</td>
+        <td>{{runner.age}}</td>
+        <td>{{runner.gender}}</td>
+        <td>{{runner.town}}</td>
+        <td>{{runner.state}}</td>
+        @for (field of customFields$ | async; track field) {
+          <td>
+            {{runner.customFields[field.name]}}
+          </td>
+        }
+      </tr>
+    }
+    @if (runners.length > displayLimit) {
+      <button (click)="loadAll()">Load All</button>
+    }
   </tbody>
 </table>

@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import {RunnerDataService} from "../services/runner-data.service";
-import {CommonModule} from "@angular/common";
+
 
 @Component({
     selector: 'app-clear-runners',
     templateUrl: './clear-runners.component.html',
     styleUrls: ['./clear-runners.component.css'],
     standalone: true,
-    imports: [CommonModule]
+    imports: []
 })
 export class ClearRunnersComponent {
   clearStatus = '';

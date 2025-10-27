@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import {BibScrapeService} from "../services/bib-scrape.service";
 import {DEFAULT_SETTINGS, SettingsService, Settings} from "../services/settings.service";
-import {CommonModule} from "@angular/common";
+
 
 @Component({
     selector: 'app-auto-import',
     templateUrl: './auto-import.component.html',
     styleUrls: ['./auto-import.component.css'],
     standalone: true,
-    imports: [CommonModule]
+    imports: []
 })
 export class AutoImportComponent {
   private settings: Settings= DEFAULT_SETTINGS;

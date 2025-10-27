@@ -32,8 +32,8 @@
       <div>
         <label>
           Min Time Between Entries:
-            Minutes: <input formControlName="minTimeMinutes" type="number" min="0">
-            Seconds: <input formControlName="minTimeSeconds" type="number" min="0" max="59">
+          Minutes: <input formControlName="minTimeMinutes" type="number" min="0">
+          Seconds: <input formControlName="minTimeSeconds" type="number" min="0" max="59">
         </label>
       </div>
       <div>
@@ -79,9 +79,11 @@
         <label>
           Announcer Screen View:
           <select formControlName="announceTemplate">
-            <option *ngFor="let templateOption of templateOptions" [value]="templateOption.value">
-              {{templateOption.display}}
-            </option>
+            @for (templateOption of templateOptions; track templateOption) {
+              <option [value]="templateOption.value">
+                {{templateOption.display}}
+              </option>
+            }
           </select>
         </label>
       </div>
@@ -120,30 +122,34 @@
     <label for="custom-fields" class="collapsible-label">Custom Fields</label>
     <div class="collapsible-content">
       <div formArrayName="customFields">
-        <div *ngFor="let field of customFields.controls; let i = index" [formGroupName]="i" class="custom-field-group">
-          <h4>Custom Field {{i + 1}}</h4>
-          <div>
-            <label>
-              Name: <input formControlName="name" type="text">
-            </label>
+        @for (field of customFields.controls; track field; let i = $index) {
+          <div [formGroupName]="i" class="custom-field-group">
+            <h4>Custom Field {{i + 1}}</h4>
+            <div>
+              <label>
+                Name: <input formControlName="name" type="text">
+              </label>
+            </div>
+            <div>
+              <label>
+                Show in Announce Screen: <input formControlName="showInAnnounce" type="checkbox">
+              </label>
+            </div>
+            <div>
+              <label>
+                Show in Browse Screen: <input formControlName="showInBrowse" type="checkbox">
+              </label>
+            </div>
+            <button (click)="removeField(i)">Remove This Field</button>
           </div>
-          <div>
-            <label>
-              Show in Announce Screen: <input formControlName="showInAnnounce" type="checkbox">
-            </label>
-          </div>
-          <div>
-            <label>
-              Show in Browse Screen: <input formControlName="showInBrowse" type="checkbox">
-            </label>
-          </div>
-          <button (click)="removeField(i)">Remove This Field</button>
-        </div>
+        }
       </div>
       <button (click)="addField()">Add Field</button>
     </div>
   </div>
 
   <button (click)="saveSettings()">Save Settings</button>
-  <p *ngIf="status === 'success'" class="success-message">Settings saved successfully!</p>
+  @if (status === 'success') {
+    <p class="success-message">Settings saved successfully!</p>
+  }
 </div>

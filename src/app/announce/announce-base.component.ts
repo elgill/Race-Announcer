@@ -12,7 +12,7 @@ import {ElectronService} from "../services/electron.service";
 export class AnnounceBaseComponent implements OnInit {
   settings: Settings= DEFAULT_SETTINGS;
   runStartTime: Date | undefined;
-  isElectron = this.electronService.isElectron;
+  isElectron = !!this.electronService.isElectron;
 
   runnerList: Runner[] = [];
   reverseRunnerList: Runner[] = [];

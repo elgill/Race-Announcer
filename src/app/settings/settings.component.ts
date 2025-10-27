@@ -2,14 +2,14 @@ import {AfterViewInit, Component, OnInit} from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule } from '@angular/forms';
 import { ANNOUNCE_TEMPLATE_OPTIONS, DEFAULT_SETTINGS, Settings, SettingsService } from '../services/settings.service';
 import { ElectronService } from "../services/electron.service";
-import { CommonModule } from '@angular/common';
+
 
 @Component({
     selector: 'app-settings',
     templateUrl: './settings.component.html',
     styleUrls: ['./settings.component.css'],
     standalone: true,
-    imports: [ReactiveFormsModule, CommonModule]
+    imports: [ReactiveFormsModule]
 })
 export class SettingsComponent implements OnInit, AfterViewInit {
   settingsForm: FormGroup = new FormGroup({});

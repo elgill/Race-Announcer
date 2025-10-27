@@ -3,7 +3,9 @@
 
   <button (click)="importRunners()" class="btn-primary">Scrape Runners</button>
 
-  <div *ngIf="importStatus" class="status-message">
-    {{ importStatus }}
-  </div>
+  @if (importStatus) {
+    <div class="status-message">
+      {{ importStatus }}
+    </div>
+  }
 </div>

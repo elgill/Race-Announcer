@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { BibEntryComponent } from '../bib-entry/bib-entry.component';
 import { RaceClockComponent } from '../race-clock/race-clock.component';
 import { ConnectMatStreamComponent } from '../connect-mat-stream/connect-mat-stream.component';
@@ -14,7 +14,7 @@ import { AnnounceBaseComponent } from './announce-base.component';
     templateUrl: './announce-screen.component.html',
     styleUrls: ['./announce-screen.component.css'],
     standalone: true,
-    imports: [CommonModule, BibEntryComponent, RaceClockComponent, ConnectMatStreamComponent, AnnounceGridComponent, AnnounceFreeformComponent, AnnounceTimerComponent, ErrorComponent]
+    imports: [BibEntryComponent, RaceClockComponent, ConnectMatStreamComponent, AnnounceGridComponent, AnnounceFreeformComponent, AnnounceTimerComponent, ErrorComponent]
 })
 export class AnnounceScreenComponent extends AnnounceBaseComponent {
 }

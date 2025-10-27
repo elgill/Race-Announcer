@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {DEFAULT_SETTINGS, Settings, SettingsService} from "../services/settings.service";
 import {RaceService} from "../services/race.service";
-import { CommonModule } from '@angular/common';
+
 
 interface Race {
   id: string;
@@ -16,7 +16,7 @@ interface Race {
     templateUrl: './quick-settings.component.html',
     styleUrl: './quick-settings.component.css',
     standalone: true,
-    imports: [ReactiveFormsModule, CommonModule]
+    imports: [ReactiveFormsModule]
 })
 export class QuickSettingsComponent implements OnInit {
   quickSetupForm: FormGroup = new FormGroup({});

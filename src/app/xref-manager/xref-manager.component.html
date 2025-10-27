@@ -25,6 +25,8 @@
 
   <button (click)="createXrefData()">Create</button>
 
-  <p *ngIf="importStatus === 'success'" class="success-message">Creation successful!</p>
+  @if (importStatus === 'success') {
+    <p class="success-message">Creation successful!</p>
+  }
   <p class="error-message">{{ errorMessage }}</p>
 </div>

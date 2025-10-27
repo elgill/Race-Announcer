@@ -1,20 +1,36 @@
 <div [style.font-size.px]="settings.fontSize" [style.color]="settings.fontColor" [style.background-color]="settings.backgroundColor">
   <div class="header">
     <app-bib-entry></app-bib-entry>
-    <div *ngIf="isNumLockOff&&settings.numLockWarn" class="num-lock-warning">Warning: Num Lock is off!</div>
+    @if (isNumLockOff&&settings.numLockWarn) {
+      <div class="num-lock-warning">Warning: Num Lock is off!</div>
+    }
     <app-race-clock></app-race-clock>
   </div>
   <div class="upper-info-bar">
-    <div class="pause-status"><ng-container *ngIf="paused">Paused: {{ pausedQueueLength }} entries in queue</ng-container></div>
-    <div *ngIf="isElectron" id="mat-connect">
-      <app-connect-mat-stream></app-connect-mat-stream>
-    </div>
+    <div class="pause-status">@if (paused) {
+      Paused: {{ pausedQueueLength }} entries in queue
+    }</div>
+    @if (isElectron) {
+      <div id="mat-connect">
+        <app-connect-mat-stream></app-connect-mat-stream>
+      </div>
+    }
   </div>
 
-  <div [ngSwitch]="settings.announceTemplate">
-    <app-announce-grid *ngSwitchCase="'grid'"></app-announce-grid>
-    <app-announce-freeform *ngSwitchCase="'freeform'"></app-announce-freeform>
-    <app-announce-timer *ngSwitchCase="'timer'"></app-announce-timer>
-    <app-error *ngSwitchDefault></app-error>
+  <div>
+    @switch (settings.announceTemplate) {
+      @case ('grid') {
+        <app-announce-grid></app-announce-grid>
+      }
+      @case ('freeform') {
+        <app-announce-freeform></app-announce-freeform>
+      }
+      @case ('timer') {
+        <app-announce-timer></app-announce-timer>
+      }
+      @default {
+        <app-error></app-error>
+      }
+    }
   </div>
 </div>

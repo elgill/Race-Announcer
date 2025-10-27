@@ -4,5 +4,7 @@
   <button (click)="clearRunners()" class="btn-primary">Clear Runners</button>
   <button (click)="clearXref()" class="btn-secondary">Clear XREF</button>
 
-  <p *ngIf="clearStatus" class="success-message">{{ clearStatus }}</p>
+  @if (clearStatus) {
+    <p class="success-message">{{ clearStatus }}</p>
+  }
 </div>

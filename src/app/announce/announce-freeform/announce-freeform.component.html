@@ -1,16 +1,20 @@
 <div>
-  <div *ngFor="let runner of runnerList; index as i" [hidden]="i >= settings.displayLines">
-    <span class="runnerAttribute">{{runner.bib}}</span>
-    <span class="runnerAttribute">{{runner.firstName}}</span>
-    <span class="runnerAttribute">{{runner.lastName}}</span>
-    <span *ngIf="runner.age > 0" class="runnerAttribute">{{runner.age}}</span>
-    <span class="runnerAttribute">{{runner.gender}}</span>
-    <span class="runnerAttribute">{{runner.town}}</span>
-    <span class="runnerAttribute">{{runner.state}}</span>
-    <ng-container *ngFor="let field of customFields">
-      <span class="runnerAttribute">
-        {{runner.customFields[field.name]}}
-      </span>
-    </ng-container>
-  </div>
+  @for (runner of runnerList; track runner; let i = $index) {
+    <div [hidden]="i >= settings.displayLines">
+      <span class="runnerAttribute">{{runner.bib}}</span>
+      <span class="runnerAttribute">{{runner.firstName}}</span>
+      <span class="runnerAttribute">{{runner.lastName}}</span>
+      @if (runner.age > 0) {
+        <span class="runnerAttribute">{{runner.age}}</span>
+      }
+      <span class="runnerAttribute">{{runner.gender}}</span>
+      <span class="runnerAttribute">{{runner.town}}</span>
+      <span class="runnerAttribute">{{runner.state}}</span>
+      @for (field of customFields; track field) {
+        <span class="runnerAttribute">
+          {{runner.customFields[field.name]}}
+        </span>
+      }
+    </div>
+  }
 </div>

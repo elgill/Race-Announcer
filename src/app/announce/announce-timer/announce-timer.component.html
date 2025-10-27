@@ -1,28 +1,34 @@
 <table aria-label="Runners to announce" style="font-size: 18px">
   <thead>
-  <tr>
-    <th>Time</th>
-    <th>Bib</th>
-    <th>First Name</th>
-    <th>Last Name</th>
-    <th>Age</th>
-    <th>Gender</th>
-    <th *ngFor="let field of customFields">
-      {{field.name}}
-    </th>
-  </tr>
+    <tr>
+      <th>Time</th>
+      <th>Bib</th>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Age</th>
+      <th>Gender</th>
+      @for (field of customFields; track field) {
+        <th>
+          {{field.name}}
+        </th>
+      }
+    </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let runner of reverseRunnerList; index as i">
-    <td>{{ runStartTime | timeDuration:runner.timeEntered }}</td>
-    <td>{{runner.bib}}</td>
-    <td>{{runner.firstName}}</td>
-    <td>{{runner.lastName}}</td>
-    <td>{{runner.age}}</td>
-    <td>{{runner.gender}}</td>
-    <td *ngFor="let field of customFields">
-      {{ runner.customFields[field.name] }}
-    </td>
-  </tr>
+    @for (runner of reverseRunnerList; track runner; let i = $index) {
+      <tr>
+        <td>{{ runStartTime | timeDuration:runner.timeEntered }}</td>
+        <td>{{runner.bib}}</td>
+        <td>{{runner.firstName}}</td>
+        <td>{{runner.lastName}}</td>
+        <td>{{runner.age}}</td>
+        <td>{{runner.gender}}</td>
+        @for (field of customFields; track field) {
+          <td>
+            {{ runner.customFields[field.name] }}
+          </td>
+        }
+      </tr>
+    }
   </tbody>
 </table>
