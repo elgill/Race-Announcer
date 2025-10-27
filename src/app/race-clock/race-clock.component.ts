@@ -2,12 +2,14 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { interval, Subscription } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 import {DEFAULT_SETTINGS, Settings, SettingsService} from "../services/settings.service";
+import {TimeDurationPipe} from "../time-duration.pipe";
 
 @Component({
     selector: 'app-race-clock',
     templateUrl: './race-clock.component.html',
     styleUrls: ['./race-clock.component.css'],
-    standalone: false
+    standalone: true,
+    imports: [TimeDurationPipe]
 })
 export class RaceClockComponent implements OnInit, OnDestroy {
   settings: Settings= DEFAULT_SETTINGS;

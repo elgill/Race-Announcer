@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ElectronService} from "./services/electron.service";
-import {Router} from "@angular/router";
+import {Router, RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
 import {VisualLoadTestService} from "./services/visual-load-test.service";
 import {ReportingService} from "./reporting.service";
 
@@ -8,7 +8,8 @@ import {ReportingService} from "./reporting.service";
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css'],
-    standalone: false
+    standalone: true,
+    imports: [RouterLink, RouterLinkActive, RouterOutlet]
 })
 
 export class AppComponent implements OnInit {

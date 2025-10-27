@@ -1,62 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import {RunnerDataService} from '../services/runner-data.service';
-import {DEFAULT_SETTINGS, Settings, SettingsService} from "../services/settings.service";
-import {CustomField} from "../interfaces/custom-field";
-import {Runner} from "../interfaces/runner";
-import {ElectronService} from "../services/electron.service";
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { BibEntryComponent } from '../bib-entry/bib-entry.component';
+import { RaceClockComponent } from '../race-clock/race-clock.component';
+import { ConnectMatStreamComponent } from '../connect-mat-stream/connect-mat-stream.component';
+import { AnnounceGridComponent } from './announce-grid/announce-grid.component';
+import { AnnounceFreeformComponent } from './announce-freeform/announce-freeform.component';
+import { AnnounceTimerComponent } from './announce-timer/announce-timer.component';
+import { ErrorComponent } from '../error/error.component';
+import { AnnounceBaseComponent } from './announce-base.component';
 
 @Component({
     selector: 'app-announce',
     templateUrl: './announce-screen.component.html',
     styleUrls: ['./announce-screen.component.css'],
-    standalone: false
+    standalone: true,
+    imports: [CommonModule, BibEntryComponent, RaceClockComponent, ConnectMatStreamComponent, AnnounceGridComponent, AnnounceFreeformComponent, AnnounceTimerComponent, ErrorComponent]
 })
-export class AnnounceScreenComponent implements OnInit {
-  settings: Settings= DEFAULT_SETTINGS;
-  runStartTime: Date | undefined;
-  isElectron = this.electronService.isElectron;
-
-  runnerList: Runner[] = [];
-  reverseRunnerList: Runner[] = [];
-  isNumLockOff = false;
-  customFields: CustomField[] = [];
-
-  paused = false;
-  pausedQueueLength = 0;
-
-  constructor(
-    private runnerDataService: RunnerDataService,
-    private settingsService: SettingsService,
-    private electronService: ElectronService,
-  ) { }
-
-  ngOnInit(): void {
-    this.runnerDataService.getActiveRunners().subscribe(runners => {
-      this.runnerList = runners;
-      this.reverseRunnerList = [...runners].reverse();
-    });
-
-    this.settingsService.getSettings().subscribe(settings => {
-      this.settings = settings;
-      if(settings.raceStartTime){
-        this.runStartTime = new Date(settings.raceStartTime);
-      } else {
-        this.runStartTime = undefined
-      }
-    });
-    window.addEventListener('keydown', (event: KeyboardEvent) => {
-      this.isNumLockOff = event.getModifierState && !event.getModifierState('NumLock');
-    });
-
-    this.customFields = this.settings.customFields.filter(field => field.showInAnnounce)
-
-    this.runnerDataService.getPausedStatus().subscribe(paused => {
-      this.paused = paused;
-    });
-
-    this.runnerDataService.getPausedQueue().subscribe(queue => {
-      this.pausedQueueLength = queue.length;
-    });
-  }
-
+export class AnnounceScreenComponent extends AnnounceBaseComponent {
 }

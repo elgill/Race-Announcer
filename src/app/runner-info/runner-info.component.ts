@@ -6,7 +6,7 @@ import { RunnerDataService } from '../services/runner-data.service';
     selector: 'app-runner-info',
     templateUrl: './runner-info.component.html',
     styleUrls: ['./runner-info.component.css'],
-    standalone: false
+    standalone: true
 })
 export class RunnerInfoComponent implements OnInit {
   runnerCount = 0;

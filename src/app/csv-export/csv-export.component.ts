@@ -5,7 +5,7 @@ import {RunnerDataService} from "../services/runner-data.service";
     selector: 'app-csv-export',
     templateUrl: './csv-export.component.html',
     styleUrls: ['./csv-export.component.css'],
-    standalone: false
+    standalone: true
 })
 export class CsvExportComponent {
   constructor(private runnerDataService: RunnerDataService) { }

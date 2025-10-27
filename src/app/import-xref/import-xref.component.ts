@@ -2,12 +2,14 @@ import { Component } from '@angular/core';
 import { DEFAULT_SETTINGS, Settings, SettingsService } from "../services/settings.service";
 import * as Papa from 'papaparse';
 import { RunnerDataService } from "../services/runner-data.service";
+import {CommonModule} from "@angular/common";
 
 @Component({
     selector: 'app-import-xref',
     templateUrl: './import-xref.component.html',
     styleUrls: ['./import-xref.component.css'],
-    standalone: false
+    standalone: true,
+    imports: [CommonModule]
 })
 export class ImportXrefComponent {
   settings: Settings = DEFAULT_SETTINGS;

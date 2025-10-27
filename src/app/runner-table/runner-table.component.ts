@@ -4,12 +4,14 @@ import {SettingsService} from "../services/settings.service";
 import {Runner} from "../interfaces/runner";
 import {Observable} from "rxjs";
 import {map} from "rxjs/operators";
+import {CommonModule} from "@angular/common";
 
 @Component({
     selector: 'app-runner-table',
     templateUrl: './runner-table.component.html',
     styleUrls: ['./runner-table.component.css'],
-    standalone: false
+    standalone: true,
+    imports: [CommonModule]
 })
 export class RunnerTableComponent {
   @Input() runners: Runner[] = [];

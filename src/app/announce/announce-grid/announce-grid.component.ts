@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
-import {AnnounceScreenComponent} from "../announce-screen.component";
+import { AnnounceBaseComponent } from "../announce-base.component";
+import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-announce-grid',
     templateUrl: './announce-grid.component.html',
     styleUrls: ['./announce-grid.component.css'],
-    standalone: false
+    standalone: true,
+    imports: [CommonModule]
 })
-export class AnnounceGridComponent extends AnnounceScreenComponent{
+export class AnnounceGridComponent extends AnnounceBaseComponent {
 
 }

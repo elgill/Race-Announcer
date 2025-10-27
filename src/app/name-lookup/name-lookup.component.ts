@@ -1,12 +1,14 @@
 import {Component} from '@angular/core';
 import {RunnerDataService} from "../services/runner-data.service";
 import {Runner} from "../interfaces/runner";
+import {RunnerTableComponent} from "../runner-table/runner-table.component";
 
 @Component({
     selector: 'app-name-lookup',
     templateUrl: './name-lookup.component.html',
     styleUrls: ['./name-lookup.component.css'],
-    standalone: false
+    standalone: true,
+    imports: [RunnerTableComponent]
 })
 export class NameLookupComponent {
   runners: Runner[] = [];

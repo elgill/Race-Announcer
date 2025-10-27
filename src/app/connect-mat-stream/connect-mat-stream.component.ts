@@ -7,7 +7,7 @@ import {ConnectionStatus} from "../models/connection.enum";
     selector: 'app-connect-mat-stream',
     templateUrl: './connect-mat-stream.component.html',
     styleUrls: ['./connect-mat-stream.component.css'],
-    standalone: false
+    standalone: true
 })
 export class ConnectMatStreamComponent implements OnInit {
   status: string = ConnectionStatus.UNKNOWN;

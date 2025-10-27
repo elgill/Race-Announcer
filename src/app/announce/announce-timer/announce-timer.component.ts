@@ -1,12 +1,15 @@
 import { Component } from '@angular/core';
-import {AnnounceScreenComponent} from "../announce-screen.component";
+import { AnnounceBaseComponent } from "../announce-base.component";
+import { CommonModule } from '@angular/common';
+import { TimeDurationPipe } from '../../time-duration.pipe';
 
 @Component({
     selector: 'app-announce-timer',
     templateUrl: './announce-timer.component.html',
     styleUrls: ['./announce-timer.component.css'],
-    standalone: false
+    standalone: true,
+    imports: [CommonModule, TimeDurationPipe]
 })
-export class AnnounceTimerComponent extends AnnounceScreenComponent{
+export class AnnounceTimerComponent extends AnnounceBaseComponent {
 
 }

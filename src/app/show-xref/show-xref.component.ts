@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
 import {RunnerDataService} from "../services/runner-data.service";
+import {CommonModule} from "@angular/common";
 
 
 @Component({
     selector: 'app-show-xref',
     templateUrl: './show-xref.component.html',
     styleUrls: ['./show-xref.component.css'],
-    standalone: false
+    standalone: true,
+    imports: [CommonModule]
 })
 export class ShowXrefComponent {
   showXrefData: boolean = false;

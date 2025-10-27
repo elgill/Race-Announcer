@@ -3,7 +3,7 @@ import { formatTimeDuration } from './time-utils';
 
 @Pipe({
     name: 'timeDuration',
-    standalone: false
+    standalone: true
 })
 export class TimeDurationPipe implements PipeTransform {
   transform(startTime: Date | undefined, endTime: Date | undefined): string {
