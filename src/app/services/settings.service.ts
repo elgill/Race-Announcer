@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { CustomField } from "../interfaces/custom-field";
 import { ConfigService } from './config.service';
@@ -57,11 +57,13 @@ export const DEFAULT_SETTINGS: Settings = {
   providedIn: 'root'
 })
 export class SettingsService {
+  private configService = inject(ConfigService);
+
   private settings: Settings = DEFAULT_SETTINGS;
 
   private settings$ = new BehaviorSubject<Settings>(this.settings);
 
-  constructor(private configService: ConfigService) {
+  constructor() {
     this.loadSettings();
   }
 

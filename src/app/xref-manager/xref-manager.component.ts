@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RunnerDataService } from '../services/runner-data.service';
 import { FormsModule } from '@angular/forms';
 
@@ -13,14 +13,14 @@ import { ShowXrefComponent } from '../show-xref/show-xref.component';
     imports: [FormsModule, ImportXrefComponent, ShowXrefComponent]
 })
 export class XrefManagerComponent {
+  private runnerDataService = inject(RunnerDataService);
+
   startingBibNumber: number | null = null;
   startingChipCode: number | null = null;
   numberOfEntries: number | null = null;
   padWithZeros: boolean = true;
   errorMessage: string = '';
   importStatus = '';
-
-  constructor(private runnerDataService: RunnerDataService) {}
 
   createXrefData(): void {
     if (this.startingBibNumber !== null && this.startingChipCode !== null && this.numberOfEntries !== null) {

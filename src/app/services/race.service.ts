@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import {DEFAULT_SETTINGS, Settings, SettingsService} from "./settings.service";
@@ -15,9 +15,12 @@ interface Race {
   providedIn: 'root'
 })
 export class RaceService {
+  private http = inject(HttpClient);
+  private settingsService = inject(SettingsService);
+
   private settings: Settings = DEFAULT_SETTINGS;
 
-  constructor(private http: HttpClient, private settingsService: SettingsService) {
+  constructor() {
     this.settingsService.getSettings().subscribe(settings => {
       this.settings = settings;
     });

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {RunnerDataService} from './runner-data.service';
 import * as Papa from 'papaparse';
 import {SettingsService} from "./settings.service";
@@ -8,9 +8,9 @@ import {Runner} from "../interfaces/runner";
   providedIn: 'root'
 })
 export class CsvColumnMappingService {
+  private runnerDataService = inject(RunnerDataService);
+  private settingsService = inject(SettingsService);
 
-
-  constructor(private runnerDataService: RunnerDataService,private settingsService: SettingsService) { }
 
   getHeaders(file: File): Promise<string[]> {
     return new Promise((resolve, reject) => {

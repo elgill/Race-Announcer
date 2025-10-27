@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {DEFAULT_SETTINGS, Settings, SettingsService} from "../services/settings.service";
 import {RaceService} from "../services/race.service";
@@ -19,6 +19,10 @@ interface Race {
     imports: [ReactiveFormsModule]
 })
 export class QuickSettingsComponent implements OnInit {
+  private formBuilder = inject(FormBuilder);
+  private settingsService = inject(SettingsService);
+  private raceService = inject(RaceService);
+
   quickSetupForm: FormGroup = new FormGroup({});
   races: Race[] = [];
   isLoading = false;
@@ -26,13 +30,6 @@ export class QuickSettingsComponent implements OnInit {
   settings = DEFAULT_SETTINGS;
   status: string = '';
   settingsSaved: boolean = false;
-
-  constructor(
-    private formBuilder: FormBuilder,
-    private settingsService: SettingsService,
-    private raceService: RaceService,
-  ) {
-  }
 
   ngOnInit(): void {
     this.quickSetupForm = this.formBuilder.group({

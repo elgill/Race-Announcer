@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {RunnerDataService} from "../services/runner-data.service";
 import {Runner} from "../interfaces/runner";
 import {RunnerTableComponent} from "../runner-table/runner-table.component";
@@ -11,9 +11,9 @@ import {RunnerTableComponent} from "../runner-table/runner-table.component";
     imports: [RunnerTableComponent]
 })
 export class NameLookupComponent {
-  runners: Runner[] = [];
+  private runnerDataService = inject(RunnerDataService);
 
-  constructor(private runnerDataService: RunnerDataService) { }
+  runners: Runner[] = [];
 
   async searchRunners(firstName?: string, lastName?: string) {
     this.runners = await this.runnerDataService.getRunnersByName(firstName, lastName);

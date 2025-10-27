@@ -1,5 +1,5 @@
 // runner-info.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { RunnerDataService } from '../services/runner-data.service';
 
 @Component({
@@ -9,10 +9,10 @@ import { RunnerDataService } from '../services/runner-data.service';
     standalone: true
 })
 export class RunnerInfoComponent implements OnInit {
+  private runnerDataService = inject(RunnerDataService);
+
   runnerCount = 0;
   xrefCount = 0;
-
-  constructor(private runnerDataService: RunnerDataService) {}
 
   ngOnInit(): void {
     this.runnerDataService.getRunnerCount().subscribe(count => {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {RunnerDataService} from "../services/runner-data.service";
 
 
@@ -10,9 +10,9 @@ import {RunnerDataService} from "../services/runner-data.service";
     imports: []
 })
 export class ClearRunnersComponent {
-  clearStatus = '';
+  private runnerDataService = inject(RunnerDataService);
 
-  constructor(private runnerDataService: RunnerDataService) { }
+  clearStatus = '';
 
   clearRunners() {
     this.runnerDataService.clearAllRunners();

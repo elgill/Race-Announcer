@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {TimingBoxService} from "../services/timing-box.service";
 import {DEFAULT_SETTINGS, SettingsService} from "../services/settings.service";
 import {ConnectionStatus} from "../models/connection.enum";
@@ -10,11 +10,12 @@ import {ConnectionStatus} from "../models/connection.enum";
     standalone: true
 })
 export class ConnectMatStreamComponent implements OnInit {
+  private timingBoxService = inject(TimingBoxService);
+  private settingsService = inject(SettingsService);
+
   status: string = ConnectionStatus.UNKNOWN;
   reconnectionStatus = "";
   settings = DEFAULT_SETTINGS;
-
-  constructor(private timingBoxService: TimingBoxService, private settingsService: SettingsService) {}
 
   ngOnInit() {
     this.status = this.timingBoxService.getCurrentStatus();

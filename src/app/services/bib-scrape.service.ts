@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DEFAULT_SETTINGS, Settings, SettingsService } from './settings.service';
 import { Runner } from '../interfaces/runner';
@@ -8,13 +8,13 @@ import { RunnerDataService } from './runner-data.service';
   providedIn: 'root'
 })
 export class BibScrapeService {
+  private http = inject(HttpClient);
+  private settingsService = inject(SettingsService);
+  private runnerDataService = inject(RunnerDataService);
+
   private settings: Settings = DEFAULT_SETTINGS;
 
-  constructor(
-    private http: HttpClient,
-    private settingsService: SettingsService,
-    private runnerDataService: RunnerDataService
-  ) {
+  constructor() {
     this.settingsService.getSettings().subscribe(settings => {
       this.settings = settings;
     });

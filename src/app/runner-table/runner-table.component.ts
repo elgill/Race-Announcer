@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import {CustomField} from "../interfaces/custom-field";
 import {SettingsService} from "../services/settings.service";
 import {Runner} from "../interfaces/runner";
@@ -14,13 +14,15 @@ import {CommonModule} from "@angular/common";
     imports: [CommonModule]
 })
 export class RunnerTableComponent {
+  private settingsService = inject(SettingsService);
+
   @Input() runners: Runner[] = [];
 
   startTime = 0;
   customFields$: Observable<CustomField[]>;
   displayLimit = 500;
 
-  constructor(private settingsService: SettingsService) {
+  constructor() {
     this.customFields$ = this.settingsService.getSettings().pipe(
       map(settings => settings.customFields.filter(field => field.showInBrowse))
     );

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { DEFAULT_SETTINGS, Settings, SettingsService } from "../services/settings.service";
 import * as Papa from 'papaparse';
 import { RunnerDataService } from "../services/runner-data.service";
@@ -12,12 +12,15 @@ import { RunnerDataService } from "../services/runner-data.service";
     imports: []
 })
 export class ImportXrefComponent {
+  private runnerDataService = inject(RunnerDataService);
+  private settingsService = inject(SettingsService);
+
   settings: Settings = DEFAULT_SETTINGS;
   errorMessage: string = '';
   file: File | null = null;
   importStatus = '';
 
-  constructor(private runnerDataService: RunnerDataService, private settingsService: SettingsService) {
+  constructor() {
     this.settingsService.getSettings().subscribe(settings => {
       this.settings = settings;
     });

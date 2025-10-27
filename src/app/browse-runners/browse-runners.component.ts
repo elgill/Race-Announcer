@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {RunnerDataService} from "../services/runner-data.service";
 import {Runner} from "../interfaces/runner";
 import {RunnerTableComponent} from "../runner-table/runner-table.component";
@@ -11,9 +11,9 @@ import {RunnerTableComponent} from "../runner-table/runner-table.component";
     imports: [RunnerTableComponent]
 })
 export class BrowseRunnersComponent implements OnInit {
-  runners: Runner[] = [];
+  private runnerDataService = inject(RunnerDataService);
 
-  constructor(private runnerDataService: RunnerDataService) { }
+  runners: Runner[] = [];
 
   ngOnInit() {
     this.runners = this.runnerDataService.getSortedRunners();

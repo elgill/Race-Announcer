@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import {RunnerDataService} from "./services/runner-data.service";
@@ -11,13 +11,16 @@ import {formatTimeDuration} from "./time-utils";
   providedIn: 'root'
 })
 export class ReportingService {
+  private runnerDataService = inject(RunnerDataService);
+  private settingsService = inject(SettingsService);
+
   reverseRunnerList: Runner[] = [];
   private settings = DEFAULT_SETTINGS;
   private runStartTime: Date | undefined;
   private customFields: CustomField[] = [];
 
 
-  constructor(private runnerDataService: RunnerDataService, private settingsService: SettingsService) {
+  constructor() {
 
     this.runnerDataService.getActiveRunners().subscribe(runners => {
       this.reverseRunnerList = [...runners].reverse();

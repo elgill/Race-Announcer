@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CsvColumnMappingService } from '../services/csv-column-mapping.service';
 import {DEFAULT_SETTINGS, Settings, SettingsService} from "../services/settings.service";
 
@@ -12,6 +12,9 @@ import {FormsModule} from "@angular/forms";
     imports: [FormsModule]
 })
 export class CsvImportComponent {
+  private csvService = inject(CsvColumnMappingService);
+  private settingsService = inject(SettingsService);
+
   settings: Settings = DEFAULT_SETTINGS;
   errorMessage: string = '';
   file: File | null = null;
@@ -28,7 +31,7 @@ export class CsvImportComponent {
     'state': ['State', 'state', 'Province'],
   };
 
-  constructor(private csvService: CsvColumnMappingService, private settingsService: SettingsService) {
+  constructor() {
     this.settingsService.getSettings().subscribe(settings => {
       this.settings = settings;
     });

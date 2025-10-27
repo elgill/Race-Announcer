@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {RunnerDataService} from "../services/runner-data.service";
 
 
@@ -11,10 +11,10 @@ import {RunnerDataService} from "../services/runner-data.service";
     imports: []
 })
 export class ShowXrefComponent {
+  private runnerDataService = inject(RunnerDataService);
+
   showXrefData: boolean = false;
   xrefData: { chipId: string, bib: string }[] = [];
-
-  constructor(private runnerDataService: RunnerDataService) {}
 
   toggleXrefData(): void {
     this.showXrefData = !this.showXrefData;

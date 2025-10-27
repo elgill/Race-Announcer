@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {BibScrapeService} from "../services/bib-scrape.service";
 import {DEFAULT_SETTINGS, SettingsService, Settings} from "../services/settings.service";
 
@@ -11,11 +11,14 @@ import {DEFAULT_SETTINGS, SettingsService, Settings} from "../services/settings.
     imports: []
 })
 export class AutoImportComponent {
+  private bibScrapeService = inject(BibScrapeService);
+  private settingsService = inject(SettingsService);
+
   private settings: Settings= DEFAULT_SETTINGS;
 
   importStatus = '';
 
-  constructor(private bibScrapeService:BibScrapeService, private settingsService: SettingsService) {
+  constructor() {
     this.settingsService.getSettings().subscribe(settings => {
       this.settings = settings;
     });

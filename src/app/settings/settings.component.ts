@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule } from '@angular/forms';
 import { ANNOUNCE_TEMPLATE_OPTIONS, DEFAULT_SETTINGS, Settings, SettingsService } from '../services/settings.service';
 import { ElectronService } from "../services/electron.service";
@@ -12,16 +12,14 @@ import { ElectronService } from "../services/electron.service";
     imports: [ReactiveFormsModule]
 })
 export class SettingsComponent implements OnInit, AfterViewInit {
+  private formBuilder = inject(FormBuilder);
+  private settingsService = inject(SettingsService);
+  private electronService = inject(ElectronService);
+
   settingsForm: FormGroup = new FormGroup({});
   templateOptions = ANNOUNCE_TEMPLATE_OPTIONS;
   status: string = '';
   isElectron = this.electronService.isElectron;
-
-  constructor(
-    private formBuilder: FormBuilder,
-    private settingsService: SettingsService,
-    private electronService: ElectronService
-  ) { }
 
   ngOnInit(): void {
     this.settingsForm = this.formBuilder.group({

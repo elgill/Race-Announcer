@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {saveAs} from 'file-saver-es';
 import * as Papa from 'papaparse';
 import {BehaviorSubject, Observable} from 'rxjs';
@@ -11,6 +11,8 @@ import {DEFAULT_SETTINGS, SettingsService} from "./settings.service";
   providedIn: 'root'
 })
 export class RunnerDataService {
+  private settingsService = inject(SettingsService);
+
 
   private allRunners = new Map<string, Runner>();
   private activeRunners: Runner[] = [];
@@ -28,7 +30,7 @@ export class RunnerDataService {
   private pausedQueue$ = new BehaviorSubject<Runner[]>([]);
   private runnerCount$ = new BehaviorSubject<number>(0); // Observable for runner count
 
-  constructor(private settingsService: SettingsService) {
+  constructor() {
     // IDB
     this.db = new IndexedDbRunnerDatabaseService();
 

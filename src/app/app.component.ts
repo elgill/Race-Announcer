@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {ElectronService} from "./services/electron.service";
 import {Router, RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
 import {VisualLoadTestService} from "./services/visual-load-test.service";
@@ -13,9 +13,16 @@ import {ReportingService} from "./reporting.service";
 })
 
 export class AppComponent implements OnInit {
+  private electronService = inject(ElectronService);
+  private router = inject(Router);
+  private visualLoadTestService = inject(VisualLoadTestService);
+  private reportingService = inject(ReportingService);
+
   title = 'Race Announcer';
   isElectron = window.require;
-  constructor(private electronService: ElectronService, private router: Router, private visualLoadTestService: VisualLoadTestService, private reportingService: ReportingService) {
+  constructor() {
+    const visualLoadTestService = this.visualLoadTestService;
+
     (window as any).visualLoadTestService = visualLoadTestService;
   }
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {RunnerDataService} from "./runner-data.service";
 import {ConnectionStatus} from "../models/connection.enum";
@@ -12,6 +12,9 @@ import {RaceResultTagReadData} from "../interfaces/race-result-tag-read-data";
   providedIn: 'root',
 })
 export class TimingBoxService {
+  private runnerDataService = inject(RunnerDataService);
+  private settingsService = inject(SettingsService);
+
   private ipcRenderer: any;
   private statusSubject: BehaviorSubject<any> = new BehaviorSubject({ status: ConnectionStatus.DISCONNECTED });
   private dataSubject: Subject<any> = new Subject();
@@ -25,7 +28,7 @@ export class TimingBoxService {
   settings = DEFAULT_SETTINGS;
 
 
-  constructor(private runnerDataService: RunnerDataService, private settingsService: SettingsService) {
+  constructor() {
     if (window.require) {
 
       try {

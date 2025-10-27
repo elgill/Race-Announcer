@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { RunnerDataService } from "./runner-data.service";
 import {SettingsService} from "./settings.service";
 
@@ -6,9 +6,10 @@ import {SettingsService} from "./settings.service";
   providedIn: 'root'
 })
 export class VisualLoadTestService {
-  private timeoutIds: NodeJS.Timeout[] = [];
+  private runnerDataService = inject(RunnerDataService);
+  private settingsService = inject(SettingsService);
 
-  constructor(private runnerDataService: RunnerDataService, private settingsService:SettingsService) { }
+  private timeoutIds: NodeJS.Timeout[] = [];
 
   loadTestWithDelay(runners: { bib: string, timeElapsed: number }[], startFrom = 0) {
     this.stopLoadTest(); // Clear any existing timeouts

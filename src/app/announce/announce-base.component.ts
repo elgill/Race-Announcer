@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {RunnerDataService} from '../services/runner-data.service';
 import {DEFAULT_SETTINGS, Settings, SettingsService} from "../services/settings.service";
 import {CustomField} from "../interfaces/custom-field";
@@ -10,6 +10,10 @@ import {ElectronService} from "../services/electron.service";
   standalone: true
 })
 export class AnnounceBaseComponent implements OnInit {
+  protected runnerDataService = inject(RunnerDataService);
+  protected settingsService = inject(SettingsService);
+  protected electronService = inject(ElectronService);
+
   settings: Settings= DEFAULT_SETTINGS;
   runStartTime: Date | undefined;
   isElectron = !!this.electronService.isElectron;
@@ -21,12 +25,6 @@ export class AnnounceBaseComponent implements OnInit {
 
   paused = false;
   pausedQueueLength = 0;
-
-  constructor(
-    protected runnerDataService: RunnerDataService,
-    protected settingsService: SettingsService,
-    protected electronService: ElectronService,
-  ) { }
 
   ngOnInit(): void {
     this.runnerDataService.getActiveRunners().subscribe(runners => {

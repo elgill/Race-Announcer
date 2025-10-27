@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { interval, Subscription } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 import {DEFAULT_SETTINGS, Settings, SettingsService} from "../services/settings.service";
@@ -12,13 +12,12 @@ import {TimeDurationPipe} from "../time-duration.pipe";
     imports: [TimeDurationPipe]
 })
 export class RaceClockComponent implements OnInit, OnDestroy {
+  private settingsService = inject(SettingsService);
+
   settings: Settings= DEFAULT_SETTINGS;
   private subscription: Subscription = new Subscription();
   currentTime: Date = new Date();
   startTime: Date = new Date();
-
-  constructor(private settingsService: SettingsService) {
-  }
 
   ngOnInit(): void {
     this.settingsService.getSettings().subscribe(settings => {
