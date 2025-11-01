@@ -70,7 +70,7 @@
     "@types/lodash": "^4.14.195",
     "@types/lunr": "^2.3.4",
     "@types/papaparse": "^5.3.7",
-    "electron": "29.0.1",
+    "electron": "35.7.5",
     "electron-builder": "^24.4.0",
     "jasmine-core": "~4.6.0",
     "karma": "~6.4.0",
