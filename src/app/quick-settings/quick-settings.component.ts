@@ -1,10 +1,11 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { DEFAULT_SETTINGS, Settings, SettingsService } from "../services/settings.service";
 import { RaceService } from "../services/race.service";
 import { MatConnectionsEditorComponent } from "../mat-connections-editor/mat-connections-editor.component";
 import { MatConnection } from "../interfaces/mat-connection";
 import { generateMatId, inferMatType, normalizeMatConnection } from "../utils/mat-connection-helpers";
+import { Subscription, debounceTime, filter } from "rxjs";
 
 interface Race {
   id: string;
@@ -20,7 +21,7 @@ interface Race {
     standalone: true,
     imports: [ReactiveFormsModule, MatConnectionsEditorComponent]
 })
-export class QuickSettingsComponent implements OnInit {
+export class QuickSettingsComponent implements OnInit, OnDestroy {
   private formBuilder = inject(FormBuilder);
   private settingsService = inject(SettingsService);
   private raceService = inject(RaceService);
@@ -30,9 +31,10 @@ export class QuickSettingsComponent implements OnInit {
   isLoading = false;
   errorMessage = '';
   settings = DEFAULT_SETTINGS;
-  status: string = '';
-  settingsSaved: boolean = false;
   readonly maxMatConnections = 3;
+  private formChangesSub?: Subscription;
+  private isUpdatingForm = false;
+  private autoSaveReady = false;
 
   ngOnInit(): void {
     this.quickSetupForm = this.formBuilder.group({
@@ -57,12 +59,20 @@ export class QuickSettingsComponent implements OnInit {
       numReconnectAttempts: [DEFAULT_SETTINGS.numReconnectAttempts],
       reconnectDelay: [DEFAULT_SETTINGS.reconnectDelay]
     });
+
+    this.formChangesSub = this.quickSetupForm.valueChanges
+      .pipe(
+        debounceTime(500),
+        filter(() => this.autoSaveReady && !this.isUpdatingForm)
+      )
+      .subscribe(() => this.saveSettings(true));
+
     this.settingsService.getSettings().subscribe(settings => {
       console.log('Patching Values: ', settings);
-      // Reset the form array
-      this.customFields.clear();
 
-      // Add new groups to the form array based on the settings
+      this.isUpdatingForm = true;
+
+      this.customFields.clear();
       settings.customFields.forEach(field => {
         this.customFields.push(this.formBuilder.group(field));
       });
@@ -77,12 +87,18 @@ export class QuickSettingsComponent implements OnInit {
         raceStartTime: settings.raceStartTime ? this.toLocalInputDateTime(settings.raceStartTime) : '',
         minTimeMinutes: Math.floor(settings.minTimeMs / 60000),
         minTimeSeconds: (settings.minTimeMs % 60000) / 1000,
-      });
+      }, { emitEvent: false });
 
       this.settings = settings;
+      this.isUpdatingForm = false;
+      this.autoSaveReady = true;
     });
 
     console.log('Settings Initialized');
+  }
+
+  ngOnDestroy(): void {
+    this.formChangesSub?.unsubscribe();
   }
 
   get customFields() {
@@ -93,7 +109,7 @@ export class QuickSettingsComponent implements OnInit {
     return this.quickSetupForm.get('matConnections') as FormArray;
   }
 
-  saveSettings(): void {
+  saveSettings(silent = false): void {
     if (!this.quickSetupForm.valid) {
       return;
     }
@@ -118,7 +134,7 @@ export class QuickSettingsComponent implements OnInit {
       deleteKeybind: formValue.deleteKeybind,
       pauseKeybind: formValue.pauseKeybind,
       announceTemplate: formValue.announceTemplate,
-      raceStartTime: formValue.raceStartTime,
+      raceStartTime: formValue.raceStartTime ? new Date(formValue.raceStartTime).toISOString() : '',
       numLockWarn: formValue.numLockWarn,
       raceId: formValue.raceId,
       ip: formValue.ip,
@@ -129,7 +145,6 @@ export class QuickSettingsComponent implements OnInit {
       numReconnectAttempts: formValue.numReconnectAttempts,
       reconnectDelay: formValue.reconnectDelay
     };
-    updatedSettings.raceStartTime = formValue.raceStartTime ? new Date(formValue.raceStartTime).toISOString() : '';
 
     if (updatedSettings.matConnections.length > 0) {
       const [primaryMat] = updatedSettings.matConnections;
@@ -141,13 +156,11 @@ export class QuickSettingsComponent implements OnInit {
     }
 
     this.settingsService.updateSettings(updatedSettings);
+    if (this.areSettingsEqual(updatedSettings, this.settings)) {
+      return;
+    }
+    this.settingsService.updateSettings(updatedSettings);
     this.settings = updatedSettings;
-
-    this.settingsSaved = true;
-
-    setTimeout(() => {
-      this.settingsSaved = false;
-    }, 3000);
   }
 
   fetchRaces(): void {
@@ -199,5 +212,9 @@ export class QuickSettingsComponent implements OnInit {
     const millis = date.getMilliseconds();
     const millisPart = millis ? `.${pad(millis, 3)}` : '';
     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}${millisPart}`;
+  }
+
+  private areSettingsEqual(a: Settings, b: Settings): boolean {
+    return JSON.stringify(a) === JSON.stringify(b);
   }
 }

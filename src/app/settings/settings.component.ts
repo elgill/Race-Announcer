@@ -1,9 +1,10 @@
-import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule } from '@angular/forms';
 import { ANNOUNCE_TEMPLATE_OPTIONS, DEFAULT_SETTINGS, Settings, SettingsService } from '../services/settings.service';
 import { MatConnection } from "../interfaces/mat-connection";
 import { MatConnectionsEditorComponent } from "../mat-connections-editor/mat-connections-editor.component";
 import { generateMatId, inferMatType, normalizeMatConnection } from "../utils/mat-connection-helpers";
+import { Subscription, debounceTime, filter } from "rxjs";
 
 
 @Component({
@@ -13,14 +14,17 @@ import { generateMatId, inferMatType, normalizeMatConnection } from "../utils/ma
     standalone: true,
     imports: [ReactiveFormsModule, MatConnectionsEditorComponent]
 })
-export class SettingsComponent implements OnInit, AfterViewInit {
+export class SettingsComponent implements OnInit, AfterViewInit, OnDestroy {
   private formBuilder = inject(FormBuilder);
   private settingsService = inject(SettingsService);
 
   settingsForm: FormGroup = new FormGroup({});
   templateOptions = ANNOUNCE_TEMPLATE_OPTIONS;
-  status: string = '';
   readonly maxMatConnections = 3;
+  private formChangesSub?: Subscription;
+  private isUpdatingForm = false;
+  private autoSaveReady = false;
+  private currentSettings: Settings = DEFAULT_SETTINGS;
 
   ngOnInit(): void {
     this.settingsForm = this.formBuilder.group({
@@ -44,18 +48,24 @@ export class SettingsComponent implements OnInit, AfterViewInit {
       numReconnectAttempts: [DEFAULT_SETTINGS.numReconnectAttempts],
       reconnectDelay: [DEFAULT_SETTINGS.reconnectDelay / 1000]
     });
+
+    this.formChangesSub = this.settingsForm.valueChanges
+      .pipe(
+        debounceTime(500),
+        filter(() => this.autoSaveReady && !this.isUpdatingForm)
+      )
+      .subscribe(() => this.saveSettings(true));
+
     this.settingsService.getSettings().subscribe(settings => {
       console.log('Patching Values: ', settings);
 
-      // Reset the form array
-      this.customFields.clear();
+      this.isUpdatingForm = true;
 
-      // Add new groups to the form array based on the settings
+      this.customFields.clear();
       settings.customFields.forEach(field => {
         this.customFields.push(this.formBuilder.group(field));
       });
 
-      // Reset and populate mat connections
       this.matConnections.clear();
       settings.matConnections.forEach(mat => {
         this.matConnections.push(this.createMatConnectionGroup(mat));
@@ -67,7 +77,11 @@ export class SettingsComponent implements OnInit, AfterViewInit {
         minTimeMinutes: Math.floor(settings.minTimeMs / 60000),
         minTimeSeconds: (settings.minTimeMs % 60000) / 1000,
         reconnectDelay: settings.reconnectDelay / 1000
-      });
+      }, { emitEvent: false });
+
+      this.isUpdatingForm = false;
+      this.autoSaveReady = true;
+      this.currentSettings = settings;
     });
 
     console.log('Settings Initialized');
@@ -83,7 +97,15 @@ export class SettingsComponent implements OnInit, AfterViewInit {
   }
 
 
-  saveSettings(): void {
+  ngOnDestroy(): void {
+    this.formChangesSub?.unsubscribe();
+  }
+
+  saveSettings(silent = false): void {
+    if (this.settingsForm.invalid) {
+      return;
+    }
+
     const formValue = this.settingsForm.value;
     const matConnections = this.matConnections.getRawValue().map((connection: MatConnection) =>
       normalizeMatConnection({
@@ -124,8 +146,12 @@ export class SettingsComponent implements OnInit, AfterViewInit {
       updatedSettings.port = DEFAULT_SETTINGS.port;
     }
 
+    if (this.areSettingsEqual(updatedSettings, this.currentSettings)) {
+      return;
+    }
+
+    this.currentSettings = updatedSettings;
     this.settingsService.updateSettings(updatedSettings);
-    this.status = 'success';
   }
 
   get customFields() {
@@ -175,6 +201,10 @@ export class SettingsComponent implements OnInit, AfterViewInit {
     const millis = date.getMilliseconds();
     const millisPart = millis ? `.${pad(millis, 3)}` : '';
     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}${millisPart}`;
+  }
+
+  private areSettingsEqual(a: Settings, b: Settings): boolean {
+    return JSON.stringify(a) === JSON.stringify(b);
   }
 
   persistState(section: string, event: Event): void {

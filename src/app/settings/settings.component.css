@@ -46,3 +46,10 @@
   color: #555;
   font-size: 0.9em;
 }
+
+.auto-save-note {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: #4caf50;
+  font-weight: 500;
+}

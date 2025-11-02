@@ -21,14 +21,7 @@
     </div>
   </div>
 
-  <button (click)="saveSettings()" class="btn-primary">Save Settings</button>
-
-  <!-- Success Message for Saved Settings -->
-  @if (settingsSaved) {
-    <div class="success-message">
-      Settings have been saved successfully!
-    </div>
-  }
+  <p class="auto-save-note">Changes save automatically.</p>
 
   <h3>Load Race List</h3>
   <button (click)="fetchRaces()" [disabled]="isLoading" class="btn-secondary">
