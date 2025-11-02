@@ -32,6 +32,16 @@ export class ConnectMatStreamComponent implements OnInit {
   }
 
   private updateMatStatuses() {
+    const enabledMatIds = new Set(
+      this.settings.matConnections
+        .filter(mat => mat.enabled)
+        .map(mat => mat.id)
+    );
+
+    this.timingBoxService.getAllMatIds()
+      .filter(matId => !enabledMatIds.has(matId))
+      .forEach(matId => this.timingBoxService.disconnect(matId));
+
     this.matStatuses = this.settings.matConnections
       .filter(mat => mat.enabled)
       .map(mat => {

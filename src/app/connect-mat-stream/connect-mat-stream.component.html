@@ -1,34 +1,21 @@
 <div class="mat-connections-container">
-  <h3>Timing Mat Connections</h3>
+  <div class="heading" [hidden]="true">Mat Connections</div>
 
   @if (matStatuses.length === 0) {
     <p>No timing mats configured. Go to Settings to add timing mat connections.</p>
   } @else {
-    <div class="actions">
-      <button (click)="connectAll()">Connect All</button>
-      <button (click)="disconnectAll()">Disconnect All</button>
-    </div>
-
     <div class="mat-list">
       @for (mat of matStatuses; track mat.id) {
-        <div class="mat-item">
-          <div class="mat-info">
-            <strong>{{ mat.label }}</strong>
-            <span class="mat-address">{{ mat.ip }}:{{ mat.port }}</span>
-          </div>
-          <div class="mat-status">
-            <span [class]="'status-badge status-' + mat.status.toLowerCase()">
-              {{ mat.status }}
-            </span>
-            @if (mat.reconnectionStatus) {
-              <span class="reconnection-status">{{ mat.reconnectionStatus }}</span>
-            }
-          </div>
-          <div class="mat-actions">
-            <button (click)="toggleConnection(mat)">
-              {{ mat.status === ConnectionStatus.CONNECTED || mat.status === ConnectionStatus.CONNECTING || mat.status === ConnectionStatus.RECONNECTING ? 'Disconnect' : 'Connect' }}
-            </button>
-          </div>
+        <div class="mat-item"
+             [attr.title]="mat.label + '\n' + mat.ip + ':' + mat.port + (mat.reconnectionStatus ? '\n' + mat.reconnectionStatus : '')">
+          <span class="mat-label">{{ mat.label }}</span>
+          <span class="mat-status">
+            <span [class]="'status-badge status-' + mat.status.toLowerCase()">{{ mat.status }}</span>
+          </span>
+          <button class="mat-action"
+                  (click)="toggleConnection(mat)">
+            {{ mat.status === ConnectionStatus.CONNECTED || mat.status === ConnectionStatus.CONNECTING || mat.status === ConnectionStatus.RECONNECTING ? 'Disconnect' : 'Connect' }}
+          </button>
         </div>
       }
     </div>

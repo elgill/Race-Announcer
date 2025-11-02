@@ -84,15 +84,25 @@ export class TimingBoxService {
   }
 
   private handleStatusChange(matId: string, status: string){
+    const isMatEnabled = this.settings.matConnections.some(mat => mat.id === matId && mat.enabled);
     const shouldReconnectFlag = this.shouldReconnect.get(matId);
-    if (status === ConnectionStatus.DISCONNECTED && shouldReconnectFlag) {
-      // Find the mat connection to get ip and port
-      const matConnection = this.settings.matConnections.find(m => m.id === matId);
-      if (matConnection) {
-        this.startAutoReconnect(matId, matConnection.ip, matConnection.port, matConnection.label);
+
+    if (status === ConnectionStatus.DISCONNECTED) {
+      if (isMatEnabled && shouldReconnectFlag) {
+        const matConnection = this.settings.matConnections.find(m => m.id === matId && m.enabled);
+        if (matConnection) {
+          this.startAutoReconnect(matId, matConnection.ip, matConnection.port, matConnection.label);
+        }
+      } else {
+        this.stopAutoReconnect(matId);
       }
     } else if (status === ConnectionStatus.CONNECTED){
-      this.shouldReconnect.set(matId, true);
+      if (isMatEnabled) {
+        this.shouldReconnect.set(matId, true);
+      } else {
+        this.shouldReconnect.set(matId, false);
+        this.stopAutoReconnect(matId);
+      }
       const reconnectionStatus = this.getOrCreateReconnectionStatus(matId);
       reconnectionStatus.next("");
     }

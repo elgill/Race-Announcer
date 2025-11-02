@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule } from '@angular/forms';
 import { ANNOUNCE_TEMPLATE_OPTIONS, DEFAULT_SETTINGS, Settings, SettingsService } from '../services/settings.service';
-import { ElectronService } from "../services/electron.service";
+import { MatConnection } from "../interfaces/mat-connection";
 
 
 @Component({
@@ -14,11 +14,11 @@ import { ElectronService } from "../services/electron.service";
 export class SettingsComponent implements OnInit, AfterViewInit {
   private formBuilder = inject(FormBuilder);
   private settingsService = inject(SettingsService);
-  private electronService = inject(ElectronService);
 
   settingsForm: FormGroup = new FormGroup({});
   templateOptions = ANNOUNCE_TEMPLATE_OPTIONS;
   status: string = '';
+  readonly maxMatConnections = 3;
 
   ngOnInit(): void {
     this.settingsForm = this.formBuilder.group({
@@ -35,6 +35,7 @@ export class SettingsComponent implements OnInit, AfterViewInit {
       raceId: [DEFAULT_SETTINGS.raceId],
       ip: [DEFAULT_SETTINGS.ip],
       port: [DEFAULT_SETTINGS.port],
+      matConnections: this.formBuilder.array([]),
       customFields: this.formBuilder.array([]),
       minTimeMinutes: [Math.floor(DEFAULT_SETTINGS.minTimeMs / 60000)], // Minutes part
       minTimeSeconds: [(DEFAULT_SETTINGS.minTimeMs % 60000) / 1000],  // Seconds part
@@ -51,6 +52,16 @@ export class SettingsComponent implements OnInit, AfterViewInit {
       settings.customFields.forEach(field => {
         this.customFields.push(this.formBuilder.group(field));
       });
+
+      // Reset and populate mat connections
+      this.matConnections.clear();
+      settings.matConnections.forEach(mat => {
+        this.matConnections.push(this.createMatConnectionGroup(mat));
+      });
+
+      if (this.matConnections.length === 0) {
+        this.addMatConnection();
+      }
 
       this.settingsForm.patchValue({
         ...settings,
@@ -74,15 +85,53 @@ export class SettingsComponent implements OnInit, AfterViewInit {
 
 
   saveSettings(): void {
-    const updatedSettings = this.settingsForm.value as Settings;
-    updatedSettings.minTimeMs = (this.settingsForm.value.minTimeMinutes * 60000) + (this.settingsForm.value.minTimeSeconds * 1000);
-    updatedSettings.reconnectDelay = this.settingsForm.value.reconnectDelay * 1000;
+    const formValue = this.settingsForm.value;
+    const matConnections = (this.matConnections.value as MatConnection[]).map(connection => ({
+      ...connection,
+      id: connection.id || this.generateMatId(),
+      port: typeof connection.port === 'string' ? Number(connection.port) : connection.port
+    }));
+
+    const updatedSettings: Settings = {
+      fontSize: formValue.fontSize,
+      fontColor: formValue.fontColor,
+      displayLines: formValue.displayLines,
+      backgroundColor: formValue.backgroundColor,
+      proxyUrl: formValue.proxyUrl,
+      deleteKeybind: formValue.deleteKeybind,
+      pauseKeybind: formValue.pauseKeybind,
+      announceTemplate: formValue.announceTemplate,
+      raceStartTime: formValue.raceStartTime,
+      numLockWarn: formValue.numLockWarn,
+      raceId: formValue.raceId,
+      ip: formValue.ip,
+      port: formValue.port,
+      matConnections,
+      customFields: formValue.customFields,
+      minTimeMs: (formValue.minTimeMinutes * 60000) + (formValue.minTimeSeconds * 1000),
+      numReconnectAttempts: formValue.numReconnectAttempts,
+      reconnectDelay: formValue.reconnectDelay * 1000
+    };
+
+    if (updatedSettings.matConnections.length > 0) {
+      const [primaryMat] = updatedSettings.matConnections;
+      updatedSettings.ip = primaryMat.ip;
+      updatedSettings.port = primaryMat.port;
+    } else {
+      updatedSettings.ip = '';
+      updatedSettings.port = DEFAULT_SETTINGS.port;
+    }
+
     this.settingsService.updateSettings(updatedSettings);
     this.status = 'success';
   }
 
   get customFields() {
     return this.settingsForm.get('customFields') as FormArray;
+  }
+
+  get matConnections() {
+    return this.settingsForm.get('matConnections') as FormArray;
   }
 
   addField(): void {
@@ -95,6 +144,39 @@ export class SettingsComponent implements OnInit, AfterViewInit {
 
   removeField(index: number): void {
     this.customFields.removeAt(index);
+  }
+
+  addMatConnection(): void {
+    if (this.matConnections.length >= this.maxMatConnections) {
+      return;
+    }
+
+    const defaultLabel = `Timing Mat ${this.matConnections.length + 1}`;
+    this.matConnections.push(this.createMatConnectionGroup({
+      id: this.generateMatId(),
+      label: defaultLabel,
+      ip: '',
+      port: DEFAULT_SETTINGS.port,
+      enabled: true
+    }));
+  }
+
+  removeMatConnection(index: number): void {
+    this.matConnections.removeAt(index);
+  }
+
+  private createMatConnectionGroup(mat?: MatConnection): FormGroup {
+    return this.formBuilder.group({
+      id: [mat?.id ?? this.generateMatId()],
+      label: [mat?.label ?? ''],
+      ip: [mat?.ip ?? ''],
+      port: [mat?.port ?? DEFAULT_SETTINGS.port],
+      enabled: [mat?.enabled ?? true]
+    });
+  }
+
+  private generateMatId(): string {
+    return `mat-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
   }
 
   persistState(section: string, event: Event): void {

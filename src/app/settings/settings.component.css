@@ -40,3 +40,56 @@
 .collapsible-checkbox:checked ~ .collapsible-content {
   display: block;
 }
+
+.mat-connections-info {
+  margin-bottom: 10px;
+  color: #555;
+  font-size: 0.9em;
+}
+
+.mat-connections {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.mat-connection-card {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  background-color: #fafafa;
+}
+
+.mat-connection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.mat-connection-fields {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.mat-connection-fields label,
+.mat-connection-header label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  font-size: 0.9em;
+}
+
+.mat-connection-actions {
+  margin-top: 10px;
+  text-align: right;
+}
+
+.mat-connection-actions button {
+  padding: 4px 12px;
+  cursor: pointer;
+}

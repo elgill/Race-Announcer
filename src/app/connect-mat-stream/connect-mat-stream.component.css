@@ -1,69 +1,62 @@
 .mat-connections-container {
-  padding: 20px;
+  padding: 4px 6px;
+  font-size: 0.8rem;
 }
 
-.mat-connections-container h3 {
-  margin-top: 0;
-  margin-bottom: 15px;
+.heading {
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .actions {
-  margin-bottom: 15px;
+  display: flex;
+  gap: 4px;
+  margin-bottom: 6px;
 }
 
 .actions button {
-  margin-right: 10px;
-  padding: 8px 16px;
+  padding: 3px 8px;
+  font-size: 0.7rem;
+  line-height: 1.1;
   cursor: pointer;
 }
 
 .mat-list {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  gap: 4px;
+  flex-wrap: wrap;
 }
 
 .mat-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: #f9f9f9;
+  gap: 6px;
+  padding: 4px 6px;
+  border: 1px solid #ccc;
+  border-radius: 16px;
+  background-color: #fff;
+  line-height: 1.2;
+  box-shadow: none;
 }
 
-.mat-info {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-.mat-info strong {
-  font-size: 1.1em;
-  margin-bottom: 4px;
-}
-
-.mat-address {
-  font-size: 0.9em;
-  color: #666;
+.mat-label {
+  font-weight: 600;
 }
 
 .mat-status {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  margin: 0 15px;
-  min-width: 150px;
 }
 
 .status-badge {
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 0.85em;
-  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 0.65rem;
+  font-weight: 600;
   text-transform: uppercase;
-  margin-bottom: 4px;
 }
 
 .status-connected {
@@ -91,13 +84,12 @@
   color: white;
 }
 
-.reconnection-status {
-  font-size: 0.75em;
-  color: #666;
-}
-
-.mat-actions button {
-  padding: 8px 16px;
+.mat-action {
+  padding: 3px 8px;
+  font-size: 0.7rem;
+  line-height: 1.1;
   cursor: pointer;
-  min-width: 100px;
+  border-radius: 12px;
+  border: 1px solid #888;
+  background-color: #f5f5f5;
 }
