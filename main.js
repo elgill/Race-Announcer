@@ -2,7 +2,8 @@ const { app, BrowserWindow, ipcMain, Menu } = require('electron');
 const net = require('net');
 
 let win;
-let timingBoxClient;
+// Map of matId -> TCP socket client
+const timingBoxClients = new Map();
 
 const WINDOW_CONFIG = {
   width: 1200,
@@ -39,51 +40,71 @@ app.on('activate', () => {
 })
 
 function setupIPCListeners() {
-  ipcMain.on('connect-timing-box', (event, { ip, port }) => {
-    connectToTimingBox(ip, port);
+  // Connect to a single timing mat
+  ipcMain.on('connect-timing-box', (event, { matId, ip, port, label }) => {
+    connectToTimingBox(matId, ip, port, label);
   });
 
-  ipcMain.on('disconnect-timing-box', () => {
-    if (timingBoxClient) {
-      timingBoxClient.destroy();
-      timingBoxClient = null;
+  // Disconnect from a single timing mat
+  ipcMain.on('disconnect-timing-box', (event, { matId }) => {
+    const client = timingBoxClients.get(matId);
+    if (client) {
+      client.destroy();
+      timingBoxClients.delete(matId);
     }
+  });
+
+  // Disconnect from all timing mats
+  ipcMain.on('disconnect-all-timing-boxes', () => {
+    timingBoxClients.forEach((client, matId) => {
+      client.destroy();
+    });
+    timingBoxClients.clear();
   });
 }
 
-function connectToTimingBox(ip, port) {
-  timingBoxClient = new net.Socket();
-  timingBoxClient.connect(port, ip, () => {
-    console.log('Connected to timing box');
-    win.webContents.send('timing-box-status', { status: 'Connected' });
+function connectToTimingBox(matId, ip, port, label) {
+  // Disconnect existing connection if any
+  const existingClient = timingBoxClients.get(matId);
+  if (existingClient) {
+    existingClient.destroy();
+  }
+
+  const client = new net.Socket();
+  timingBoxClients.set(matId, client);
+
+  client.connect(port, ip, () => {
+    console.log(`Connected to timing mat ${matId} (${label}) at ${ip}:${port}`);
+    win.webContents.send('timing-box-status', { matId, status: 'Connected' });
 
     // If RR box
     if(port === 3601){
-        timingBoxClient.write('SETPROTOCOL;2.6\r\n');
-        timingBoxClient.write('SETPUSHPASSINGS;1;0\r\n');
+        client.write('SETPROTOCOL;2.6\r\n');
+        client.write('SETPUSHPASSINGS;1;0\r\n');
     }
-
   });
 
-  timingBoxClient.on('data', (data) => {
+  client.on('data', (data) => {
     const records = data.toString('utf-8').split('\r\n');
 
     records.forEach(record => {
       if (record.trim() !== '') {
-        console.log('Data: ', record);
-        win.webContents.send('timing-box-data', record);
+        console.log(`Data from ${matId} (${label}):`, record);
+        win.webContents.send('timing-box-data', { matId, data: record });
       }
     });
   });
 
-  timingBoxClient.on('close', () => {
-    console.log('Connection to timing box closed');
-    win.webContents.send('timing-box-status', { status: 'Disconnected' });
+  client.on('close', () => {
+    console.log(`Connection to timing mat ${matId} (${label}) closed`);
+    timingBoxClients.delete(matId);
+    win.webContents.send('timing-box-status', { matId, status: 'Disconnected' });
   });
 
-  timingBoxClient.on('error', (err) => {
-    console.error('Error connecting to timing box:', err);
-    win.webContents.send('timing-box-status', { status: 'Error', message: err.message });
+  client.on('error', (err) => {
+    console.error(`Error connecting to timing mat ${matId} (${label}):`, err);
+    timingBoxClients.delete(matId);
+    win.webContents.send('timing-box-status', { matId, status: 'Error', message: err.message });
   });
 }
 

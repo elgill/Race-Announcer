@@ -16,14 +16,14 @@ export class TimingBoxService {
   private settingsService = inject(SettingsService);
 
   private ipcRenderer: any;
-  private statusSubject: BehaviorSubject<any> = new BehaviorSubject({ status: ConnectionStatus.DISCONNECTED });
-  private dataSubject: Subject<any> = new Subject();
 
-  private autoReconnectInterval: any;
-  private reconnectAttempts = 0;
-  private shouldReconnect = false;
-
-  private reconnectionStatus$ = new BehaviorSubject<string>("")
+  // Maps for tracking multiple mat connections
+  private statusSubjects = new Map<string, BehaviorSubject<any>>();
+  private dataSubjects = new Map<string, Subject<any>>();
+  private autoReconnectIntervals = new Map<string, any>();
+  private reconnectAttempts = new Map<string, number>();
+  private shouldReconnect = new Map<string, boolean>();
+  private reconnectionStatuses = new Map<string, BehaviorSubject<string>>();
 
   settings = DEFAULT_SETTINGS;
 
@@ -37,20 +37,22 @@ export class TimingBoxService {
           this.settings = settings;
         });
 
-        // Listen for status updates
+        // Listen for status updates from all mats
         // @ts-ignore
-        this.ipcRenderer.on('timing-box-status', (event, status) => {
-          this.statusSubject.next(status);
-          this.handleStatusChange(status.status);
-          console.log('New Status: ', status)
+        this.ipcRenderer.on('timing-box-status', (event, { matId, status, message }) => {
+          const statusSubject = this.getOrCreateStatusSubject(matId);
+          statusSubject.next({ status, message });
+          this.handleStatusChange(matId, status);
+          console.log(`Status for mat ${matId}:`, status);
         });
 
-        // Listen for data updates
+        // Listen for data updates from all mats
         // @ts-ignore
-        this.ipcRenderer.on('timing-box-data', (event, data) => {
-          this.dataSubject.next(data);
-          console.log('New Data: ',data);
-          this.handleData(data);
+        this.ipcRenderer.on('timing-box-data', (event, { matId, data }) => {
+          const dataSubject = this.getOrCreateDataSubject(matId);
+          dataSubject.next(data);
+          console.log(`Data from mat ${matId}:`, data);
+          this.handleData(matId, data);
         });
       } catch (e) {
         throw e;
@@ -60,12 +62,39 @@ export class TimingBoxService {
     }
   }
 
-  private handleStatusChange(status: string){
-    if (status === ConnectionStatus.DISCONNECTED && this.shouldReconnect) {
-      this.startAutoReconnect(this.settings.ip, this.settings.port);
+  private getOrCreateStatusSubject(matId: string): BehaviorSubject<any> {
+    if (!this.statusSubjects.has(matId)) {
+      this.statusSubjects.set(matId, new BehaviorSubject({ status: ConnectionStatus.DISCONNECTED }));
+    }
+    return this.statusSubjects.get(matId)!;
+  }
+
+  private getOrCreateDataSubject(matId: string): Subject<any> {
+    if (!this.dataSubjects.has(matId)) {
+      this.dataSubjects.set(matId, new Subject());
+    }
+    return this.dataSubjects.get(matId)!;
+  }
+
+  private getOrCreateReconnectionStatus(matId: string): BehaviorSubject<string> {
+    if (!this.reconnectionStatuses.has(matId)) {
+      this.reconnectionStatuses.set(matId, new BehaviorSubject<string>(""));
+    }
+    return this.reconnectionStatuses.get(matId)!;
+  }
+
+  private handleStatusChange(matId: string, status: string){
+    const shouldReconnectFlag = this.shouldReconnect.get(matId);
+    if (status === ConnectionStatus.DISCONNECTED && shouldReconnectFlag) {
+      // Find the mat connection to get ip and port
+      const matConnection = this.settings.matConnections.find(m => m.id === matId);
+      if (matConnection) {
+        this.startAutoReconnect(matId, matConnection.ip, matConnection.port, matConnection.label);
+      }
     } else if (status === ConnectionStatus.CONNECTED){
-      this.shouldReconnect = true;
-      this.reconnectionStatus$.next("");
+      this.shouldReconnect.set(matId, true);
+      const reconnectionStatus = this.getOrCreateReconnectionStatus(matId);
+      reconnectionStatus.next("");
     }
   }
 
@@ -139,108 +168,140 @@ export class TimingBoxService {
   }
 
 
-  private handleData(data: string) {
+  private handleData(matId: string, data: string) {
     const parsedData = this.parseTagReadData(data);
     if (!parsedData) {
       return; // Ignore invalid data
     }
+
+    // Add matId to the parsed data
+    parsedData.matId = matId;
     console.log('Parsed Data: ', parsedData);
 
     // Example usage: Enter runner bib number from tagId
     const bibNumber = this.runnerDataService.getBibByChipId(parsedData.chipCode);
     if (bibNumber) {
-      this.runnerDataService.enterBib(bibNumber, false, false, 'automated');
+      this.runnerDataService.enterBib(bibNumber, false, false, 'automated', matId);
     } else {
       console.warn('No bib number found for tag ID:', parsedData.chipCode);
     }
   }
 
-  toggleConnection(ip: string, port: number): void {
-    const currentStatus = this.getCurrentStatus().status;
+  toggleConnection(matId: string, ip: string, port: number, label: string): void {
+    const currentStatus = this.getCurrentStatus(matId).status;
     if (currentStatus === ConnectionStatus.CONNECTED || currentStatus === ConnectionStatus.CONNECTING ||
           currentStatus === ConnectionStatus.RECONNECTING) {
-      this.disconnect();
+      this.disconnect(matId);
     } else {
-      this.connect(ip, port);
+      this.connect(matId, ip, port, label);
     }
   }
 
-  connect(ip: string, port: number): void {
-    const currentStatus: string = this.getCurrentStatus().status;
+  connect(matId: string, ip: string, port: number, label: string): void {
+    const currentStatus: string = this.getCurrentStatus(matId).status;
 
     if (currentStatus === ConnectionStatus.CONNECTED || currentStatus === ConnectionStatus.CONNECTING || currentStatus === ConnectionStatus.RECONNECTING) {
-      console.warn("Ignoring request: Already connected or connecting..");
+      console.warn(`Mat ${matId}: Ignoring request - already connected or connecting`);
       return;
     }
 
-    this.statusSubject.next({ status: ConnectionStatus.CONNECTING });
-    this.ipcRenderer.send('connect-timing-box', { ip, port });
-
-    // Start auto-reconnect
-    //this.startAutoReconnect(ip, port);
+    const statusSubject = this.getOrCreateStatusSubject(matId);
+    statusSubject.next({ status: ConnectionStatus.CONNECTING });
+    this.ipcRenderer.send('connect-timing-box', { matId, ip, port, label });
   }
 
-  disconnect(): void {
-    this.shouldReconnect = false;
-    this.ipcRenderer.send('disconnect-timing-box');
-    this.stopAutoReconnect();
+  disconnect(matId: string): void {
+    this.shouldReconnect.set(matId, false);
+    this.ipcRenderer.send('disconnect-timing-box', { matId });
+    this.stopAutoReconnect(matId);
   }
 
-  private startAutoReconnect(ip: string, port: number): void {
-    console.log("Stop existing AutoReconnect");
-    this.stopAutoReconnect(); // Clear any existing interval
-    this.reconnectAttempts = 0;
-    this.shouldReconnect = false; // This will be reset once it connects successfully
+  disconnectAll(): void {
+    this.statusSubjects.forEach((_, matId) => {
+      this.shouldReconnect.set(matId, false);
+      this.stopAutoReconnect(matId);
+    });
+    this.ipcRenderer.send('disconnect-all-timing-boxes');
+  }
 
-    this.reconnectionStatus$.next(`Reconnection Attempts: (0/${this.settings.numReconnectAttempts})`);
+  private startAutoReconnect(matId: string, ip: string, port: number, label: string): void {
+    console.log(`Mat ${matId}: Starting auto-reconnect`);
+    this.stopAutoReconnect(matId); // Clear any existing interval
+    this.reconnectAttempts.set(matId, 0);
+    this.shouldReconnect.set(matId, false); // This will be reset once it connects successfully
 
-    this.autoReconnectInterval = setInterval(() => {
-      if (this.getCurrentStatus().status === ConnectionStatus.DISCONNECTED) {
-        if (this.reconnectAttempts < this.settings.numReconnectAttempts) {
-          this.reconnectionStatus$.next(`Reconnection Attempts: (${this.reconnectAttempts + 1}/${this.settings.numReconnectAttempts})`);
-          console.log(`Attempting to reconnect (${this.reconnectAttempts + 1}/${this.settings.numReconnectAttempts})...`);
-          this.statusSubject.next({ status: ConnectionStatus.RECONNECTING });
-          this.ipcRenderer.send('connect-timing-box', { ip, port });
-          this.reconnectAttempts++;
+    const reconnectionStatus = this.getOrCreateReconnectionStatus(matId);
+    reconnectionStatus.next(`Reconnection Attempts: (0/${this.settings.numReconnectAttempts})`);
+
+    const interval = setInterval(() => {
+      const currentStatus = this.getCurrentStatus(matId).status;
+      const attempts = this.reconnectAttempts.get(matId) || 0;
+
+      if (currentStatus === ConnectionStatus.DISCONNECTED) {
+        if (attempts < this.settings.numReconnectAttempts) {
+          reconnectionStatus.next(`Reconnection Attempts: (${attempts + 1}/${this.settings.numReconnectAttempts})`);
+          console.log(`Mat ${matId}: Attempting to reconnect (${attempts + 1}/${this.settings.numReconnectAttempts})...`);
+          const statusSubject = this.getOrCreateStatusSubject(matId);
+          statusSubject.next({ status: ConnectionStatus.RECONNECTING });
+          this.ipcRenderer.send('connect-timing-box', { matId, ip, port, label });
+          this.reconnectAttempts.set(matId, attempts + 1);
         } else {
-          console.log('Max reconnect attempts reached. Stopping auto-reconnect.');
-          this.stopAutoReconnect();
+          console.log(`Mat ${matId}: Max reconnect attempts reached. Stopping auto-reconnect.`);
+          this.stopAutoReconnect(matId);
         }
-      } else if (this.getCurrentStatus().status === ConnectionStatus.CONNECTED) {
-        console.log("Connected.. Stopping Auto Reconnect");
-        this.stopAutoReconnect();
-      } else {
-        console.log("Ignoring attempt at reconnect because not Connected or Disconnected");
+      } else if (currentStatus === ConnectionStatus.CONNECTED) {
+        console.log(`Mat ${matId}: Connected - stopping auto reconnect`);
+        this.stopAutoReconnect(matId);
       }
     }, this.settings.reconnectDelay);
+
+    this.autoReconnectIntervals.set(matId, interval);
   }
 
-  private stopAutoReconnect(): void {
-    if (this.autoReconnectInterval) {
-      this.reconnectionStatus$.next("");
-      console.log("Stopping Auto Reconnect");
-      clearInterval(this.autoReconnectInterval);
-      this.autoReconnectInterval = null;
+  private stopAutoReconnect(matId: string): void {
+    const interval = this.autoReconnectIntervals.get(matId);
+    if (interval) {
+      const reconnectionStatus = this.getOrCreateReconnectionStatus(matId);
+      reconnectionStatus.next("");
+      console.log(`Mat ${matId}: Stopping auto reconnect`);
+      clearInterval(interval);
+      this.autoReconnectIntervals.delete(matId);
     }
   }
 
-  getCurrentStatus(): any {
-    return this.statusSubject.value;
+  getCurrentStatus(matId: string): any {
+    const statusSubject = this.statusSubjects.get(matId);
+    return statusSubject ? statusSubject.value : { status: ConnectionStatus.DISCONNECTED };
   }
 
-  getStatus(): Observable<any> {
-    return this.statusSubject.asObservable();
+  getStatus(matId: string): Observable<any> {
+    return this.getOrCreateStatusSubject(matId).asObservable();
   }
 
-  getCurrentReconnectStatus(){
-    return this.reconnectionStatus$.value;
+  getCurrentReconnectStatus(matId: string): string {
+    const reconnectionStatus = this.reconnectionStatuses.get(matId);
+    return reconnectionStatus ? reconnectionStatus.value : "";
   }
 
-  getReconnectStatus(){
-    return this.reconnectionStatus$.asObservable();
+  getReconnectStatus(matId: string): Observable<string> {
+    return this.getOrCreateReconnectionStatus(matId).asObservable();
   }
 
-  getData(): Observable<any> {
-    return this.dataSubject.asObservable();
+  getData(matId: string): Observable<any> {
+    return this.getOrCreateDataSubject(matId).asObservable();
+  }
+
+  // Helper method to get all mat IDs that have been initialized
+  getAllMatIds(): string[] {
+    return Array.from(this.statusSubjects.keys());
+  }
+
+  // Helper method to get status of all mats
+  getAllStatuses(): Map<string, any> {
+    const statuses = new Map<string, any>();
+    this.statusSubjects.forEach((subject, matId) => {
+      statuses.set(matId, subject.value);
+    });
+    return statuses;
   }
 }

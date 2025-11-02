@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { CustomField } from "../interfaces/custom-field";
 import { ConfigService } from './config.service';
+import { MatConnection } from "../interfaces/mat-connection";
 
 export interface Settings {
   minTimeMs: number;
@@ -18,8 +19,9 @@ export interface Settings {
   raceStartTime: string;
   numLockWarn: boolean;
   raceId: string;
-  ip: string,
-  port: number,
+  ip: string, // Deprecated: kept for backward compatibility
+  port: number, // Deprecated: kept for backward compatibility
+  matConnections: MatConnection[];
   customFields: CustomField[];
 }
 
@@ -44,6 +46,7 @@ export const DEFAULT_SETTINGS: Settings = {
   raceId: '',
   ip: '',
   port: 10001,
+  matConnections: [],
   customFields: [
     { name: "division", showInAnnounce: true, showInBrowse: true },
     { name: "t-shirt", showInAnnounce: false, showInBrowse: true },
@@ -99,6 +102,20 @@ export class SettingsService {
           this.settings[key] = loadedSettings[key] as never;
         }
       }
+
+      // Migration: Convert old ip/port settings to matConnections if needed
+      if (this.settings.matConnections.length === 0 && this.settings.ip && this.settings.port) {
+        this.settings.matConnections = [{
+          id: 'mat-1',
+          label: 'Timing Mat 1',
+          ip: this.settings.ip,
+          port: this.settings.port,
+          enabled: true
+        }];
+        console.log("Migrated old ip/port settings to matConnections");
+        this.saveSettings(); // Save migrated settings
+      }
+
       console.log("Merged Settings:",this.settings);
       this.settings$.next(this.settings);
     } else {

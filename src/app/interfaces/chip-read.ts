@@ -3,4 +3,5 @@ export interface ChipRead {
   antennaId: string;
   chipCode: string;
   date: Date;
+  matId?: string; // ID of the timing mat that detected this read
 }

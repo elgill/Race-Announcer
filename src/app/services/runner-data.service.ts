@@ -187,7 +187,7 @@ export class RunnerDataService {
     this.xrefCount$.next(this.xrefData.size);
   }
 
-  enterBib(bib: string, overrideMinTime = false, overridePause = false, entrySource?: 'manual' | 'automated') {
+  enterBib(bib: string, overrideMinTime = false, overridePause = false, entrySource?: 'manual' | 'automated', matId?: string) {
     const now = new Date();
     const lastEntryTime = this.lastEntryTimes.get(bib);
     const minTimeMs = this.settings.minTimeMs;
@@ -204,7 +204,8 @@ export class RunnerDataService {
         bib,
         timestamp: now,
         entrySource,
-        wasShown: false // Will be updated if entry is actually shown
+        wasShown: false, // Will be updated if entry is actually shown
+        matId
       });
     }
 
@@ -250,7 +251,12 @@ export class RunnerDataService {
 
     // Mark the most recent entry attempt as shown
     if (entrySource && this.entryAttempts.length > 0) {
-      this.entryAttempts[this.entryAttempts.length - 1].wasShown = true;
+      const lastAttempt = this.entryAttempts[this.entryAttempts.length - 1];
+      lastAttempt.wasShown = true;
+      // Also store matId on the attempt if provided
+      if (matId) {
+        lastAttempt.matId = matId;
+      }
     }
 
     if (this.paused && !overridePause) {
