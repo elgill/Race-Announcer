@@ -8,7 +8,8 @@
 }
 
 .btn-primary,
-.btn-secondary {
+.btn-secondary,
+.btn-info {
   width: 100%;
   padding: 10px;
   margin-top: 10px;
@@ -16,6 +17,11 @@
   border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
+}
+
+.btn-info {
+  background-color: #17a2b8;
+  color: white;
 }
 
 .btn-primary {

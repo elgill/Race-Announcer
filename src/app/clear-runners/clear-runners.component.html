@@ -1,7 +1,8 @@
 <div class="form-container">
   <h2>Clear Runners & XREF</h2>
 
-  <button (click)="clearRunners()" class="btn-primary">Clear Runners</button>
+  <button (click)="clearActiveEntries()" class="btn-info">Clear Active Entries</button>
+  <button (click)="clearRunners()" class="btn-primary">Clear Runners Database</button>
   <button (click)="clearXref()" class="btn-secondary">Clear XREF</button>
 
   @if (clearStatus) {

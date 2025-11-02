@@ -14,9 +14,18 @@ export class ClearRunnersComponent {
 
   clearStatus = '';
 
+  clearActiveEntries() {
+    this.runnerDataService.clearActiveRunners();
+    this.clearStatus = 'Active Entries Cleared!';
+
+    setTimeout(() => {
+      this.clearStatus = '';
+    }, 3000);
+  }
+
   clearRunners() {
     this.runnerDataService.clearAllRunners();
-    this.clearStatus = 'Runners Cleared!';
+    this.clearStatus = 'Runners Database Cleared!';
 
     setTimeout(() => {
       this.clearStatus = '';

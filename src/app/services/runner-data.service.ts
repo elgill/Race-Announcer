@@ -8,6 +8,9 @@ import {Runner} from "../interfaces/runner";
 import {EntryAttempt} from "../interfaces/entry-attempt";
 import {DEFAULT_SETTINGS, SettingsService} from "./settings.service";
 
+// CONFIGURATION: Set to true to also clear bib history when clearing active entries
+const CLEAR_HISTORY_WITH_ACTIVE_ENTRIES = true;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -321,10 +324,25 @@ export class RunnerDataService {
     saveAs(blob, 'runners.csv');
   }
 
+  clearActiveRunners() {
+    this.activeRunners = [];
+    this.activeRunners$.next(this.activeRunners);
+    this.lastEntryTimes.clear();
+
+    // Optionally clear bib history based on configuration toggle
+    if (CLEAR_HISTORY_WITH_ACTIVE_ENTRIES) {
+      this.entryAttempts = [];
+      console.log('Cleared active runner entries and bib history.');
+    } else {
+      console.log('Cleared active runner entries (bib history preserved).');
+    }
+  }
+
   clearAllRunners() {
     this.allRunners.clear();
     this.activeRunners = [];
     this.activeRunners$.next(this.activeRunners);
+    this.lastEntryTimes.clear();
 
     this.db.deleteAllRunners().then(() => {
       console.log('Deleted all runners from database.');
