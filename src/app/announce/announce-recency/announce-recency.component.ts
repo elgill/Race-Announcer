@@ -67,26 +67,26 @@ export class AnnounceRecencyComponent extends AnnounceBaseComponent implements O
 
   private calculateStyle(seconds: number): { color: string; opacity: number } {
     if (seconds < 3) {
-      // 0-3s: Transition from green to yellow
+      // 0-3s: Transition from dark green to dark orange
       const ratio = seconds / 3;
-      const r = Math.round(255 * ratio);
-      const g = 255;
-      const b = 0;
+      const r = Math.round(34 + (204 * ratio)); // 34 to 238
+      const g = Math.round(139 - (30 * ratio)); // 139 to 109
+      const b = 34;
       return {
         color: `rgb(${r}, ${g}, ${b})`,
         opacity: 1
       };
     } else if (seconds < 7) {
-      // 3-7s: Stay yellow
+      // 3-7s: Stay dark orange
       return {
-        color: 'rgb(255, 255, 0)',
+        color: 'rgb(238, 109, 34)',
         opacity: 1
       };
     } else {
-      // 7-10s: Fade from yellow to transparent
+      // 7-10s: Fade from dark orange to transparent
       const fadeRatio = (10 - seconds) / 3;
       return {
-        color: 'rgb(255, 255, 0)',
+        color: 'rgb(238, 109, 34)',
         opacity: Math.max(0, fadeRatio)
       };
     }
