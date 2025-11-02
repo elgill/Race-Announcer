@@ -12,7 +12,7 @@
               [class.manual-badge]="runner.entrySource === 'manual'"
               [class.automated-badge]="runner.entrySource === 'automated'"
               [class.both-badge]="runner.entrySource === 'both'">
-          {{runner.entrySource === 'manual' ? 'M' : runner.entrySource === 'automated' ? 'A' : runner.entrySource === 'both' ? 'M+A' : '-'}}
+          {{runner.entrySource === 'manual' ? 'M' : runner.entrySource === 'automated' ? 'A' : runner.entrySource === 'both' ? 'C' : '-'}}
         </span>
         <span class="runnerAttribute">{{runner.bib}}</span>
         <span class="runnerAttribute">{{runner.firstName}}</span>
