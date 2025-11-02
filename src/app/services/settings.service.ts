@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { CustomField } from "../interfaces/custom-field";
 import { ConfigService } from './config.service';
 import { MatConnection } from "../interfaces/mat-connection";
+import { generateMatId, inferMatType, normalizeMatConnection } from "../utils/mat-connection-helpers";
 
 export interface Settings {
   minTimeMs: number;
@@ -110,11 +111,22 @@ export class SettingsService {
           label: 'Timing Mat 1',
           ip: this.settings.ip,
           port: this.settings.port,
-          enabled: true
+          enabled: true,
+          type: inferMatType(this.settings.port)
         }];
         console.log("Migrated old ip/port settings to matConnections");
         this.saveSettings(); // Save migrated settings
       }
+
+      this.settings.matConnections = this.settings.matConnections.map(mat =>
+        normalizeMatConnection({
+          ...mat,
+          id: mat.id || generateMatId(),
+          label: mat.label || 'Timing Mat',
+          enabled: mat.enabled ?? true,
+          type: inferMatType(mat.port, mat.type)
+        })
+      );
 
       console.log("Merged Settings:",this.settings);
       this.settings$.next(this.settings);

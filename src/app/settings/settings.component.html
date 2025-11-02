@@ -20,46 +20,14 @@
     <label for="timing-box-settings" class="collapsible-label">Timing Box Settings</label>
     <div class="collapsible-content">
       <div class="mat-connections-info">
-        <p>Configure up to {{maxMatConnections}} timing mats. Only enabled mats appear on the main screen.</p>
+        <p>Configure up to {{maxMatConnections}} timing mats. Only enabled mats appear on the announce screen.</p>
       </div>
-      <div formArrayName="matConnections" class="mat-connections">
-        @for (mat of matConnections.controls; track mat; let i = $index) {
-          <div [formGroupName]="i" class="mat-connection-card">
-            <div class="mat-connection-header">
-              <div class="mat-label-input">
-                <label>
-                  Label:
-                  <input formControlName="label" type="text" placeholder="Finish Line">
-                </label>
-              </div>
-              <div class="mat-enabled-toggle">
-                <label>
-                  Enabled:
-                  <input formControlName="enabled" type="checkbox">
-                </label>
-              </div>
-            </div>
-            <div class="mat-connection-fields">
-              <label>
-                IP Address:
-                <input formControlName="ip" type="text" placeholder="192.168.1.200">
-              </label>
-              <label>
-                Port:
-                <input formControlName="port" type="number" min="0" max="65535" placeholder="10001">
-              </label>
-            </div>
-            <div class="mat-connection-actions">
-              <button type="button" (click)="removeMatConnection(i)">Remove Mat</button>
-            </div>
-          </div>
-        }
+      <div formArrayName="matConnections">
+        <app-mat-connections-editor
+          [matConnections]="matConnections"
+          [maxConnections]="maxMatConnections">
+        </app-mat-connections-editor>
       </div>
-      <button type="button"
-              (click)="addMatConnection()"
-              [disabled]="matConnections.length >= maxMatConnections">
-        Add Timing Mat
-      </button>
       <div>
         <label>
           Min Time Between Entries:

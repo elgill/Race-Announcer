@@ -1,0 +1,173 @@
+.mat-editor {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  background-color: #fdfdfd;
+}
+
+.mat-editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.editor-title {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+}
+
+.add-button {
+  padding: 4px 12px;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.add-button[disabled] {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.empty-state {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.mat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.mat-row.mat-disabled {
+  opacity: 0.6;
+}
+
+.mat-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.mat-label {
+  font-weight: 600;
+}
+
+.mat-details {
+  color: #555;
+  font-family: monospace;
+}
+
+.mat-type {
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+  background-color: #eef2ff;
+  color: #3b4cca;
+  text-transform: capitalize;
+}
+
+.mat-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.mat-actions button {
+  padding: 3px 8px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.dialog {
+  background-color: #fff;
+  padding: 18px;
+  border-radius: 6px;
+  width: 320px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.dialog h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+}
+
+.field label {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.field input[type="text"],
+.field input[type="number"] {
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.checkbox-field label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.type-options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.type-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.disabled-port {
+  background-color: #f3f4f6;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.dialog-actions button {
+  padding: 4px 12px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}

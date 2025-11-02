@@ -12,13 +12,13 @@
   </div>
 
   <div class="form-group">
-    <label for="ip">IP Address:</label>
-    <input id="ip" formControlName="ip" type="text" placeholder="192.168.1.200" class="form-control">
-  </div>
-
-  <div class="form-group">
-    <label for="port">Port:</label>
-    <input id="port" formControlName="port" type="number" placeholder="10001" class="form-control">
+    <label>Timing Mats:</label>
+    <div formArrayName="matConnections">
+      <app-mat-connections-editor
+        [matConnections]="matConnections"
+        [maxConnections]="maxMatConnections">
+      </app-mat-connections-editor>
+    </div>
   </div>
 
   <button (click)="saveSettings()" class="btn-primary">Save Settings</button>

@@ -4,4 +4,5 @@ export interface MatConnection {
   ip: string;
   port: number;
   enabled: boolean;
+  type?: 'trident' | 'raceResult' | 'other'; // Reader type for default configuration
 }

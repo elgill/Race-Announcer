@@ -1,0 +1,92 @@
+<div class="mat-editor">
+  <div class="mat-editor-header">
+    <span class="editor-title">Timing Mats</span>
+    <button type="button"
+            class="add-button"
+            (click)="openAddDialog()"
+            [disabled]="!hasRoomForMore">
+      Add Mat
+    </button>
+  </div>
+
+  @if (matConnections.length === 0) {
+    <p class="empty-state">No timing mats configured.</p>
+  } @else {
+    <div class="mat-list">
+      @for (matGroup of matConnections.controls; track matGroup; let i = $index) {
+        <div class="mat-row" [class.mat-disabled]="!(matGroup.get('enabled')?.value)">
+          <div class="mat-summary">
+            <span class="mat-label">{{ matGroup.get('label')?.value || 'Unnamed Mat' }}</span>
+            <span class="mat-details">
+              {{ matGroup.get('ip')?.value }}:{{ matGroup.get('port')?.value }}
+            </span>
+            <span class="mat-type">{{ typeLabel(matGroup.get('type')?.value) }}</span>
+            <span class="mat-state">
+              {{ matGroup.get('enabled')?.value ? 'Enabled' : 'Disabled' }}
+            </span>
+          </div>
+          <div class="mat-actions">
+            <button type="button" (click)="openEditDialog(i)">Edit</button>
+            <button type="button" (click)="removeMat(i)">Remove</button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
+
+@if (dialogOpen) {
+  <div class="dialog-backdrop">
+    <div class="dialog">
+      <h3>{{ dialogTitle }}</h3>
+      <form [formGroup]="dialogForm" (ngSubmit)="saveMat()">
+        <div class="field">
+          <label for="matLabel">Label</label>
+          <input id="matLabel" type="text" formControlName="label" placeholder="Finish Line">
+        </div>
+
+        <div class="field">
+          <label for="matIp">IP Address</label>
+          <input id="matIp" type="text" formControlName="ip" placeholder="192.168.1.">
+        </div>
+
+        <div class="field">
+          <label>Reader Type</label>
+          <div class="type-options">
+            @for (typeOption of matTypes; track typeOption.value) {
+              <label class="type-option">
+                <input type="radio"
+                       [value]="typeOption.value"
+                       formControlName="type"
+                       (change)="onTypeChange(typeOption.value)">
+                {{ typeOption.label }}
+              </label>
+            }
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="matPort">Port</label>
+          <input id="matPort"
+                 type="number"
+                 min="0"
+                 max="65535"
+                 formControlName="port"
+                 [class.disabled-port]="dialogForm.get('type')?.value !== 'other'">
+        </div>
+
+        <div class="field checkbox-field">
+          <label>
+            <input type="checkbox" formControlName="enabled">
+            Enabled
+          </label>
+        </div>
+
+        <div class="dialog-actions">
+          <button type="button" (click)="closeDialog()">Cancel</button>
+          <button type="submit" [disabled]="dialogForm.invalid">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
