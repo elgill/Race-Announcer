@@ -22,7 +22,7 @@ export class VisualLoadTestService {
     const startTime: Date = new Date(currentTime.getTime() - startFrom);
 
     console.log('Race start time:', startTime.toISOString());
-    this.settingsService.setRaceStartTime(startTime.toString())
+    this.settingsService.setRaceStartTime(startTime.toISOString())
 
     runners.forEach((runner) => {
       if (runner.timeElapsed >= startFrom) {

@@ -74,6 +74,7 @@ export class QuickSettingsComponent implements OnInit {
 
       this.quickSetupForm.patchValue({
         ...settings,
+        raceStartTime: settings.raceStartTime ? this.toLocalInputDateTime(settings.raceStartTime) : '',
         minTimeMinutes: Math.floor(settings.minTimeMs / 60000),
         minTimeSeconds: (settings.minTimeMs % 60000) / 1000,
       });
@@ -128,6 +129,7 @@ export class QuickSettingsComponent implements OnInit {
       numReconnectAttempts: formValue.numReconnectAttempts,
       reconnectDelay: formValue.reconnectDelay
     };
+    updatedSettings.raceStartTime = formValue.raceStartTime ? new Date(formValue.raceStartTime).toISOString() : '';
 
     if (updatedSettings.matConnections.length > 0) {
       const [primaryMat] = updatedSettings.matConnections;
@@ -180,5 +182,22 @@ export class QuickSettingsComponent implements OnInit {
       enabled: [mat?.enabled ?? true],
       type: [type]
     });
+  }
+
+  private toLocalInputDateTime(value: string): string {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+      return '';
+    }
+    const pad = (num: number, size = 2) => String(num).padStart(size, '0');
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1);
+    const day = pad(date.getDate());
+    const hours = pad(date.getHours());
+    const minutes = pad(date.getMinutes());
+    const seconds = pad(date.getSeconds());
+    const millis = date.getMilliseconds();
+    const millisPart = millis ? `.${pad(millis, 3)}` : '';
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}${millisPart}`;
   }
 }
