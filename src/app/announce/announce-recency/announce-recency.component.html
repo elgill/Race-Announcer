@@ -1,0 +1,41 @@
+<div class="recency-container">
+  @if (paused) {
+    <div class="pause-indicator">
+      PAUSED @if (pausedQueueLength > 0) { ({{pausedQueueLength}} in queue) }
+    </div>
+  }
+
+  <div class="runner-list">
+    @for (runner of recencyRunners; track trackByBib($index, runner); let i = $index) {
+      <div class="runner-entry">
+        <span class="source-badge"
+              [class.manual-badge]="runner.entrySource === 'manual'"
+              [class.automated-badge]="runner.entrySource === 'automated'"
+              [class.both-badge]="runner.entrySource === 'both'">
+          {{runner.entrySource === 'manual' ? 'M' : runner.entrySource === 'automated' ? 'A' : runner.entrySource === 'both' ? 'M+A' : '-'}}
+        </span>
+        <span class="runnerAttribute">{{runner.bib}}</span>
+        <span class="runnerAttribute">{{runner.firstName}}</span>
+        <span class="runnerAttribute">{{runner.lastName}}</span>
+        @if (runner.age > 0) {
+          <span class="runnerAttribute">{{runner.age}}</span>
+        }
+        <span class="runnerAttribute">{{runner.gender}}</span>
+        <span class="runnerAttribute">{{runner.town}}</span>
+        <span class="runnerAttribute">{{runner.state}}</span>
+        @for (field of customFields; track field) {
+          <span class="runnerAttribute">
+            {{runner.customFields[field.name]}}
+          </span>
+        }
+        @if (runner.opacity > 0) {
+          <span class="time-badge"
+                [style.color]="runner.color"
+                [style.opacity]="runner.opacity">
+            {{runner.secondsSinceEntry | number:'1.1-1'}}s
+          </span>
+        }
+      </div>
+    }
+  </div>
+</div>

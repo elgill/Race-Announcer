@@ -149,7 +149,7 @@ export class TimingBoxService {
     // Example usage: Enter runner bib number from tagId
     const bibNumber = this.runnerDataService.getBibByChipId(parsedData.chipCode);
     if (bibNumber) {
-      this.runnerDataService.enterBib(bibNumber, false, false);
+      this.runnerDataService.enterBib(bibNumber, false, false, 'automated');
     } else {
       console.warn('No bib number found for tag ID:', parsedData.chipCode);
     }

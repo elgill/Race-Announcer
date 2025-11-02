@@ -19,7 +19,6 @@ export class SettingsComponent implements OnInit, AfterViewInit {
   settingsForm: FormGroup = new FormGroup({});
   templateOptions = ANNOUNCE_TEMPLATE_OPTIONS;
   status: string = '';
-  isElectron = this.electronService.isElectron;
 
   ngOnInit(): void {
     this.settingsForm = this.formBuilder.group({

@@ -1,0 +1,67 @@
+<div class="bib-history-container">
+  <h1>Bib Entry History</h1>
+
+  <div class="search-section">
+    <div class="search-form">
+      <label for="bibSearch">Enter Bib Number:</label>
+      <input
+        id="bibSearch"
+        type="text"
+        [(ngModel)]="searchBib"
+        (keyup.enter)="onSearch()"
+        placeholder="Enter bib number"
+        class="bib-input">
+      <button (click)="onSearch()" class="search-button">Search</button>
+      <button (click)="clearSearch()" class="clear-button">Clear</button>
+    </div>
+  </div>
+
+  @if (hasSearched) {
+    <div class="results-section">
+      <h2>Results for Bib: {{searchBib}}</h2>
+
+      @if (entryAttempts.length === 0) {
+        <p class="no-results">No entry attempts found for this bib number.</p>
+      } @else {
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Net Time</th>
+              <th>Entry Type</th>
+              <th>Was Shown?</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (attempt of entryAttempts; track attempt.timestamp) {
+              <tr [class.not-shown]="!attempt.wasShown">
+                <td class="precise-time">{{formatPreciseTimestamp(attempt.timestamp)}}</td>
+                <td class="net-time">{{getNetTime(attempt.timestamp)}}</td>
+                <td>
+                  <span class="entry-badge"
+                        [class.manual-badge]="attempt.entrySource === 'manual'"
+                        [class.automated-badge]="attempt.entrySource === 'automated'">
+                    {{getEntryTypeLabel(attempt.entrySource)}}
+                  </span>
+                </td>
+                <td>
+                  <span class="shown-indicator"
+                        [class.shown-yes]="attempt.wasShown"
+                        [class.shown-no]="!attempt.wasShown">
+                    {{getShownLabel(attempt.wasShown)}}
+                  </span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        <div class="summary">
+          <p>Total attempts: {{entryAttempts.length}}</p>
+          <p>Shown: {{getShownCount()}}</p>
+          <p>Blocked: {{getBlockedCount()}}</p>
+        </div>
+      }
+    </div>
+  }
+</div>

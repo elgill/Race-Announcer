@@ -6,6 +6,7 @@ import { ConnectMatStreamComponent } from '../connect-mat-stream/connect-mat-str
 import { AnnounceGridComponent } from './announce-grid/announce-grid.component';
 import { AnnounceFreeformComponent } from './announce-freeform/announce-freeform.component';
 import { AnnounceTimerComponent } from './announce-timer/announce-timer.component';
+import { AnnounceRecencyComponent } from './announce-recency/announce-recency.component';
 import { ErrorComponent } from '../error/error.component';
 import { AnnounceBaseComponent } from './announce-base.component';
 
@@ -14,7 +15,7 @@ import { AnnounceBaseComponent } from './announce-base.component';
     templateUrl: './announce-screen.component.html',
     styleUrls: ['./announce-screen.component.css'],
     standalone: true,
-    imports: [BibEntryComponent, RaceClockComponent, ConnectMatStreamComponent, AnnounceGridComponent, AnnounceFreeformComponent, AnnounceTimerComponent, ErrorComponent]
+    imports: [BibEntryComponent, RaceClockComponent, ConnectMatStreamComponent, AnnounceGridComponent, AnnounceFreeformComponent, AnnounceTimerComponent, AnnounceRecencyComponent, ErrorComponent]
 })
 export class AnnounceScreenComponent extends AnnounceBaseComponent {
 }

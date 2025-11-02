@@ -10,6 +10,7 @@ export interface Runner {
   town: string;
   state: string;
   timeEntered?: Date;
+  entrySource?: 'manual' | 'automated' | 'both';
   customFields: { [key: string]: string };
 }
 

@@ -10,6 +10,7 @@ import { XrefManagerComponent } from './xref-manager/xref-manager.component';
 import { TimerRunnerTableComponent } from './timer-runner-table/timer-runner-table.component';
 import { ImportExportComponent } from './import-export/import-export.component';
 import { QuickSetupComponent } from './quick-setup/quick-setup.component';
+import { BibHistoryComponent } from './bib-history/bib-history.component';
 
 const routes: Routes = [
   { path: 'settings', component: SettingsComponent },
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'lookup', component: NameLookupComponent},
   { path: 'xref', component: XrefManagerComponent},
   { path: 'timer', component: TimerRunnerTableComponent},
+  { path: 'bib-history', component: BibHistoryComponent},
   { path: 'quick-setup', component: QuickSetupComponent},
   { path: '', redirectTo: '/announce', pathMatch: 'full' },
 ];

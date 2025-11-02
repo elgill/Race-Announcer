@@ -49,7 +49,7 @@ export class BibEntryComponent implements OnInit, AfterViewInit  {
 
   onSubmit(): void {
     const bib: string = this.bibNumber ? this.bibNumber : '';
-    this.runnerDataService.enterBib(bib,true, true);
+    this.runnerDataService.enterBib(bib, true, true, 'manual');
     this.bibNumber = '';
   }
 

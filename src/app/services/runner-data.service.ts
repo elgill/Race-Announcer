@@ -5,6 +5,7 @@ import {BehaviorSubject, Observable} from 'rxjs';
 import {RunnerDatabase} from "../runner-database/runner-database";
 import {IndexedDbRunnerDatabaseService} from "../runner-database/indexed-db-runner-database.service";
 import {Runner} from "../interfaces/runner";
+import {EntryAttempt} from "../interfaces/entry-attempt";
 import {DEFAULT_SETTINGS, SettingsService} from "./settings.service";
 
 @Injectable({
@@ -29,6 +30,8 @@ export class RunnerDataService {
   private pausedQueue: Runner[] = [];
   private pausedQueue$ = new BehaviorSubject<Runner[]>([]);
   private runnerCount$ = new BehaviorSubject<number>(0); // Observable for runner count
+
+  private entryAttempts: EntryAttempt[] = []; // Track all entry attempts
 
   constructor() {
     // IDB
@@ -166,6 +169,13 @@ export class RunnerDataService {
     return this.xrefCount$.asObservable();
   }
 
+  getEntryAttempts(bib?: string): EntryAttempt[] {
+    if (bib) {
+      return this.entryAttempts.filter(attempt => attempt.bib === bib);
+    }
+    return [...this.entryAttempts];
+  }
+
   private updateRunnerCount() {
     this.runnerCount$.next(this.allRunners.size);
   }
@@ -174,7 +184,7 @@ export class RunnerDataService {
     this.xrefCount$.next(this.xrefData.size);
   }
 
-  enterBib(bib: string, overrideMinTime = false, overridePause = false) {
+  enterBib(bib: string, overrideMinTime = false, overridePause = false, entrySource?: 'manual' | 'automated') {
     const now = new Date();
     const lastEntryTime = this.lastEntryTimes.get(bib);
     const minTimeMs = this.settings.minTimeMs;
@@ -185,10 +195,32 @@ export class RunnerDataService {
 
     bib = bib.toString();
 
+    // Track this entry attempt
+    if (entrySource) {
+      this.entryAttempts.push({
+        bib,
+        timestamp: now,
+        entrySource,
+        wasShown: false // Will be updated if entry is actually shown
+      });
+    }
+
+    // Check if entry is within minTimeMs window
     if (!overrideMinTime && lastEntryTime) {
       const timeSinceLastEntry = now.getTime() - lastEntryTime.getTime();
       if (timeSinceLastEntry < minTimeMs) {
         console.warn(`Ignoring entry for bib ${bib} because it was entered too recently.`);
+
+        // Update the existing entry in activeRunners to show it was confirmed by alternate method
+        if (entrySource) {
+          const existingEntry = this.activeRunners.find(r => r.bib === bib);
+          if (existingEntry && existingEntry.entrySource && existingEntry.entrySource !== entrySource) {
+            existingEntry.entrySource = 'both';
+            this.activeRunners$.next(this.activeRunners);
+            console.debug(`Updated bib ${bib} entry to 'both' (confirmed by ${entrySource})`);
+          }
+        }
+
         return;
       }
     }
@@ -206,7 +238,17 @@ export class RunnerDataService {
       runner.timeEntered = new Date();
     }
 
+    // Set entry source if provided
+    if (entrySource) {
+      runner.entrySource = entrySource;
+    }
+
     this.lastEntryTimes.set(bib, now);
+
+    // Mark the most recent entry attempt as shown
+    if (entrySource && this.entryAttempts.length > 0) {
+      this.entryAttempts[this.entryAttempts.length - 1].wasShown = true;
+    }
 
     if (this.paused && !overridePause) {
       this.pausedQueue.push(runner);

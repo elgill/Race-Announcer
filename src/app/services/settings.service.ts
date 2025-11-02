@@ -26,7 +26,8 @@ export interface Settings {
 export const ANNOUNCE_TEMPLATE_OPTIONS: { display: string; value: string }[] = [
   { display: 'Grid View', value: 'grid' },
   { display: 'Freeform View', value: 'freeform' },
-  { display: 'Timer View', value: 'timer'}
+  { display: 'Timer View', value: 'timer'},
+  { display: 'Recency View', value: 'recency'}
 ];
 
 export const DEFAULT_SETTINGS: Settings = {
