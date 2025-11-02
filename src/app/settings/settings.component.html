@@ -121,7 +121,7 @@
     <label for="custom-fields" class="collapsible-label">Custom Fields</label>
     <div class="collapsible-content">
       <div formArrayName="customFields">
-        @for (field of customFields.controls; track field; let i = $index) {
+        @for (field of customFields.controls; track $index; let i = $index) {
           <div [formGroupName]="i" class="custom-field-group">
             <h4>Custom Field {{i + 1}}</h4>
             <div>

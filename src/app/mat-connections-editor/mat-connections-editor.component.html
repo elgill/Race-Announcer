@@ -13,7 +13,7 @@
     <p class="empty-state">No timing mats configured.</p>
   } @else {
     <div class="mat-list">
-      @for (matGroup of matConnections.controls; track matGroup; let i = $index) {
+      @for (matGroup of matConnections.controls; track matGroup.get('id')?.value; let i = $index) {
         <div class="mat-row" [class.mat-disabled]="!(matGroup.get('enabled')?.value)">
           <div class="mat-summary">
             <span class="mat-label">{{ matGroup.get('label')?.value || 'Unnamed Mat' }}</span>
