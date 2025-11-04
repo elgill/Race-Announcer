@@ -85,13 +85,22 @@ export class TimingBoxService {
 
   private handleStatusChange(matId: string, status: string){
     const isMatEnabled = this.settings.matConnections.some(mat => mat.id === matId && mat.enabled);
-    const shouldReconnectFlag = this.shouldReconnect.get(matId);
+    const shouldReconnectFlag = this.shouldReconnect.has(matId) ? this.shouldReconnect.get(matId)! : true;
+    const hasActiveInterval = this.autoReconnectIntervals.has(matId);
+    const statusSubject = this.getOrCreateStatusSubject(matId);
+    const reconnectionStatus = this.getOrCreateReconnectionStatus(matId);
 
-    if (status === ConnectionStatus.DISCONNECTED) {
+    if (status === ConnectionStatus.DISCONNECTED || status === ConnectionStatus.ERROR) {
       if (isMatEnabled && shouldReconnectFlag) {
-        const matConnection = this.settings.matConnections.find(m => m.id === matId && m.enabled);
-        if (matConnection) {
-          this.startAutoReconnect(matId, matConnection.ip, matConnection.port, matConnection.label);
+        if (!hasActiveInterval) {
+          const matConnection = this.settings.matConnections.find(m => m.id === matId && m.enabled);
+          if (matConnection) {
+            this.startAutoReconnect(matId, matConnection.ip, matConnection.port, matConnection.label);
+          }
+        } else {
+          const attempts = this.reconnectAttempts.get(matId) || 0;
+          const message = reconnectionStatus.value || this.formatReconnectMessage(attempts, this.settings.numReconnectAttempts);
+          statusSubject.next({ status: ConnectionStatus.RECONNECTING, message });
         }
       } else {
         this.stopAutoReconnect(matId);
@@ -238,25 +247,32 @@ export class TimingBoxService {
     console.log(`Mat ${matId}: Starting auto-reconnect`);
     this.stopAutoReconnect(matId); // Clear any existing interval
     this.reconnectAttempts.set(matId, 0);
-    this.shouldReconnect.set(matId, false); // This will be reset once it connects successfully
+    this.shouldReconnect.set(matId, true);
 
+    const totalAttempts = this.settings.numReconnectAttempts;
     const reconnectionStatus = this.getOrCreateReconnectionStatus(matId);
-    reconnectionStatus.next(`Reconnection Attempts: (0/${this.settings.numReconnectAttempts})`);
+    const statusSubject = this.getOrCreateStatusSubject(matId);
+    const initialMessage = this.formatReconnectMessage(0, totalAttempts);
+    reconnectionStatus.next(initialMessage);
+    statusSubject.next({ status: ConnectionStatus.RECONNECTING, message: initialMessage });
 
     const interval = setInterval(() => {
       const currentStatus = this.getCurrentStatus(matId).status;
       const attempts = this.reconnectAttempts.get(matId) || 0;
 
-      if (currentStatus === ConnectionStatus.DISCONNECTED) {
+      if (currentStatus === ConnectionStatus.DISCONNECTED || currentStatus === ConnectionStatus.RECONNECTING || currentStatus === ConnectionStatus.ERROR) {
         if (attempts < this.settings.numReconnectAttempts) {
-          reconnectionStatus.next(`Reconnection Attempts: (${attempts + 1}/${this.settings.numReconnectAttempts})`);
-          console.log(`Mat ${matId}: Attempting to reconnect (${attempts + 1}/${this.settings.numReconnectAttempts})...`);
-          const statusSubject = this.getOrCreateStatusSubject(matId);
-          statusSubject.next({ status: ConnectionStatus.RECONNECTING });
+          const nextAttempt = attempts + 1;
+          const attemptMessage = this.formatReconnectMessage(nextAttempt, totalAttempts);
+          reconnectionStatus.next(attemptMessage);
+          console.log(`Mat ${matId}: Attempting to reconnect (${nextAttempt}/${totalAttempts})...`);
+          statusSubject.next({ status: ConnectionStatus.RECONNECTING, message: attemptMessage });
           this.ipcRenderer.send('connect-timing-box', { matId, ip, port, label });
-          this.reconnectAttempts.set(matId, attempts + 1);
+          this.reconnectAttempts.set(matId, nextAttempt);
         } else {
           console.log(`Mat ${matId}: Max reconnect attempts reached. Stopping auto-reconnect.`);
+          this.shouldReconnect.set(matId, false);
+          statusSubject.next({ status: ConnectionStatus.DISCONNECTED });
           this.stopAutoReconnect(matId);
         }
       } else if (currentStatus === ConnectionStatus.CONNECTED) {
@@ -313,5 +329,13 @@ export class TimingBoxService {
       statuses.set(matId, subject.value);
     });
     return statuses;
+  }
+
+  private formatReconnectMessage(attempt: number, totalAttempts: number): string {
+    if (!totalAttempts || totalAttempts <= 0) {
+      return 'Reconnecting';
+    }
+    const safeAttempt = Math.min(Math.max(attempt, 0), totalAttempts);
+    return `Reconnecting (${safeAttempt}/${totalAttempts})`;
   }
 }

@@ -7,6 +7,7 @@ import {CommonModule} from "@angular/common";
 
 interface MatConnectionStatus extends MatConnection {
   status: string;
+  statusMessage: string;
   reconnectionStatus: string;
 }
 
@@ -53,6 +54,7 @@ export class ConnectMatStreamComponent implements OnInit {
           const matStatus = this.matStatuses.find(m => m.id === mat.id);
           if (matStatus) {
             matStatus.status = statusUpdate.status;
+            matStatus.statusMessage = statusUpdate.message || '';
           }
         });
 
@@ -67,6 +69,7 @@ export class ConnectMatStreamComponent implements OnInit {
         return {
           ...mat,
           status: status.status,
+          statusMessage: status.message || '',
           reconnectionStatus
         };
       });
@@ -92,4 +95,46 @@ export class ConnectMatStreamComponent implements OnInit {
   }
 
   protected readonly ConnectionStatus = ConnectionStatus;
+
+  protected getStatusClass(status: string): string {
+    if (!status) {
+      return 'status-unknown';
+    }
+
+    const normalized = status.toLowerCase();
+
+    if (normalized.startsWith('reconnect')) {
+      return 'status-reconnecting';
+    }
+
+    if (normalized.startsWith('disconnect')) {
+      return 'status-disconnected';
+    }
+
+    if (normalized.startsWith('connecting')) {
+      return 'status-connecting';
+    }
+
+    if (normalized.startsWith('connected')) {
+      return 'status-connected';
+    }
+
+    if (normalized.startsWith('error')) {
+      return 'status-error';
+    }
+
+    return 'status-unknown';
+  }
+
+  protected getStatusLabel(mat: MatConnectionStatus): string {
+    if (!mat) {
+      return '';
+    }
+
+    if (mat.status === ConnectionStatus.ERROR && mat.statusMessage) {
+      return `Error: ${mat.statusMessage}`;
+    }
+
+    return mat.statusMessage || mat.status;
+  }
 }

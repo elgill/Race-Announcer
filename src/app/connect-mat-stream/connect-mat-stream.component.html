@@ -10,7 +10,9 @@
              [attr.title]="mat.label + '\n' + mat.ip + ':' + mat.port + (mat.reconnectionStatus ? '\n' + mat.reconnectionStatus : '')">
           <span class="mat-label">{{ mat.label }}</span>
           <span class="mat-status">
-            <span [class]="'status-badge status-' + mat.status.toLowerCase()">{{ mat.status }}</span>
+            <span [ngClass]="['status-badge', getStatusClass(mat.status)]">
+              {{ getStatusLabel(mat) }}
+            </span>
           </span>
           <button class="mat-action"
                   (click)="toggleConnection(mat)">
