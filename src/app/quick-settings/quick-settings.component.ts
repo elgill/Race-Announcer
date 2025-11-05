@@ -114,7 +114,7 @@ export class QuickSettingsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const formValue = this.quickSetupForm.value;
+    const formValue = this.quickSetupForm.getRawValue();
     const matConnections = this.matConnections.getRawValue().map((connection: MatConnection) =>
       normalizeMatConnection({
         ...connection,
@@ -155,7 +155,6 @@ export class QuickSettingsComponent implements OnInit, OnDestroy {
       updatedSettings.port = DEFAULT_SETTINGS.port;
     }
 
-    this.settingsService.updateSettings(updatedSettings);
     if (this.areSettingsEqual(updatedSettings, this.settings)) {
       return;
     }
