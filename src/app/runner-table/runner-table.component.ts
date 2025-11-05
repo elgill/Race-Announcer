@@ -31,4 +31,14 @@ export class RunnerTableComponent {
   loadAll() {
     this.displayLimit = Number.MAX_SAFE_INTEGER;
   }
+
+  // PERFORMANCE FIX: Add trackBy function for efficient list rendering
+  trackByBib(index: number, runner: Runner): string {
+    return runner.bib;
+  }
+
+  // PERFORMANCE FIX: Add trackBy function for custom fields
+  trackByFieldName(index: number, field: CustomField): string {
+    return field.name;
+  }
 }

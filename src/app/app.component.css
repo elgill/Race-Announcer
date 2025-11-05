@@ -1,13 +1,74 @@
+/* Header Styles */
+.app-header {
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.header-brand {
+  margin-right: 32px;
+  padding: 16px 0;
+}
+
+.app-title {
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Navigation Styles */
+.main-nav {
+  display: flex;
+  flex: 1;
+  gap: 4px;
+}
+
+.nav-link {
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  padding: 16px 20px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  position: relative;
+  white-space: nowrap;
+}
+
+.nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.nav-link.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  box-shadow: inset 0 -3px 0 0 #4fc3f7;
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #4fc3f7, #29b6f6);
+  border-radius: 2px 2px 0 0;
+}
+
+/* Main Container */
 .app-container {
-  padding-top: 10px;
-}
-.active {
-   background-color: #ddd;
-}
-nav a {
-  padding: 10px;
-  font-size: 1.2em;
-}
-nav a:hover {
-   background-color: #eee;
+  padding: 24px;
+  background-color: #f5f7fa;
+  min-height: calc(100vh - 72px);
 }
