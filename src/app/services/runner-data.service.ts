@@ -34,8 +34,6 @@ export class RunnerDataService {
   private pausedQueue$ = new BehaviorSubject<Runner[]>([]);
   private runnerCount$ = new BehaviorSubject<number>(0); // Observable for runner count
 
-  // PERFORMANCE FIX: Limit entry attempts to prevent unbounded memory growth
-  private readonly MAX_ENTRY_ATTEMPTS = 10000; // Keep last 10,000 attempts
   private entryAttempts: EntryAttempt[] = []; // Track entry attempts with size limit
 
   constructor() {
@@ -209,12 +207,6 @@ export class RunnerDataService {
         wasShown: false, // Will be updated if entry is actually shown
         matId
       });
-
-      // PERFORMANCE FIX: Limit array size to prevent unbounded growth
-      // Remove oldest entries if we exceed the limit (FIFO)
-      if (this.entryAttempts.length > this.MAX_ENTRY_ATTEMPTS) {
-        this.entryAttempts.shift(); // Remove oldest entry
-      }
     }
 
     // Check if entry is within minTimeMs window

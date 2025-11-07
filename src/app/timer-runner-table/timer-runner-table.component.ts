@@ -28,14 +28,4 @@ export class TimerRunnerTableComponent {
       map(settings => settings.customFields.filter(field => field.showInBrowse))
     );
   }
-
-  // PERFORMANCE FIX: Add trackBy function for efficient list rendering
-  trackByBib(index: number, runner: Runner): string {
-    return runner.bib;
-  }
-
-  // PERFORMANCE FIX: Add trackBy function for custom fields
-  trackByFieldName(index: number, field: CustomField): string {
-    return field.name;
-  }
 }
