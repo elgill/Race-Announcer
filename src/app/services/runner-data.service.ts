@@ -34,7 +34,7 @@ export class RunnerDataService {
   private pausedQueue$ = new BehaviorSubject<Runner[]>([]);
   private runnerCount$ = new BehaviorSubject<number>(0); // Observable for runner count
 
-  private entryAttempts: EntryAttempt[] = []; // Track all entry attempts
+  private entryAttempts: EntryAttempt[] = []; // Track entry attempts with size limit
 
   constructor() {
     // IDB

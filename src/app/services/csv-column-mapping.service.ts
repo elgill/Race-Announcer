@@ -38,55 +38,61 @@ export class CsvColumnMappingService {
   importCsv(file: File, columnMappings: { [key: string]: string }): Promise<Runner[]> {
     return new Promise((resolve, reject) => {
       const runners: Runner[] = [];
-      Papa.parse(file, {
-        header: true,
-        skipEmptyLines: true,
-        step: (results) => {
-          console.log('Raw CSV row:', results.data);  // Debug: Log raw CSV row
 
-          const row = results.data as Record<string, string>; // Tell TypeScript we expect results.data to be an object with string keys and values
-          console.log('Column Mappings: ',columnMappings);
+      // PERFORMANCE FIX: Subscribe ONCE before parsing, not once per row
+      const subscription = this.settingsService.getSettings().subscribe(settings => {
+        const customFieldsArray = settings.customFields;
 
-          // Skip row if it has too few fields or if key fields are empty
-          if (Object.keys(row).length < Object.keys(columnMappings).length ||
-            !row[columnMappings['bib']] || !row[columnMappings['firstName']] || !row[columnMappings['lastName']]) {
-            console.warn('Skipping invalid row:', row);
-            return;
-          }
+        Papa.parse(file, {
+          header: true,
+          skipEmptyLines: true,
+          step: (results) => {
+            console.log('Raw CSV row:', results.data);  // Debug: Log raw CSV row
 
-          const runner: Runner = {
-            id: this.runnerDataService.generateUniqueId(),
-            bib: row[columnMappings['bib']],
-            firstName: row[columnMappings['firstName']],
-            lastName: row[columnMappings['lastName']],
-            age: parseInt(row[columnMappings['age']]),
-            gender: row[columnMappings['gender']],
-            town: row[columnMappings['town']],
-            state: row[columnMappings['state']],
-            customFields: {}
-          };
+            const row = results.data as Record<string, string>; // Tell TypeScript we expect results.data to be an object with string keys and values
+            console.log('Column Mappings: ',columnMappings);
 
-          // Add custom fields
-          this.settingsService.getSettings().subscribe(settings => {
-            settings.customFields.forEach(customField => {
+            // Skip row if it has too few fields or if key fields are empty
+            if (Object.keys(row).length < Object.keys(columnMappings).length ||
+              !row[columnMappings['bib']] || !row[columnMappings['firstName']] || !row[columnMappings['lastName']]) {
+              console.warn('Skipping invalid row:', row);
+              return;
+            }
+
+            const runner: Runner = {
+              id: this.runnerDataService.generateUniqueId(),
+              bib: row[columnMappings['bib']],
+              firstName: row[columnMappings['firstName']],
+              lastName: row[columnMappings['lastName']],
+              age: parseInt(row[columnMappings['age']]),
+              gender: row[columnMappings['gender']],
+              town: row[columnMappings['town']],
+              state: row[columnMappings['state']],
+              customFields: {}
+            };
+
+            // PERFORMANCE FIX: Use customFieldsArray directly (no subscription per row)
+            customFieldsArray.forEach(customField => {
               if (row[columnMappings[customField.name]]) {
                 runner.customFields[customField.name] = row[columnMappings[customField.name]];
               }
             });
-          });
 
-          console.log('Mapped runner:', runner);  // Debug: Log mapped runner
+            console.log('Mapped runner:', runner);  // Debug: Log mapped runner
 
-          runners.push(runner);
-        },
-        complete: () => {
-          console.log('Completed mapping runners: ',runners);
-          this.runnerDataService.loadRunners(runners);  // Load the runners into the RunnerDataService
-          resolve(runners);
-        },
-        error: (error) => {
-          reject(error);
-        }
+            runners.push(runner);
+          },
+          complete: () => {
+            subscription.unsubscribe(); // PERFORMANCE FIX: Clean up subscription
+            console.log('Completed mapping runners: ',runners);
+            this.runnerDataService.loadRunners(runners);  // Load the runners into the RunnerDataService
+            resolve(runners);
+          },
+          error: (error) => {
+            subscription.unsubscribe(); // PERFORMANCE FIX: Clean up on error too
+            reject(error);
+          }
+        });
       });
     });
   }

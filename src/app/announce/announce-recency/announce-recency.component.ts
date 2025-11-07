@@ -33,7 +33,7 @@ export class AnnounceRecencyComponent extends AnnounceBaseComponent implements O
     }, 100);
   }
 
-  ngOnDestroy(): void {
+  override ngOnDestroy(): void {
     if (this.updateInterval) {
       clearInterval(this.updateInterval);
     }
