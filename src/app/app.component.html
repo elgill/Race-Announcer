@@ -1,15 +1,44 @@
-<header>
-  <nav>
-    <a routerLink="/quick-setup" routerLinkActive="active">Quick Setup</a>
-    <a routerLink="/announce" routerLinkActive="active">Announce</a>
-    <a routerLink="/browse" routerLinkActive="active">Browse</a>
-    <a routerLink="/lookup" routerLinkActive="active">Name Lookup</a>
-    <a routerLink="/timer" routerLinkActive="active">Timer View</a>
-    <a routerLink="/bib-history" routerLinkActive="active">Bib History</a>
-    <a routerLink="/settings" routerLinkActive="active">Settings</a>
-    <a routerLink="/importexport" routerLinkActive="active">Import/Export</a>
-    <a routerLink="/xref" routerLinkActive="active">XREF Manager</a>
-  </nav>
+<header class="app-header">
+  <div class="header-inner">
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-label="Toggle navigation"
+      aria-controls="compactMenu"
+      [attr.aria-expanded]="isCompactMenuOpen"
+      (click)="toggleCompactMenu()"
+    >
+      <span class="sr-only">Toggle navigation</span>
+      <span class="menu-toggle__icon" aria-hidden="true"></span>
+    </button>
+
+    <nav class="main-nav" aria-label="Primary">
+      <a
+        *ngFor="let link of navLinks"
+        [routerLink]="link.route"
+        routerLinkActive="active"
+        (click)="closeCompactMenu()"
+      >
+        {{ link.label }}
+      </a>
+    </nav>
+
+    <nav
+      *ngIf="isCompactMenuOpen"
+      id="compactMenu"
+      class="compact-menu"
+      aria-label="Primary"
+    >
+      <a
+        *ngFor="let link of navLinks"
+        [routerLink]="link.route"
+        routerLinkActive="active"
+        (click)="closeCompactMenu()"
+      >
+        {{ link.label }}
+      </a>
+    </nav>
+  </div>
 </header>
 <main class="app-container">
   <router-outlet></router-outlet>
