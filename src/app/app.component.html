@@ -1,14 +1,33 @@
 <header>
-  <nav>
-    <a routerLink="/quick-setup" routerLinkActive="active">Quick Setup</a>
-    <a routerLink="/announce" routerLinkActive="active">Announce</a>
-    <a routerLink="/browse" routerLinkActive="active">Browse</a>
-    <a routerLink="/lookup" routerLinkActive="active">Name Lookup</a>
-    <a routerLink="/timer" routerLinkActive="active">Timer View</a>
-    <a routerLink="/bib-history" routerLinkActive="active">Bib History</a>
-    <a routerLink="/settings" routerLinkActive="active">Settings</a>
-    <a routerLink="/importexport" routerLinkActive="active">Import/Export</a>
-    <a routerLink="/xref" routerLinkActive="active">XREF Manager</a>
+  <nav class="main-nav">
+    <h1 class="nav-title">Race Announcer</h1>
+    <button
+      type="button"
+      class="nav-toggle"
+      (click)="toggleMenu()"
+      [attr.aria-expanded]="menuOpen"
+      aria-controls="primary-navigation"
+    >
+      <span class="sr-only">Toggle navigation</span>
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+    </button>
+    <div
+      id="primary-navigation"
+      class="nav-links"
+      [class.open]="menuOpen"
+    >
+      <a routerLink="/quick-setup" routerLinkActive="active" (click)="closeMenu()">Quick Setup</a>
+      <a routerLink="/announce" routerLinkActive="active" (click)="closeMenu()">Announce</a>
+      <a routerLink="/browse" routerLinkActive="active" (click)="closeMenu()">Browse</a>
+      <a routerLink="/lookup" routerLinkActive="active" (click)="closeMenu()">Name Lookup</a>
+      <a routerLink="/timer" routerLinkActive="active" (click)="closeMenu()">Timer View</a>
+      <a routerLink="/bib-history" routerLinkActive="active" (click)="closeMenu()">Bib History</a>
+      <a routerLink="/settings" routerLinkActive="active" (click)="closeMenu()">Settings</a>
+      <a routerLink="/importexport" routerLinkActive="active" (click)="closeMenu()">Import/Export</a>
+      <a routerLink="/xref" routerLinkActive="active" (click)="closeMenu()">XREF Manager</a>
+    </div>
   </nav>
 </header>
 <main class="app-container">

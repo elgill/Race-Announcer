@@ -1,8 +1,9 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {ElectronService} from "./services/electron.service";
-import {Router, RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
+import {NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
 import {VisualLoadTestService} from "./services/visual-load-test.service";
 import {ReportingService} from "./reporting.service";
+import {filter} from "rxjs";
 
 @Component({
     selector: 'app-root',
@@ -19,6 +20,7 @@ export class AppComponent implements OnInit {
   private reportingService = inject(ReportingService);
 
   title = 'Race Announcer';
+  menuOpen = false;
   constructor() {
     (window as any).visualLoadTestService = this.visualLoadTestService;
   }
@@ -36,5 +38,17 @@ export class AppComponent implements OnInit {
     this.electronService.on('report-menu-clicked', (event: any, report: string) => {
       this.reportingService.runReport(report);
     });
+
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => this.closeMenu());
+  }
+
+  toggleMenu(): void {
+    this.menuOpen = !this.menuOpen;
+  }
+
+  closeMenu(): void {
+    this.menuOpen = false;
   }
 }
