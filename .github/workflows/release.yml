@@ -1,0 +1,78 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [windows-latest]
+        # Uncomment below when macOS signing is ready
+        # os: [macos-latest, windows-latest]
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create environment.prod.ts from template
+        shell: bash
+        run: |
+          sed 's|{{PROXY_URL}}|${{ secrets.PROXY_URL }}|g' src/environments/environment.prod.ts.template > src/environments/environment.prod.ts
+
+      - name: Build Angular app
+        run: npm run build
+
+      - name: Build Electron app (Windows)
+        if: matrix.os == 'windows-latest'
+        run: npx electron-builder -w --x64
+
+      # Uncomment below when macOS signing is ready
+      # - name: Build Electron app (macOS)
+      #   if: matrix.os == 'macos-latest'
+      #   run: npx electron-builder -m --universal
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.os }}-build
+          path: build/Race Announcer*.exe
+          # Uncomment and adjust path for macOS when ready:
+          # path: |
+          #   build/Race Announcer*.exe
+          #   build/Race Announcer*.dmg
+          if-no-files-found: error
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/**/*
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
