@@ -2,7 +2,7 @@
   "git": {
     "commitMessage": "Release: v${version}",
     "tagName": "v${version}",
-    "requireCleanWorkingDir": false,
+    "requireCleanWorkingDir": true,
     "requireBranch": "main"
   },
   "github": {
