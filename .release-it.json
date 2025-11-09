@@ -15,13 +15,5 @@
     "before:init": [],
     "after:bump": "echo Version bumped to ${version}",
     "after:release": "echo Successfully released ${tagName}"
-  },
-  "plugins": {
-    "@release-it/conventional-changelog": {
-      "preset": {
-        "name": "conventionalcommits"
-      },
-      "infile": "CHANGELOG.md"
-    }
   }
 }
