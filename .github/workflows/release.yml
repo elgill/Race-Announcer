@@ -50,8 +50,8 @@ jobs:
         with:
           name: ${{ matrix.os }}-build
           path: |
-            build/Race-Announcer-Setup-*.exe
-            build/Race-Announcer-Setup-*.exe.blockmap
+            build/*.exe
+            build/*.exe.blockmap
             build/latest.yml
           if-no-files-found: error
 
@@ -62,10 +62,10 @@ jobs:
       #   with:
       #     name: ${{ matrix.os }}-build
       #     path: |
-      #       build/Race-Announcer-*-arm64-mac.zip
-      #       build/Race-Announcer-*-arm64-mac.zip.blockmap
-      #       build/Race-Announcer-*-arm64.dmg
-      #       build/Race-Announcer-*-arm64.dmg.blockmap
+      #       build/*.zip
+      #       build/*.zip.blockmap
+      #       build/*.dmg
+      #       build/*.dmg.blockmap
       #       build/latest-mac.yml
       #     if-no-files-found: error
 
