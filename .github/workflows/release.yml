@@ -48,11 +48,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.os }}-build
-          path: build/Race Announcer*.exe
-          # Uncomment and adjust path for macOS when ready:
-          # path: |
-          #   build/Race Announcer*.exe
-          #   build/Race Announcer*.dmg
+          path: build/
           if-no-files-found: error
 
   release:
