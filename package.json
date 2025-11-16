@@ -25,7 +25,13 @@
       "identity": "Chris Gillin (CPAZW3J38G)"
     },
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "azureSignOptions": {
+        "publisherName": "Christopher Gillin",
+        "endpoint": "https://eus.codesigning.azure.net",
+        "certificateProfileName": "CGTrustedSignCert",
+        "codeSigningAccountName": "CGTrustedSigning"
+      }
     },
     "files": [
       "dist/**/*",
