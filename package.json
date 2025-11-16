@@ -26,6 +26,7 @@
     },
     "win": {
       "target": "nsis",
+      "executableName": "RaceAnnouncer",
       "azureSignOptions": {
         "publisherName": "Christopher Gillin",
         "endpoint": "https://eus.codesigning.azure.net",
