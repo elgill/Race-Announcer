@@ -28,4 +28,11 @@ export class ElectronService {
     }
     this.ipc.on(channel, listener);
   }
+
+  public send(channel: string, ...args: any[]): void {
+    if (!this.ipc) {
+      return;
+    }
+    this.ipc.send(channel, ...args);
+  }
 }

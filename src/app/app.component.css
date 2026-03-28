@@ -1,6 +1,24 @@
 .app-container {
   padding-top: 10px;
 }
+.update-banner {
+  background-color: #2c7be5;
+  color: white;
+  padding: 8px 16px;
+  font-size: 0.95em;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.update-banner button {
+  background: white;
+  color: #2c7be5;
+  border: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
 .active {
   background-color: #ddd;
 }

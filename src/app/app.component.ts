@@ -19,6 +19,9 @@ export class AppComponent implements OnInit {
   private reportingService = inject(ReportingService);
 
   title = 'Race Announcer';
+  updateAvailable = false;
+  updateDownloaded = false;
+
   constructor() {
     (window as any).visualLoadTestService = this.visualLoadTestService;
   }
@@ -36,5 +39,15 @@ export class AppComponent implements OnInit {
     this.electronService.on('report-menu-clicked', (event: any, report: string) => {
       this.reportingService.runReport(report);
     });
+    this.electronService.on('update-available', () => {
+      this.updateAvailable = true;
+    });
+    this.electronService.on('update-downloaded', () => {
+      this.updateDownloaded = true;
+    });
+  }
+
+  installUpdate(): void {
+    this.electronService.send('install-update');
   }
 }

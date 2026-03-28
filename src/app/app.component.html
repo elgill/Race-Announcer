@@ -11,6 +11,15 @@
     <a routerLink="/xref" routerLinkActive="active">XREF Manager</a>
   </nav>
 </header>
+@if (updateDownloaded) {
+  <div class="update-banner">
+    A new version has been downloaded. <button (click)="installUpdate()">Restart to update</button>
+  </div>
+} @else if (updateAvailable) {
+  <div class="update-banner">
+    A new update is downloading in the background&hellip;
+  </div>
+}
 <main class="app-container">
   <router-outlet></router-outlet>
 </main>

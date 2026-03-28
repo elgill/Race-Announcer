@@ -1,4 +1,5 @@
 const { app, BrowserWindow, ipcMain, Menu } = require('electron');
+const { autoUpdater } = require('electron-updater');
 const net = require('net');
 
 let win;
@@ -25,6 +26,7 @@ function createWindow () {
   })
 
   setupIPCListeners();
+  setupAutoUpdater();
 
   //win.webContents.openDevTools();
 }
@@ -60,6 +62,23 @@ function setupIPCListeners() {
       client.destroy();
     });
     timingBoxClients.clear();
+  });
+
+  // Install downloaded update and restart
+  ipcMain.on('install-update', () => {
+    autoUpdater.quitAndInstall();
+  });
+}
+
+function setupAutoUpdater() {
+  autoUpdater.checkForUpdatesAndNotify();
+
+  autoUpdater.on('update-available', () => {
+    win.webContents.send('update-available');
+  });
+
+  autoUpdater.on('update-downloaded', () => {
+    win.webContents.send('update-downloaded');
   });
 }
 
