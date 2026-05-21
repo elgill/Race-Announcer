@@ -8,7 +8,7 @@ describe('RunnerComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [AnnounceScreenComponent]
+      imports: [AnnounceScreenComponent]
     });
     fixture = TestBed.createComponent(AnnounceScreenComponent);
     component = fixture.componentInstance;

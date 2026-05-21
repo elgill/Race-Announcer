@@ -8,7 +8,7 @@ describe('RaceClockComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [RaceClockComponent]
+      imports: [RaceClockComponent]
     });
     fixture = TestBed.createComponent(RaceClockComponent);
     component = fixture.componentInstance;

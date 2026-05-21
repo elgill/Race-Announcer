@@ -8,7 +8,7 @@ describe('ShowXrefComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ShowXrefComponent]
+      imports: [ShowXrefComponent]
     });
     fixture = TestBed.createComponent(ShowXrefComponent);
     component = fixture.componentInstance;

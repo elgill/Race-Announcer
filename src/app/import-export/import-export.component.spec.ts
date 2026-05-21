@@ -8,7 +8,7 @@ describe('ImportExportComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ImportExportComponent]
+      imports: [ImportExportComponent]
     });
     fixture = TestBed.createComponent(ImportExportComponent);
     component = fixture.componentInstance;

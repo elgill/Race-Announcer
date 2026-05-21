@@ -8,7 +8,7 @@ describe('CsvImportComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [CsvImportComponent]
+      imports: [CsvImportComponent]
     });
     fixture = TestBed.createComponent(CsvImportComponent);
     component = fixture.componentInstance;

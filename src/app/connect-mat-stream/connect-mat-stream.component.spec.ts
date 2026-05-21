@@ -8,7 +8,7 @@ describe('ConnectMatStreamComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ConnectMatStreamComponent]
+      imports: [ConnectMatStreamComponent]
     });
     fixture = TestBed.createComponent(ConnectMatStreamComponent);
     component = fixture.componentInstance;

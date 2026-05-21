@@ -8,7 +8,7 @@ describe('TimerRunnerTableComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [TimerRunnerTableComponent]
+      imports: [TimerRunnerTableComponent]
     });
     fixture = TestBed.createComponent(TimerRunnerTableComponent);
     component = fixture.componentInstance;

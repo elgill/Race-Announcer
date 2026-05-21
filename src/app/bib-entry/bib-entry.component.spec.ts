@@ -8,7 +8,7 @@ describe('BibEntryComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [BibEntryComponent]
+      imports: [BibEntryComponent]
     });
     fixture = TestBed.createComponent(BibEntryComponent);
     component = fixture.componentInstance;

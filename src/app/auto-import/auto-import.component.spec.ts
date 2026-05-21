@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
 
 import { AutoImportComponent } from './auto-import.component';
 
@@ -8,7 +9,8 @@ describe('AutoImportComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [AutoImportComponent]
+      imports: [AutoImportComponent],
+      providers: [provideHttpClient()]
     });
     fixture = TestBed.createComponent(AutoImportComponent);
     component = fixture.componentInstance;

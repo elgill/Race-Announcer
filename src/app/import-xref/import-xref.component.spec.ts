@@ -8,7 +8,7 @@ describe('ImportXrefComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ImportXrefComponent]
+      imports: [ImportXrefComponent]
     });
     fixture = TestBed.createComponent(ImportXrefComponent);
     component = fixture.componentInstance;

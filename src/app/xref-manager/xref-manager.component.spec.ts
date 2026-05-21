@@ -8,7 +8,7 @@ describe('XrefManagerComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [XrefManagerComponent]
+      imports: [XrefManagerComponent]
     });
     fixture = TestBed.createComponent(XrefManagerComponent);
     component = fixture.componentInstance;

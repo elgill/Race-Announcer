@@ -54,6 +54,10 @@ export class TimingBoxService {
           console.log(`Data from mat ${matId}:`, data);
           this.handleData(matId, data);
         });
+
+        // Sync current connection state from main process in case the renderer
+        // crashed and restarted while sockets were already open.
+        this.ipcRenderer.send('get-timing-box-states');
       } catch (e) {
         throw e;
       }
@@ -266,7 +270,9 @@ export class TimingBoxService {
           const attemptMessage = this.formatReconnectMessage(nextAttempt, totalAttempts);
           reconnectionStatus.next(attemptMessage);
           console.log(`Mat ${matId}: Attempting to reconnect (${nextAttempt}/${totalAttempts})...`);
-          statusSubject.next({ status: ConnectionStatus.RECONNECTING, message: attemptMessage });
+          // Set CONNECTING immediately so the next tick won't fire a duplicate attempt
+          // while this one is still in progress.
+          statusSubject.next({ status: ConnectionStatus.CONNECTING, message: attemptMessage });
           this.ipcRenderer.send('connect-timing-box', { matId, ip, port, label });
           this.reconnectAttempts.set(matId, nextAttempt);
         } else {

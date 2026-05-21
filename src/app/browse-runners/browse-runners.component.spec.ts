@@ -8,7 +8,7 @@ describe('BrowseRunnersComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [BrowseRunnersComponent]
+      imports: [BrowseRunnersComponent]
     });
     fixture = TestBed.createComponent(BrowseRunnersComponent);
     component = fixture.componentInstance;

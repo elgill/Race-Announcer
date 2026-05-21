@@ -8,7 +8,7 @@ describe('NameLookupComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [NameLookupComponent]
+      imports: [NameLookupComponent]
     });
     fixture = TestBed.createComponent(NameLookupComponent);
     component = fixture.componentInstance;

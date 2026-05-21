@@ -8,7 +8,7 @@ describe('ClearRunnersComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ClearRunnersComponent]
+      imports: [ClearRunnersComponent]
     });
     fixture = TestBed.createComponent(ClearRunnersComponent);
     component = fixture.componentInstance;

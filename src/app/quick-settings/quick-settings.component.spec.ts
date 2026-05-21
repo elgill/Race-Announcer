@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
 
 import { QuickSettingsComponent } from './quick-settings.component';
 
@@ -8,7 +9,8 @@ describe('QuickSettingsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [QuickSettingsComponent]
+      imports: [QuickSettingsComponent],
+      providers: [provideHttpClient()]
     })
     .compileComponents();
 

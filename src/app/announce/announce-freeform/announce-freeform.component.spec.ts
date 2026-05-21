@@ -8,7 +8,7 @@ describe('AnnounceTestComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [AnnounceFreeformComponent]
+      imports: [AnnounceFreeformComponent]
     });
     fixture = TestBed.createComponent(AnnounceFreeformComponent);
     component = fixture.componentInstance;

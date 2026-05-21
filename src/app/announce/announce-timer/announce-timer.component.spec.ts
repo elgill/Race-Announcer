@@ -8,7 +8,7 @@ describe('AnnounceTimerComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [AnnounceTimerComponent]
+      imports: [AnnounceTimerComponent]
     });
     fixture = TestBed.createComponent(AnnounceTimerComponent);
     component = fixture.componentInstance;

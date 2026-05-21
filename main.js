@@ -1,10 +1,18 @@
-const { app, BrowserWindow, ipcMain, Menu } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, powerMonitor } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const net = require('net');
 
 let win;
 // Map of matId -> TCP socket client
 const timingBoxClients = new Map();
+
+const CONNECT_TIMEOUT_MS = 8000;
+
+function sendToRenderer(channel, data) {
+  if (win && !win.isDestroyed()) {
+    win.webContents.send(channel, data);
+  }
+}
 
 const WINDOW_CONFIG = {
   width: 1200,
@@ -27,6 +35,7 @@ function createWindow () {
 
   setupIPCListeners();
   setupAutoUpdater();
+  setupPowerMonitor();
 
   //win.webContents.openDevTools();
 }
@@ -41,6 +50,19 @@ app.on('activate', () => {
   }
 })
 
+function setupPowerMonitor() {
+  powerMonitor.on('resume', () => {
+    console.log('System resumed from sleep — tearing down timing box connections');
+    timingBoxClients.forEach((client, matId) => {
+      timingBoxClients.delete(matId);
+      client.destroy();
+      // Send Disconnected explicitly since the identity check in the close handler
+      // will skip it (client was already removed from the map above).
+      sendToRenderer('timing-box-status', { matId, status: 'Disconnected' });
+    });
+  });
+}
+
 function setupIPCListeners() {
   // Connect to a single timing mat
   ipcMain.on('connect-timing-box', (event, { matId, ip, port, label }) => {
@@ -51,17 +73,27 @@ function setupIPCListeners() {
   ipcMain.on('disconnect-timing-box', (event, { matId }) => {
     const client = timingBoxClients.get(matId);
     if (client) {
-      client.destroy();
+      // Remove from map first so the close event identity check won't double-send status.
       timingBoxClients.delete(matId);
+      client.destroy();
+      sendToRenderer('timing-box-status', { matId, status: 'Disconnected' });
     }
   });
 
   // Disconnect from all timing mats
   ipcMain.on('disconnect-all-timing-boxes', () => {
     timingBoxClients.forEach((client, matId) => {
+      timingBoxClients.delete(matId);
       client.destroy();
+      sendToRenderer('timing-box-status', { matId, status: 'Disconnected' });
     });
-    timingBoxClients.clear();
+  });
+
+  // Renderer requests current connection state on init (handles crash/reload recovery)
+  ipcMain.on('get-timing-box-states', (event) => {
+    timingBoxClients.forEach((client, matId) => {
+      event.sender.send('timing-box-status', { matId, status: 'Connected' });
+    });
   });
 
   // Install downloaded update and restart
@@ -74,56 +106,75 @@ function setupAutoUpdater() {
   autoUpdater.checkForUpdatesAndNotify();
 
   autoUpdater.on('update-available', () => {
-    win.webContents.send('update-available');
+    sendToRenderer('update-available');
   });
 
   autoUpdater.on('update-downloaded', () => {
-    win.webContents.send('update-downloaded');
+    sendToRenderer('update-downloaded');
   });
 }
 
 function connectToTimingBox(matId, ip, port, label) {
-  // Disconnect existing connection if any
+  // Remove any existing socket first. Delete from map before destroying so its
+  // close event identity check won't fire a spurious status update.
   const existingClient = timingBoxClients.get(matId);
   if (existingClient) {
+    timingBoxClients.delete(matId);
     existingClient.destroy();
   }
 
   const client = new net.Socket();
   timingBoxClients.set(matId, client);
 
-  client.connect(port, ip, () => {
-    console.log(`Connected to timing mat ${matId} (${label}) at ${ip}:${port}`);
-    win.webContents.send('timing-box-status', { matId, status: 'Connected' });
+  // TCP keepalive detects silently dead connections (e.g. after sleep/wake or NAT timeout).
+  client.setKeepAlive(true, 5000);
+  // Timeout fires if the socket is idle during connect; destroyed below to trigger close.
+  client.setTimeout(CONNECT_TIMEOUT_MS);
 
-    // If RR box
-    if(port === 3601){
-        client.write('SETPROTOCOL;2.6\r\n');
-        client.write('SETPUSHPASSINGS;1;0\r\n');
+  client.connect(port, ip, () => {
+    // Disable idle timeout once connected — keepalive handles dead detection from here.
+    client.setTimeout(0);
+    console.log(`Connected to timing mat ${matId} (${label}) at ${ip}:${port}`);
+    sendToRenderer('timing-box-status', { matId, status: 'Connected' });
+
+    if (port === 3601) {
+      client.write('SETPROTOCOL;2.6\r\n');
+      client.write('SETPUSHPASSINGS;1;0\r\n');
     }
+  });
+
+  client.on('timeout', () => {
+    console.log(`Connect timeout for timing mat ${matId} (${label})`);
+    client.destroy(); // triggers close event below
   });
 
   client.on('data', (data) => {
     const records = data.toString('utf-8').split('\r\n');
-
     records.forEach(record => {
       if (record.trim() !== '') {
         console.log(`Data from ${matId} (${label}):`, record);
-        win.webContents.send('timing-box-data', { matId, data: record });
+        sendToRenderer('timing-box-data', { matId, data: record });
       }
     });
   });
 
+  // Identity check: only act if this is still the active socket for this mat.
+  // Prevents a destroyed old socket from clobbering a new socket's map entry.
   client.on('close', () => {
-    console.log(`Connection to timing mat ${matId} (${label}) closed`);
-    timingBoxClients.delete(matId);
-    win.webContents.send('timing-box-status', { matId, status: 'Disconnected' });
+    if (timingBoxClients.get(matId) === client) {
+      console.log(`Connection to timing mat ${matId} (${label}) closed`);
+      timingBoxClients.delete(matId);
+      sendToRenderer('timing-box-status', { matId, status: 'Disconnected' });
+    }
   });
 
   client.on('error', (err) => {
-    console.error(`Error connecting to timing mat ${matId} (${label}):`, err);
-    timingBoxClients.delete(matId);
-    win.webContents.send('timing-box-status', { matId, status: 'Error', message: err.message });
+    console.error(`Error on timing mat ${matId} (${label}):`, err.message);
+    if (timingBoxClients.get(matId) === client) {
+      timingBoxClients.delete(matId);
+      sendToRenderer('timing-box-status', { matId, status: 'Error', message: err.message });
+    }
+    // Node.js always fires close after error; identity check above prevents double-status.
   });
 }
 

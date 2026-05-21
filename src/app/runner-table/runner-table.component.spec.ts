@@ -8,7 +8,7 @@ describe('RunnerTableComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [RunnerTableComponent]
+      imports: [RunnerTableComponent]
     });
     fixture = TestBed.createComponent(RunnerTableComponent);
     component = fixture.componentInstance;

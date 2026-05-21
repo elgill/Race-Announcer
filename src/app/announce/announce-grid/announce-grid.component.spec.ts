@@ -8,7 +8,7 @@ describe('AnnounceGridComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [AnnounceGridComponent]
+      imports: [AnnounceGridComponent]
     });
     fixture = TestBed.createComponent(AnnounceGridComponent);
     component = fixture.componentInstance;
