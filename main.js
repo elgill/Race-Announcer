@@ -33,7 +33,6 @@ const WINDOW_CONFIG = {
   webPreferences: {
     nodeIntegration: true,
     contextIsolation: false,
-    worldSafeExecuteJavaScript: true
   },
   icon: __dirname + '/dist/race-announcer-angular/favicon.ico'
 };
