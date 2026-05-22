@@ -20,6 +20,7 @@
   },
   "build": {
     "appId": "dev.gillin.raceannouncer",
+    "artifactName": "Race-Announcer-${version}-${arch}.${ext}",
     "mac": {
       "category": "public.app-category.productivity",
       "identity": "Chris Gillin (CPAZW3J38G)"
@@ -27,6 +28,7 @@
     "win": {
       "target": "nsis",
       "executableName": "RaceAnnouncer",
+      "artifactName": "Race-Announcer-${version}-Setup.${ext}",
       "azureSignOptions": {
         "publisherName": "Christopher Gillin",
         "endpoint": "https://eus.codesigning.azure.net",
