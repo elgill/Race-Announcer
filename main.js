@@ -4,6 +4,15 @@ const log = require('electron-log');
 const net = require('net');
 
 log.initialize();
+
+process.on('uncaughtException', (err) => {
+  log.error('Uncaught exception', err);
+});
+
+process.on('unhandledRejection', (reason) => {
+  log.error('Unhandled promise rejection', reason);
+});
+
 log.info('=== Race Announcer starting ===', { version: app.getVersion(), electron: process.versions.electron, platform: process.platform });
 
 let win;
