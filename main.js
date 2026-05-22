@@ -1,6 +1,10 @@
-const { app, BrowserWindow, ipcMain, Menu, powerMonitor } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, powerMonitor, shell } = require('electron');
 const { autoUpdater } = require('electron-updater');
+const log = require('electron-log');
 const net = require('net');
+
+log.initialize();
+log.info('=== Race Announcer starting ===', { version: app.getVersion(), electron: process.versions.electron, platform: process.platform });
 
 let win;
 // Map of matId -> TCP socket client
@@ -26,10 +30,16 @@ const WINDOW_CONFIG = {
 };
 
 function createWindow () {
+  log.info('Creating main window');
   win = new BrowserWindow(WINDOW_CONFIG)
   win.loadFile('dist/race-announcer-angular/browser/index.html')
 
+  win.webContents.on('did-finish-load', () => {
+    log.info('Renderer finished loading');
+  });
+
   win.on('closed', () => {
+    log.info('Main window closed');
     win = null
   })
 
@@ -40,48 +50,58 @@ function createWindow () {
   //win.webContents.openDevTools();
 }
 
-app.on('ready', createWindow)
+app.on('ready', () => {
+  log.info('App ready');
+  createWindow();
+});
 
-app.on('window-all-closed', app.quit)
+app.on('window-all-closed', () => {
+  log.info('All windows closed — quitting');
+  app.quit();
+});
 
 app.on('activate', () => {
   if (win === null) {
-    createWindow()
+    log.info('App activated with no window — recreating');
+    createWindow();
   }
-})
+});
 
 function setupPowerMonitor() {
+  powerMonitor.on('suspend', () => {
+    log.info('System suspending');
+  });
+
   powerMonitor.on('resume', () => {
-    console.log('System resumed from sleep — tearing down timing box connections');
+    log.info('System resumed from sleep — tearing down timing box connections', { count: timingBoxClients.size });
     timingBoxClients.forEach((client, matId) => {
       timingBoxClients.delete(matId);
       client.destroy();
-      // Send Disconnected explicitly since the identity check in the close handler
-      // will skip it (client was already removed from the map above).
       sendToRenderer('timing-box-status', { matId, status: 'Disconnected' });
     });
   });
 }
 
 function setupIPCListeners() {
-  // Connect to a single timing mat
   ipcMain.on('connect-timing-box', (event, { matId, ip, port, label }) => {
+    log.info('IPC: connect-timing-box', { matId, ip, port, label });
     connectToTimingBox(matId, ip, port, label);
   });
 
-  // Disconnect from a single timing mat
   ipcMain.on('disconnect-timing-box', (event, { matId }) => {
+    log.info('IPC: disconnect-timing-box', { matId });
     const client = timingBoxClients.get(matId);
     if (client) {
-      // Remove from map first so the close event identity check won't double-send status.
       timingBoxClients.delete(matId);
       client.destroy();
       sendToRenderer('timing-box-status', { matId, status: 'Disconnected' });
+    } else {
+      log.warn('IPC: disconnect-timing-box — no client found', { matId });
     }
   });
 
-  // Disconnect from all timing mats
   ipcMain.on('disconnect-all-timing-boxes', () => {
+    log.info('IPC: disconnect-all-timing-boxes', { count: timingBoxClients.size });
     timingBoxClients.forEach((client, matId) => {
       timingBoxClients.delete(matId);
       client.destroy();
@@ -89,28 +109,55 @@ function setupIPCListeners() {
     });
   });
 
-  // Renderer requests current connection state on init (handles crash/reload recovery)
   ipcMain.on('get-timing-box-states', (event) => {
+    log.info('IPC: get-timing-box-states', { connected: [...timingBoxClients.keys()] });
     timingBoxClients.forEach((client, matId) => {
       event.sender.send('timing-box-status', { matId, status: 'Connected' });
     });
   });
 
-  // Install downloaded update and restart
   ipcMain.on('install-update', () => {
+    log.info('IPC: install-update — calling quitAndInstall');
     autoUpdater.quitAndInstall();
   });
 }
 
 function setupAutoUpdater() {
+  autoUpdater.logger = log;
+  autoUpdater.logger.transports.file.level = 'debug';
+
+  log.info('Auto-updater: checking for updates');
   autoUpdater.checkForUpdatesAndNotify();
 
-  autoUpdater.on('update-available', () => {
+  autoUpdater.on('checking-for-update', () => {
+    log.info('Auto-updater: checking-for-update');
+  });
+
+  autoUpdater.on('update-available', (info) => {
+    log.info('Auto-updater: update-available', info);
     sendToRenderer('update-available');
   });
 
-  autoUpdater.on('update-downloaded', () => {
+  autoUpdater.on('update-not-available', (info) => {
+    log.info('Auto-updater: update-not-available', info);
+  });
+
+  autoUpdater.on('download-progress', (progress) => {
+    log.info('Auto-updater: download-progress', {
+      percent: Math.round(progress.percent),
+      transferred: progress.transferred,
+      total: progress.total,
+      bytesPerSecond: Math.round(progress.bytesPerSecond)
+    });
+  });
+
+  autoUpdater.on('update-downloaded', (info) => {
+    log.info('Auto-updater: update-downloaded', info);
     sendToRenderer('update-downloaded');
+  });
+
+  autoUpdater.on('error', (err) => {
+    log.error('Auto-updater: error', err);
   });
 }
 
@@ -132,9 +179,8 @@ function connectToTimingBox(matId, ip, port, label) {
   client.setTimeout(CONNECT_TIMEOUT_MS);
 
   client.connect(port, ip, () => {
-    // Disable idle timeout once connected — keepalive handles dead detection from here.
     client.setTimeout(0);
-    console.log(`Connected to timing mat ${matId} (${label}) at ${ip}:${port}`);
+    log.info(`Timing mat connected`, { matId, label, ip, port });
     sendToRenderer('timing-box-status', { matId, status: 'Connected' });
 
     if (port === 3601) {
@@ -144,37 +190,34 @@ function connectToTimingBox(matId, ip, port, label) {
   });
 
   client.on('timeout', () => {
-    console.log(`Connect timeout for timing mat ${matId} (${label})`);
-    client.destroy(); // triggers close event below
+    log.warn('Timing mat connect timeout', { matId, label, ip, port });
+    client.destroy();
   });
 
   client.on('data', (data) => {
     const records = data.toString('utf-8').split('\r\n');
     records.forEach(record => {
       if (record.trim() !== '') {
-        console.log(`Data from ${matId} (${label}):`, record);
+        log.debug('Timing mat data', { matId, label, record });
         sendToRenderer('timing-box-data', { matId, data: record });
       }
     });
   });
 
-  // Identity check: only act if this is still the active socket for this mat.
-  // Prevents a destroyed old socket from clobbering a new socket's map entry.
   client.on('close', () => {
     if (timingBoxClients.get(matId) === client) {
-      console.log(`Connection to timing mat ${matId} (${label}) closed`);
+      log.info('Timing mat connection closed', { matId, label });
       timingBoxClients.delete(matId);
       sendToRenderer('timing-box-status', { matId, status: 'Disconnected' });
     }
   });
 
   client.on('error', (err) => {
-    console.error(`Error on timing mat ${matId} (${label}):`, err.message);
+    log.error('Timing mat error', { matId, label, message: err.message, code: err.code });
     if (timingBoxClients.get(matId) === client) {
       timingBoxClients.delete(matId);
       sendToRenderer('timing-box-status', { matId, status: 'Error', message: err.message });
     }
-    // Node.js always fires close after error; identity check above prevents double-status.
   });
 }
 
@@ -232,6 +275,11 @@ const template = [
   {
     label: 'Help',
     submenu: [
+      {
+        label: 'Open Logs Folder',
+        click() { shell.openPath(app.getPath('logs')); }
+      },
+      { type: 'separator' },
       {
         label: 'Developer Tools',
         click() { win.webContents.openDevTools(); }

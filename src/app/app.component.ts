@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, NgZone, OnInit} from '@angular/core';
 import {ElectronService} from "./services/electron.service";
 import {Router, RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
 import {VisualLoadTestService} from "./services/visual-load-test.service";
@@ -15,6 +15,7 @@ import {ReportingService} from "./reporting.service";
 export class AppComponent implements OnInit {
   private electronService = inject(ElectronService);
   private router = inject(Router);
+  private zone = inject(NgZone);
   private visualLoadTestService = inject(VisualLoadTestService);
   private reportingService = inject(ReportingService);
 
@@ -40,10 +41,10 @@ export class AppComponent implements OnInit {
       this.reportingService.runReport(report);
     });
     this.electronService.on('update-available', () => {
-      this.updateAvailable = true;
+      this.zone.run(() => { this.updateAvailable = true; });
     });
     this.electronService.on('update-downloaded', () => {
-      this.updateDownloaded = true;
+      this.zone.run(() => { this.updateDownloaded = true; });
     });
   }
 
