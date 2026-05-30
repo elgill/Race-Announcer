@@ -10,6 +10,7 @@
         [(ngModel)]="searchBib"
         (keyup.enter)="onSearch()"
         placeholder="Enter bib number"
+        autocomplete="off"
         class="bib-input">
       <button (click)="onSearch()" class="search-button">Search</button>
       <button (click)="clearSearch()" class="clear-button">Clear</button>

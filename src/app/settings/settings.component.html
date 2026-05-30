@@ -5,7 +5,7 @@
     <div class="collapsible-content">
       <div>
         <label>
-          EF Race ID: <input formControlName="raceId" type="text" placeholder="12345">
+          EF Race ID: <input formControlName="raceId" type="text" placeholder="12345" autocomplete="off">
         </label>
       </div>
       <div>
@@ -31,20 +31,20 @@
       <div>
         <label>
           Min Time Between Entries:
-          Minutes: <input formControlName="minTimeMinutes" type="number" min="0">
-          Seconds: <input formControlName="minTimeSeconds" type="number" min="0" max="59">
+          Minutes: <input formControlName="minTimeMinutes" type="number" min="0" autocomplete="off">
+          Seconds: <input formControlName="minTimeSeconds" type="number" min="0" max="59" autocomplete="off">
         </label>
       </div>
       <div>
         <label>
           Max Reconnect Attempts:
-          <input formControlName="numReconnectAttempts" type="number" min="0" max="100">
+          <input formControlName="numReconnectAttempts" type="number" min="0" max="100" autocomplete="off">
         </label>
       </div>
       <div>
         <label>
           Reconnect Delay:
-          Seconds: <input formControlName="reconnectDelay" type="number" min="0" max="100">
+          Seconds: <input formControlName="reconnectDelay" type="number" min="0" max="100" autocomplete="off">
         </label>
       </div>
     </div>
@@ -56,7 +56,7 @@
     <div class="collapsible-content">
       <div>
         <label>
-          Font Size: <input formControlName="fontSize" type="number">
+          Font Size: <input formControlName="fontSize" type="number" autocomplete="off">
         </label>
       </div>
       <div>
@@ -66,7 +66,7 @@
       </div>
       <div>
         <label>
-          Display Lines: <input formControlName="displayLines" type="number">
+          Display Lines: <input formControlName="displayLines" type="number" autocomplete="off">
         </label>
       </div>
       <div>
@@ -100,17 +100,17 @@
       </div>
       <div>
         <label>
-          Delete Keybind: <input formControlName="deleteKeybind" (keydown)="onKeydown($event, 'deleteKeybind')" type="text">
+          Delete Keybind: <input formControlName="deleteKeybind" (keydown)="onKeydown($event, 'deleteKeybind')" type="text" autocomplete="off">
         </label>
       </div>
       <div>
         <label>
-          Pause Keybind: <input formControlName="pauseKeybind" (keydown)="onKeydown($event, 'pauseKeybind')" type="text">
+          Pause Keybind: <input formControlName="pauseKeybind" (keydown)="onKeydown($event, 'pauseKeybind')" type="text" autocomplete="off">
         </label>
       </div>
       <div>
         <label>
-          CORS Proxy URL: <input formControlName="proxyUrl" type="text" placeholder="https://proxy.example.com/">
+          CORS Proxy URL: <input formControlName="proxyUrl" type="text" placeholder="https://proxy.example.com/" autocomplete="off">
         </label>
       </div>
     </div>
@@ -126,7 +126,7 @@
             <h4>Custom Field {{i + 1}}</h4>
             <div>
               <label>
-                Name: <input formControlName="name" type="text">
+                Name: <input formControlName="name" type="text" autocomplete="off">
               </label>
             </div>
             <div>
