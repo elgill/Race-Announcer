@@ -9,7 +9,7 @@
       <div class="mapping-grid">
         @for (header of headers; track header) {
           <div class="mapping-row">
-            <label class="mapping-label">{{ header }}</label>
+            <label class="mapping-label">{{ header.trim() }}</label>
             <select class="mapping-select" [(ngModel)]="mappedColumns[header]">
               <option value="">-</option>
               <option value="bib">Bib Number</option>
