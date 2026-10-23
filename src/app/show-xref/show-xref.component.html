@@ -1,26 +1,36 @@
-<div>
-  <button (click)="toggleXrefData()">
-    {{ showXrefData ? 'Hide XREF Data' : 'Show XREF Data' }}
-  </button>
-  @if (showXrefData) {
-    <div>
-      <h3>XREF Data</h3>
-      <table>
-        <thead>
+<div class="xref-panel">
+  <div class="xref-header">
+    <h3>XREF Ranges</h3>
+    <span class="xref-summary">
+      {{ totalEntries }} chip{{ totalEntries !== 1 ? 's' : '' }} in
+      {{ xrefRanges.length }} range{{ xrefRanges.length !== 1 ? 's' : '' }}
+    </span>
+  </div>
+  <div class="xref-search">
+    <input type="text" placeholder="Search bib" [(ngModel)]="searchBib" (ngModelChange)="applySearch()" autocomplete="off">
+    <input type="text" placeholder="Search chip code" [(ngModel)]="searchChip" (ngModelChange)="applySearch()" autocomplete="off">
+    <button (click)="clearSearch()" [disabled]="!isSearching">Clear</button>
+  </div>
+  @if (xrefRanges.length > 0) {
+    <table class="xref-table">
+      <thead>
+        <tr>
+          <th>Bib Range</th>
+          <th>Chip Range</th>
+          <th class="count">Count</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (range of xrefRanges; track range.startChip) {
           <tr>
-            <th>Chip ID</th>
-            <th>Bib Number</th>
+            <td>{{ formatRange(range.startBib, range.endBib) }}</td>
+            <td class="chip">{{ formatRange(range.startChip, range.endChip) }}</td>
+            <td class="count">{{ range.count }}</td>
           </tr>
-        </thead>
-        <tbody>
-          @for (entry of xrefData; track entry) {
-            <tr>
-              <td>{{ entry.chipId }}</td>
-              <td>{{ entry.bib }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <p class="empty-state">{{ isSearching ? 'No matching XREF entries.' : 'No XREF data loaded.' }}</p>
   }
 </div>
