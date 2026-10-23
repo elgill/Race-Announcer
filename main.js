@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, Menu, powerMonitor, shell } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, net: electronNet, powerMonitor, shell } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const log = require('electron-log');
 const net = require('net');
@@ -122,6 +122,17 @@ function setupIPCListeners() {
     timingBoxClients.forEach((client, matId) => {
       event.sender.send('timing-box-status', { matId, status: 'Connected' });
     });
+  });
+
+  // Fetch remote text from the main process so the renderer isn't subject to CORS.
+  ipcMain.handle('http-get-text', async (event, url) => {
+    log.info('IPC: http-get-text', { url });
+    const response = await electronNet.fetch(url);
+    if (!response.ok) {
+      log.warn('IPC: http-get-text failed', { url, status: response.status });
+      throw new Error(`HTTP ${response.status} fetching ${url}`);
+    }
+    return response.text();
   });
 
   ipcMain.on('install-update', () => {

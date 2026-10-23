@@ -1,8 +1,7 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, from } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import {DEFAULT_SETTINGS, Settings, SettingsService} from "./settings.service";
+import { ElectronService } from './electron.service';
 
 interface Race {
   id: string;
@@ -15,26 +14,10 @@ interface Race {
   providedIn: 'root'
 })
 export class RaceService {
-  private http = inject(HttpClient);
-  private settingsService = inject(SettingsService);
-
-  private settings: Settings = DEFAULT_SETTINGS;
-
-  constructor() {
-    this.settingsService.getSettings().subscribe(settings => {
-      this.settings = settings;
-    });
-  }
-
-  private getURL(url: string): string {
-    const corsProxy = this.settings.proxyUrl;
-    const separator = corsProxy && !corsProxy.endsWith('/') ? '/' : '';
-    return corsProxy + separator + url;
-  }
+  private electronService = inject(ElectronService);
 
   fetchRaces(): Observable<Race[]> {
-    const url = this.getURL('http://elitefeats.com/upcoming');
-    return this.http.get(url, { responseType: 'text' }).pipe(
+    return from(this.electronService.fetchText('http://elitefeats.com/upcoming')).pipe(
       map(response => {
         const parser = new DOMParser();
         const document = parser.parseFromString(response, 'text/html');

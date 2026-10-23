@@ -27,11 +27,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Create environment.prod.ts from template
-        shell: bash
-        run: |
-          sed 's|{{PROXY_URL}}|${{ secrets.PROXY_URL }}|g' src/environments/environment.prod.ts.template > src/environments/environment.prod.ts
-
       - name: Build Angular app
         run: npm run build
 

@@ -1,7 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { CustomField } from "../interfaces/custom-field";
-import { ConfigService } from './config.service';
 import { MatConnection } from "../interfaces/mat-connection";
 import { generateMatId, inferMatType, normalizeMatConnection } from "../utils/mat-connection-helpers";
 
@@ -13,7 +12,6 @@ export interface Settings {
   fontColor: string;
   displayLines: number;
   backgroundColor: string;
-  proxyUrl: string;
   deleteKeybind: string;
   pauseKeybind: string;
   announceTemplate: string;
@@ -38,7 +36,6 @@ export const DEFAULT_SETTINGS: Settings = {
   fontColor: '#000000',
   displayLines: 50,
   backgroundColor: '#ffffff',
-  proxyUrl: '',
   deleteKeybind: 'Delete',
   pauseKeybind: ' ',
   announceTemplate: 'freeform',
@@ -62,8 +59,6 @@ export const DEFAULT_SETTINGS: Settings = {
   providedIn: 'root'
 })
 export class SettingsService {
-  private configService = inject(ConfigService);
-
   private settings: Settings = DEFAULT_SETTINGS;
 
   private settings$ = new BehaviorSubject<Settings>(this.settings);
@@ -133,8 +128,6 @@ export class SettingsService {
     } else {
       // Default settings
       this.settings = DEFAULT_SETTINGS;
-      this.settings['proxyUrl']=this.configService.getProxyUrl();
-      console.log('Proxy URL: ',this.configService.getProxyUrl());
     }
   }
 

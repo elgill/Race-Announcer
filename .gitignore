@@ -41,7 +41,4 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
-
-#environment
-/src/environments/environment.prod.ts
 githubToken.sh
