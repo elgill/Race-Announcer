@@ -57,13 +57,13 @@ export class IndexedDbRunnerDatabaseService implements RunnerDatabase {
 
   async saveXrefData(xrefArray: { bib: string, chipId: string }[]): Promise<void> {
     const db = await this.dbPromise;
+    // Replace the stored XREF with the given array so removed or cleared entries don't reappear on restart
     const tx = db.transaction('xref', 'readwrite');
-    for (const xref of xrefArray) {
-      tx.store.put(xref).then().catch(err => {
-        console.error('Failed to store xref:', err);
-      });
-    }
-    await tx.done;
+    await Promise.all([
+      tx.store.clear(),
+      ...xrefArray.map(xref => tx.store.put(xref)),
+      tx.done,
+    ]);
   }
 
   async rebuildIndex() {
