@@ -38,6 +38,15 @@ npm run build
 npm run electron
 ```
 
+## Testing
+
+```bash
+npm test      # unit tests (headless Chrome)
+npm run e2e   # builds, then drives the real Electron app end to end
+```
+
+The end-to-end test launches Electron with a throwaway profile, so your saved settings and runner data are not touched. It runs a fake Trident timing box on localhost to exercise chip reads.
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
