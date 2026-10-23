@@ -89,3 +89,18 @@ jobs:
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  cleanup:
+    runs-on: ubuntu-latest
+    needs: release  # Only after a successful release, so a failed release can still be re-run from the artifacts
+    permissions:
+      actions: write
+
+    steps:
+      # The artifacts only carry files from build to release; delete them now rather than waiting for retention to expire
+      - name: Delete workflow artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts" --paginate --jq '.artifacts[].id' \
+            | xargs -r -I{} gh api -X DELETE "repos/${{ github.repository }}/actions/artifacts/{}"
