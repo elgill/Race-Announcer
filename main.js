@@ -35,7 +35,7 @@ const WINDOW_CONFIG = {
     nodeIntegration: true,
     contextIsolation: false,
   },
-  icon: __dirname + '/dist/race-announcer-angular/favicon.ico'
+  icon: __dirname + '/dist/race-announcer-angular/browser/favicon.ico'
 };
 
 function createWindow () {
