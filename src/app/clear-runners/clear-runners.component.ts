@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import {RunnerDataService} from "../services/runner-data.service";
 
 
@@ -12,32 +12,32 @@ import {RunnerDataService} from "../services/runner-data.service";
 export class ClearRunnersComponent {
   private runnerDataService = inject(RunnerDataService);
 
-  clearStatus = '';
+  clearStatus = signal('');
 
   clearActiveEntries() {
     this.runnerDataService.clearActiveRunners();
-    this.clearStatus = 'Active Entries Cleared!';
+    this.clearStatus.set('Active Entries Cleared!');
 
     setTimeout(() => {
-      this.clearStatus = '';
+      this.clearStatus.set('');
     }, 3000);
   }
 
   clearRunners() {
     this.runnerDataService.clearAllRunners();
-    this.clearStatus = 'Runners Database Cleared!';
+    this.clearStatus.set('Runners Database Cleared!');
 
     setTimeout(() => {
-      this.clearStatus = '';
+      this.clearStatus.set('');
     }, 3000);
   }
 
   clearXref() {
     this.runnerDataService.clearXref();
-    this.clearStatus = 'XREF Cleared!';
+    this.clearStatus.set('XREF Cleared!');
 
     setTimeout(() => {
-      this.clearStatus = '';
+      this.clearStatus.set('');
     }, 3000);
   }
 }

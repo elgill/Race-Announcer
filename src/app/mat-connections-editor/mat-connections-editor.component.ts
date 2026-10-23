@@ -1,5 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, Component, DestroyRef, Input, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatConnection } from '../interfaces/mat-connection';
 import { EthernetSetupComponent } from '../ethernet-setup/ethernet-setup.component';
@@ -19,7 +20,7 @@ interface MatTypeOption {
 @Component({
   selector: 'app-mat-connections-editor',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, EthernetSetupComponent],
+  imports: [ReactiveFormsModule, EthernetSetupComponent],
   templateUrl: './mat-connections-editor.component.html',
   styleUrls: ['./mat-connections-editor.component.css']
 })
@@ -38,6 +39,9 @@ export class MatConnectionsEditorComponent implements OnInit {
     { value: 'other', label: 'Other' }
   ];
 
+  private changeDetectorRef = inject(ChangeDetectorRef);
+  private destroyRef = inject(DestroyRef);
+
   constructor(private formBuilder: FormBuilder) {
     this.dialogForm = this.formBuilder.group({
       id: [''],
@@ -50,6 +54,11 @@ export class MatConnectionsEditorComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // The parent owns this FormArray and repopulates it when settings load, so refresh on any change
+    this.matConnections.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.changeDetectorRef.markForCheck());
+
     // Ensure existing controls have type field populated
     this.matConnections.controls.forEach(control => {
       const group = control as FormGroup;

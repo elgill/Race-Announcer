@@ -7,7 +7,7 @@
       <th>Last Name</th>
       <th>Age</th>
       <th>Gender</th>
-      @for (field of customFields; track field) {
+      @for (field of customFields(); track field) {
         <th>
           {{field.name}}
         </th>
@@ -15,15 +15,15 @@
     </tr>
   </thead>
   <tbody>
-    @for (runner of reverseRunnerList; track runner; let i = $index) {
+    @for (runner of reverseRunnerList(); track runner; let i = $index) {
       <tr>
-        <td>{{ runStartTime | timeDuration:runner.timeEntered }}</td>
+        <td>{{ runStartTime() | timeDuration:runner.timeEntered }}</td>
         <td>{{runner.bib}}</td>
         <td>{{runner.firstName}}</td>
         <td>{{runner.lastName}}</td>
         <td>{{runner.age}}</td>
         <td>{{runner.gender}}</td>
-        @for (field of customFields; track field) {
+        @for (field of customFields(); track field) {
           <td>
             {{ runner.customFields[field.name] }}
           </td>

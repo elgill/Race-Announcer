@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { AnnounceBaseComponent } from "../announce-base.component";
 import { CommonModule } from '@angular/common';
 import { Runner } from "../../interfaces/runner";
@@ -14,36 +14,15 @@ interface RunnerWithRecency extends Runner {
   templateUrl: './announce-recency.component.html',
   styleUrls: ['./announce-recency.component.css'],
   standalone: true,
-  imports: [CommonModule],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [CommonModule]
 })
-export class AnnounceRecencyComponent extends AnnounceBaseComponent implements OnInit, OnDestroy {
-  private cdr = inject(ChangeDetectorRef);
+export class AnnounceRecencyComponent extends AnnounceBaseComponent {
+  private readonly now = signal(Date.now());
 
-  recencyRunners: RunnerWithRecency[] = [];
-  private updateInterval: any;
-
-  override ngOnInit(): void {
-    super.ngOnInit();
-
-    // Update display every 100ms for smooth transitions
-    this.updateInterval = setInterval(() => {
-      this.updateRecencyData();
-      this.cdr.markForCheck();
-    }, 100);
-  }
-
-  override ngOnDestroy(): void {
-    if (this.updateInterval) {
-      clearInterval(this.updateInterval);
-    }
-  }
-
-  private updateRecencyData(): void {
-    const now = new Date().getTime();
-
-    // Show all runners, but only apply color/opacity to time badge for first 10 seconds
-    this.recencyRunners = this.runnerList.map(runner => {
+  // Show all runners, but only apply color/opacity to time badge for first 10 seconds
+  readonly recencyRunners = computed<RunnerWithRecency[]>(() => {
+    const now = this.now();
+    return this.runnerList().map(runner => {
       if (!runner.timeEntered) {
         return {
           ...runner,
@@ -63,6 +42,13 @@ export class AnnounceRecencyComponent extends AnnounceBaseComponent implements O
         opacity
       };
     });
+  });
+
+  constructor() {
+    super();
+    // Update display every 100ms for smooth transitions
+    const updateInterval = setInterval(() => this.now.set(Date.now()), 100);
+    inject(DestroyRef).onDestroy(() => clearInterval(updateInterval));
   }
 
   private calculateStyle(seconds: number): { color: string; opacity: number } {

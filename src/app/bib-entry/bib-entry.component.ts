@@ -1,6 +1,7 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, ViewChild, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { RunnerDataService } from '../services/runner-data.service';
-import {SettingsService, Settings, DEFAULT_SETTINGS} from "../services/settings.service";
+import {SettingsService, DEFAULT_SETTINGS} from "../services/settings.service";
 import {FormsModule} from "@angular/forms";
 
 @Component({
@@ -10,20 +11,14 @@ import {FormsModule} from "@angular/forms";
     standalone: true,
     imports: [FormsModule]
 })
-export class BibEntryComponent implements OnInit, AfterViewInit  {
+export class BibEntryComponent implements AfterViewInit {
   private runnerDataService = inject(RunnerDataService);
   private settingsService = inject(SettingsService);
 
 
   @ViewChild('bibEntryInput') bibEntryInput!: ElementRef;
   bibNumber: string = '';
-  settings: Settings = DEFAULT_SETTINGS;
-
-  ngOnInit(): void {
-    this.settingsService.getSettings().subscribe(settings => {
-      this.settings = settings;
-    });
-  }
+  private settings = toSignal(this.settingsService.getSettings(), { initialValue: DEFAULT_SETTINGS });
 
   ngAfterViewInit(): void {
     this.bibEntryInput.nativeElement.focus();
@@ -31,14 +26,12 @@ export class BibEntryComponent implements OnInit, AfterViewInit  {
 
   @HostListener('window:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
-    if(!this.settings){
-      return;
-    }
-    if (event.key === this.settings.deleteKeybind) {
+    const settings = this.settings();
+    if (event.key === settings.deleteKeybind) {
       this.onRemoveLastRunnerClick();
       this.bibNumber = '';
       event.preventDefault();
-    } else if (event.key === this.settings.pauseKeybind){
+    } else if (event.key === settings.pauseKeybind){
       this.runnerDataService.togglePause();
     }
   }

@@ -5,7 +5,7 @@
   <button (click)="clearRunners()" class="btn-primary">Clear Runners Database</button>
   <button (click)="clearXref()" class="btn-secondary">Clear XREF</button>
 
-  @if (clearStatus) {
-    <p class="success-message">{{ clearStatus }}</p>
+  @if (clearStatus()) {
+    <p class="success-message">{{ clearStatus() }}</p>
   }
 </div>

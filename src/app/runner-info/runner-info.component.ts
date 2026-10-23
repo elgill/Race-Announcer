@@ -1,5 +1,6 @@
 // runner-info.component.ts
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { RunnerDataService } from '../services/runner-data.service';
 
 @Component({
@@ -8,19 +9,9 @@ import { RunnerDataService } from '../services/runner-data.service';
     styleUrls: ['./runner-info.component.css'],
     standalone: true
 })
-export class RunnerInfoComponent implements OnInit {
+export class RunnerInfoComponent {
   private runnerDataService = inject(RunnerDataService);
 
-  runnerCount = 0;
-  xrefCount = 0;
-
-  ngOnInit(): void {
-    this.runnerDataService.getRunnerCount().subscribe(count => {
-      this.runnerCount = count;
-    });
-
-    this.runnerDataService.getXrefCount().subscribe(count => {
-      this.xrefCount = count;
-    });
-  }
+  runnerCount = toSignal(this.runnerDataService.getRunnerCount(), { initialValue: 0 });
+  xrefCount = toSignal(this.runnerDataService.getXrefCount(), { initialValue: 0 });
 }

@@ -1,7 +1,6 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { interval, Subscription } from 'rxjs';
-import { startWith } from 'rxjs/operators';
-import {DEFAULT_SETTINGS, Settings, SettingsService} from "../services/settings.service";
+import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import {DEFAULT_SETTINGS, SettingsService} from "../services/settings.service";
 import {TimeDurationPipe} from "../time-duration.pipe";
 
 @Component({
@@ -11,27 +10,16 @@ import {TimeDurationPipe} from "../time-duration.pipe";
     standalone: true,
     imports: [TimeDurationPipe]
 })
-export class RaceClockComponent implements OnInit, OnDestroy {
+export class RaceClockComponent {
   private settingsService = inject(SettingsService);
 
-  settings: Settings= DEFAULT_SETTINGS;
-  private subscription: Subscription = new Subscription();
-  currentTime: Date = new Date();
-  startTime: Date = new Date();
+  settings = toSignal(this.settingsService.getSettings(), { initialValue: DEFAULT_SETTINGS });
+  startTime = computed(() => new Date(this.settings().raceStartTime));
+  // Only this view re-renders on each tick; OnPush skips the rest of the app
+  currentTime = signal(new Date());
 
-  ngOnInit(): void {
-    this.settingsService.getSettings().subscribe(settings => {
-      this.settings = settings;
-      this.startTime = new Date(this.settings.raceStartTime);
-    });
-
-    this.subscription = interval(10).pipe(
-      startWith(0)
-    ).subscribe(() => this.currentTime = new Date());
+  constructor() {
+    const tick = setInterval(() => this.currentTime.set(new Date()), 10);
+    inject(DestroyRef).onDestroy(() => clearInterval(tick));
   }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-  }
-
 }

@@ -9,7 +9,7 @@
     <label>Gender <input name="gender" [(ngModel)]="draft.gender" autocomplete="off"></label>
     <label>Town <input name="town" [(ngModel)]="draft.town" autocomplete="off"></label>
     <label>State <input name="state" [(ngModel)]="draft.state" autocomplete="off"></label>
-    @for (name of customFieldNames; track name) {
+    @for (name of customFieldNames(); track name) {
       <label>{{ name }} <input [name]="'custom-' + name" [(ngModel)]="draft.customFields[name]" autocomplete="off"></label>
     }
   </div>
@@ -24,7 +24,7 @@
     }
   </div>
 
-  @if (errorMessage) {
-    <p class="error-message">{{ errorMessage }}</p>
+  @if (errorMessage()) {
+    <p class="error-message">{{ errorMessage() }}</p>
   }
 </form>

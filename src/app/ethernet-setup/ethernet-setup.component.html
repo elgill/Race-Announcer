@@ -1,14 +1,14 @@
-@if (supported) {
+@if (supported()) {
   <div class="ethernet-status">
     <span class="status-label">Ethernet:</span>
-    @if (recommended) {
+    @if (recommended(); as recommended) {
       <span class="adapter-name" [attr.title]="recommended.description">{{ recommended.name }}</span>
       <span class="mode-badge" [ngClass]="'mode-' + recommended.ipv4Mode">{{ describeIpv4Mode(recommended) }}</span>
       <span class="adapter-detail">{{ formatAddresses(recommended) }}</span>
       @if (recommended.status !== 'Up') {
         <span class="adapter-detail warning-text">{{ describeAdapterStatus(recommended) }}</span>
       }
-    } @else if (loading) {
+    } @else if (loading()) {
       <span class="adapter-detail">Checking network adapters…</span>
     } @else {
       <span class="adapter-detail">No wired Ethernet adapter found</span>
@@ -28,22 +28,22 @@
 
       <div class="adapter-list-header">
         <span class="section-title">Network adapters</span>
-        <button type="button" class="link-button" (click)="refresh()" [disabled]="loading || applying">
-          {{ loading ? 'Refreshing…' : 'Refresh' }}
+        <button type="button" class="link-button" (click)="refresh()" [disabled]="loading() || applying()">
+          {{ loading() ? 'Refreshing…' : 'Refresh' }}
         </button>
       </div>
 
-      @if (loadError) {
-        <p class="error-text">{{ loadError }}</p>
+      @if (loadError()) {
+        <p class="error-text">{{ loadError() }}</p>
       }
 
       <div class="adapter-list">
         @for (adapter of visibleAdapters; track adapter.ifIndex) {
-          <label class="adapter-row" [class.selected]="adapter.ifIndex === selectedIfIndex">
+          <label class="adapter-row" [class.selected]="adapter.ifIndex === selectedIfIndex()">
             <input type="radio"
                    name="ethernetAdapter"
-                   [checked]="adapter.ifIndex === selectedIfIndex"
-                   [disabled]="applying"
+                   [checked]="adapter.ifIndex === selectedIfIndex()"
+                   [disabled]="applying()"
                    (change)="selectAdapter(adapter)">
             <div class="adapter-info">
               <div class="adapter-title">
@@ -64,7 +64,7 @@
             </div>
           </label>
         } @empty {
-          @if (!loading) {
+          @if (!loading()) {
             <p class="adapter-detail">No wired Ethernet adapters found. Plug in the USB Ethernet adapter, then Refresh.</p>
           }
         }
@@ -72,7 +72,7 @@
 
       @if (hiddenAdapterCount > 0 || showAllAdapters) {
         <label class="show-all">
-          <input type="checkbox" [(ngModel)]="showAllAdapters" [ngModelOptions]="{ standalone: true }" [disabled]="applying">
+          <input type="checkbox" [(ngModel)]="showAllAdapters" [ngModelOptions]="{ standalone: true }" [disabled]="applying()">
           Show all adapters (Wi-Fi, VPN, virtual){{ showAllAdapters ? '' : ' — ' + hiddenAdapterCount + ' hidden' }}
         </label>
       }
@@ -94,7 +94,7 @@
         <div class="ip-fields">
           <div class="field">
             <label for="ethernetIp">IP Address</label>
-            <input id="ethernetIp" type="text" [(ngModel)]="staticIp" [ngModelOptions]="{ standalone: true }" [disabled]="applying" autocomplete="off">
+            <input id="ethernetIp" type="text" [(ngModel)]="staticIp" [ngModelOptions]="{ standalone: true }" [disabled]="applying()" autocomplete="off">
           </div>
           <div class="field">
             <label for="ethernetMask">Subnet Mask</label>
@@ -108,29 +108,29 @@
         }
       }
 
-      @if (applying) {
+      @if (applying()) {
         <p class="info-text">Waiting for Windows administrator approval…</p>
       }
-      @if (applyMessage) {
-        <p class="success-text">{{ applyMessage }}</p>
+      @if (applyMessage()) {
+        <p class="success-text">{{ applyMessage() }}</p>
       }
-      @if (applyError) {
-        <p class="error-text">{{ applyError }}</p>
+      @if (applyError()) {
+        <p class="error-text">{{ applyError() }}</p>
       }
 
       <div class="dialog-actions">
         <button type="button"
                 (click)="setAutomatic()"
-                [disabled]="!selectedAdapter || applying || selectedAdapter.ipv4Mode !== 'manual'"
+                [disabled]="!selectedAdapter || applying() || selectedAdapter.ipv4Mode !== 'manual'"
                 title="Return this adapter to automatic (DHCP) for normal networks">
           Use Automatic
         </button>
         <span class="spacer"></span>
-        <button type="button" (click)="closeDialog()" [disabled]="applying">Close</button>
+        <button type="button" (click)="closeDialog()" [disabled]="applying()">Close</button>
         <button type="button"
                 class="primary"
                 (click)="setManual()"
-                [disabled]="!selectedAdapter || applying || !!staticIpError">
+                [disabled]="!selectedAdapter || applying() || !!staticIpError">
           Set Manual IP
         </button>
       </div>

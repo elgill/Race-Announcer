@@ -24,21 +24,21 @@
   <p class="auto-save-note">Changes save automatically.</p>
 
   <h3>Load Race List</h3>
-  <button (click)="fetchRaces()" [disabled]="isLoading" class="btn-secondary">
-    {{ isLoading ? 'Loading...' : 'Load Races' }}
+  <button (click)="fetchRaces()" [disabled]="isLoading()" class="btn-secondary">
+    {{ isLoading() ? 'Loading...' : 'Load Races' }}
   </button>
 
-  @if (errorMessage) {
+  @if (errorMessage()) {
     <div class="error-message">
-      {{ errorMessage }}
+      {{ errorMessage() }}
     </div>
   }
 
-  @if (races.length > 0) {
+  @if (races().length > 0) {
     <div>
       <h4>Select a Race:</h4>
       <ul class="race-list">
-        @for (race of races; track race) {
+        @for (race of races(); track race) {
           <li (click)="selectRace(race)" class="race-item">
             <span>{{ race.id }}: {{ race.name }} - {{ race.date }} ({{ race.location }})</span>
           </li>

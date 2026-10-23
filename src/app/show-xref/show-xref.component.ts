@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import {RunnerDataService} from "../services/runner-data.service";
@@ -21,8 +21,8 @@ export interface XrefRange {
 export class ShowXrefComponent {
   private runnerDataService = inject(RunnerDataService);
 
-  xrefRanges: XrefRange[] = [];
-  totalEntries = 0;
+  xrefRanges = signal<XrefRange[]>([]);
+  totalEntries = signal(0);
   searchBib = '';
   searchChip = '';
   private allEntries: { chipId: string, bib: string }[] = [];
@@ -41,7 +41,7 @@ export class ShowXrefComponent {
     const chip = stripLeadingZeros(this.searchChip.trim());
     const matches = this.allEntries.filter(entry =>
       (!bib || entry.bib === bib) && (!chip || stripLeadingZeros(entry.chipId) === chip));
-    this.xrefRanges = groupIntoRanges(matches);
+    this.xrefRanges.set(groupIntoRanges(matches));
   }
 
   clearSearch(): void {
@@ -56,7 +56,7 @@ export class ShowXrefComponent {
 
   private loadXrefData(): void {
     this.allEntries = Array.from(this.runnerDataService.getFullXrefMap().entries()).map(([chipId, bib]) => ({ chipId, bib }));
-    this.totalEntries = this.allEntries.length;
+    this.totalEntries.set(this.allEntries.length);
     this.applySearch();
   }
 }

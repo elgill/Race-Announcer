@@ -1,4 +1,6 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { Observable, combineLatest, map, of, switchMap, tap } from 'rxjs';
 import {TimingBoxService} from "../services/timing-box.service";
 import {DEFAULT_SETTINGS, SettingsService} from "../services/settings.service";
 import {ConnectionStatus} from "../models/connection.enum";
@@ -18,61 +20,44 @@ interface MatConnectionStatus extends MatConnection {
     standalone: true,
     imports: [CommonModule]
 })
-export class ConnectMatStreamComponent implements OnInit {
+export class ConnectMatStreamComponent {
   private timingBoxService = inject(TimingBoxService);
   private settingsService = inject(SettingsService);
 
-  matStatuses: MatConnectionStatus[] = [];
-  settings = DEFAULT_SETTINGS;
+  private settings = toSignal(this.settingsService.getSettings(), { initialValue: DEFAULT_SETTINGS });
 
-  ngOnInit() {
-    this.settingsService.getSettings().subscribe(settings => {
-      this.settings = settings;
-      this.updateMatStatuses();
-    });
+  // Status updates arrive over IPC, so this is a signal that
+  // re-subscribes to each enabled mat's status whenever the mat list changes.
+  matStatuses = toSignal(
+    this.settingsService.getSettings().pipe(
+      map(settings => settings.matConnections.filter(mat => mat.enabled)),
+      tap(enabledMats => this.disconnectRemovedMats(enabledMats)),
+      switchMap(enabledMats => enabledMats.length === 0
+        ? of([])
+        : combineLatest(enabledMats.map(mat => this.watchMat(mat))))
+    ),
+    { initialValue: [] }
+  );
+
+  private watchMat(mat: MatConnection): Observable<MatConnectionStatus> {
+    return combineLatest([
+      this.timingBoxService.getStatus(mat.id),
+      this.timingBoxService.getReconnectStatus(mat.id)
+    ]).pipe(
+      map(([status, reconnectionStatus]) => ({
+        ...mat,
+        status: status.status,
+        statusMessage: status.message || '',
+        reconnectionStatus
+      }))
+    );
   }
 
-  private updateMatStatuses() {
-    const enabledMatIds = new Set(
-      this.settings.matConnections
-        .filter(mat => mat.enabled)
-        .map(mat => mat.id)
-    );
-
+  private disconnectRemovedMats(enabledMats: MatConnection[]) {
+    const enabledMatIds = new Set(enabledMats.map(mat => mat.id));
     this.timingBoxService.getAllMatIds()
       .filter(matId => !enabledMatIds.has(matId))
       .forEach(matId => this.timingBoxService.disconnect(matId));
-
-    this.matStatuses = this.settings.matConnections
-      .filter(mat => mat.enabled)
-      .map(mat => {
-        const status = this.timingBoxService.getCurrentStatus(mat.id);
-        const reconnectionStatus = this.timingBoxService.getCurrentReconnectStatus(mat.id);
-
-        // Subscribe to status updates for this mat
-        this.timingBoxService.getStatus(mat.id).subscribe((statusUpdate) => {
-          const matStatus = this.matStatuses.find(m => m.id === mat.id);
-          if (matStatus) {
-            matStatus.status = statusUpdate.status;
-            matStatus.statusMessage = statusUpdate.message || '';
-          }
-        });
-
-        // Subscribe to reconnection status for this mat
-        this.timingBoxService.getReconnectStatus(mat.id).subscribe((reconStatus) => {
-          const matStatus = this.matStatuses.find(m => m.id === mat.id);
-          if (matStatus) {
-            matStatus.reconnectionStatus = reconStatus;
-          }
-        });
-
-        return {
-          ...mat,
-          status: status.status,
-          statusMessage: status.message || '',
-          reconnectionStatus
-        };
-      });
   }
 
   toggleConnection(mat: MatConnection) {
@@ -80,7 +65,7 @@ export class ConnectMatStreamComponent implements OnInit {
   }
 
   connectAll() {
-    this.settings.matConnections
+    this.settings().matConnections
       .filter(mat => mat.enabled)
       .forEach(mat => {
         const status = this.timingBoxService.getCurrentStatus(mat.id);

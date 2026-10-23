@@ -3,9 +3,9 @@
 
   <button (click)="importRunners()" class="btn-primary">Scrape Runners</button>
 
-  @if (importStatus) {
+  @if (importStatus()) {
     <div class="status-message">
-      {{ importStatus }}
+      {{ importStatus() }}
     </div>
   }
 </div>

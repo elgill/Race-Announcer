@@ -1,4 +1,4 @@
-import {Component, inject, NgZone, OnInit} from '@angular/core';
+import {Component, inject, OnInit, signal} from '@angular/core';
 import {ElectronService} from "./services/electron.service";
 import {Router, RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
 import {VisualLoadTestService} from "./services/visual-load-test.service";
@@ -15,16 +15,16 @@ import {ReportingService} from "./reporting.service";
 export class AppComponent implements OnInit {
   private electronService = inject(ElectronService);
   private router = inject(Router);
-  private zone = inject(NgZone);
   private visualLoadTestService = inject(VisualLoadTestService);
   private reportingService = inject(ReportingService);
 
   title = 'Race Announcer';
-  updateAvailable = false;
-  updateDownloaded = false;
-  updateDismissed = false;
-  updateVersion = '';
-  updatePercent = 0;
+  // Signals because these are set from IPC callbacks
+  updateAvailable = signal(false);
+  updateDownloaded = signal(false);
+  updateDismissed = signal(false);
+  updateVersion = signal('');
+  updatePercent = signal(0);
 
   constructor() {
     (window as any).visualLoadTestService = this.visualLoadTestService;
@@ -44,20 +44,16 @@ export class AppComponent implements OnInit {
       this.reportingService.runReport(report);
     });
     this.electronService.on('update-available', (event: any, info?: { version?: string }) => {
-      this.zone.run(() => {
-        this.updateAvailable = true;
-        this.updateVersion = info?.version ?? '';
-      });
+      this.updateAvailable.set(true);
+      this.updateVersion.set(info?.version ?? '');
     });
     this.electronService.on('update-progress', (event: any, progress: { percent: number }) => {
-      this.zone.run(() => { this.updatePercent = Math.round(progress.percent); });
+      this.updatePercent.set(Math.round(progress.percent));
     });
     this.electronService.on('update-downloaded', (event: any, info?: { version?: string }) => {
-      this.zone.run(() => {
-        this.updateDownloaded = true;
-        this.updateDismissed = false;
-        this.updateVersion = info?.version ?? this.updateVersion;
-      });
+      this.updateDownloaded.set(true);
+      this.updateDismissed.set(false);
+      this.updateVersion.update(version => info?.version ?? version);
     });
   }
 
@@ -66,6 +62,6 @@ export class AppComponent implements OnInit {
   }
 
   dismissUpdate(): void {
-    this.updateDismissed = true;
+    this.updateDismissed.set(true);
   }
 }

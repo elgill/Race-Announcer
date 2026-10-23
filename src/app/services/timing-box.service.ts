@@ -237,14 +237,25 @@ export class TimingBoxService {
     this.shouldReconnect.set(matId, false);
     this.ipcRenderer.send('disconnect-timing-box', { matId });
     this.stopAutoReconnect(matId);
+    this.markDisconnected(matId);
   }
 
   disconnectAll(): void {
     this.statusSubjects.forEach((_, matId) => {
       this.shouldReconnect.set(matId, false);
       this.stopAutoReconnect(matId);
+      this.markDisconnected(matId);
     });
     this.ipcRenderer.send('disconnect-all-timing-boxes');
+  }
+
+  // Main only reports Disconnected when it had a socket to close, so a mat waiting between
+  // reconnect attempts would otherwise stay stuck on Reconnecting after a manual disconnect.
+  private markDisconnected(matId: string): void {
+    const statusSubject = this.statusSubjects.get(matId);
+    if (statusSubject && statusSubject.value.status !== ConnectionStatus.DISCONNECTED) {
+      statusSubject.next({ status: ConnectionStatus.DISCONNECTED });
+    }
   }
 
   private startAutoReconnect(matId: string, ip: string, port: number, label: string): void {

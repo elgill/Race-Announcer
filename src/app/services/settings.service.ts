@@ -132,7 +132,8 @@ export class SettingsService {
   }
 
   setRaceStartTime(time: string){
-    this.settings.raceStartTime = time;
+    // New object so subscribers see a change (and DEFAULT_SETTINGS is never mutated)
+    this.settings = {...this.settings, raceStartTime: time};
     this.settings$.next(this.settings);
   }
 }

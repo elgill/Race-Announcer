@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { AppComponent } from './app.component';
+import { ElectronService } from './services/electron.service';
 
 describe('AppComponent', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -12,5 +13,26 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
+  });
+
+  it('shows update progress pushed from the main process', () => {
+    const listeners = new Map<string, (...args: any[]) => void>();
+    spyOn(TestBed.inject(ElectronService), 'on').and.callFake((channel: string, listener: any) => {
+      listeners.set(channel, listener);
+    });
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    listeners.get('update-available')!({}, { version: '9.9.9' });
+    listeners.get('update-progress')!({}, { percent: 42.4 });
+    fixture.detectChanges();
+    const banner = () => fixture.nativeElement.querySelector('.update-banner') as HTMLElement;
+    expect(banner().textContent).toContain('v9.9.9');
+    expect(banner().textContent).toContain('42%');
+
+    listeners.get('update-downloaded')!({}, {});
+    fixture.detectChanges();
+    expect(banner().classList).toContain('ready');
+    expect(banner().textContent).toContain('Version 9.9.9');
   });
 });

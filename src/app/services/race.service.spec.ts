@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 
 import { RaceService } from './race.service';
 
@@ -8,7 +8,7 @@ describe('RaceService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient()]
+      providers: [provideHttpClient(withXhr())]
     });
     service = TestBed.inject(RaceService);
   });

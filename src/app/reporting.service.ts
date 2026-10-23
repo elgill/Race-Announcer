@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { jsPDF } from 'jspdf';
-import 'jspdf-autotable';
+import { autoTable } from 'jspdf-autotable';
 import {RunnerDataService} from "./services/runner-data.service";
 import {Runner} from "./interfaces/runner";
 import {DEFAULT_SETTINGS, SettingsService} from "./services/settings.service";
@@ -47,6 +47,10 @@ export class ReportingService {
   }
 
   private generateTimerReport() {
+    this.buildTimerReport().save('timer-report.pdf');
+  }
+
+  buildTimerReport(): jsPDF {
     const doc = new jsPDF();
     doc.setFontSize(18);
     doc.text('Timer Report', 14, 22);
@@ -71,12 +75,12 @@ export class ReportingService {
       return rowData;
     });
 
-    (doc as any).autoTable({
+    autoTable(doc, {
       head: [tableColumn],
       body: tableRows,
       startY: 30,
     });
 
-    doc.save('timer-report.pdf');
+    return doc;
   }
 }

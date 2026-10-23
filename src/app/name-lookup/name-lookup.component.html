@@ -8,4 +8,4 @@
   <input id="lastName" #lastNameInput (input)="searchRunners(firstNameInput.value, lastNameInput.value)" type="text" autocomplete="off">
 </div>
 
-<app-runner-table [runners]="this.runners"></app-runner-table>
+<app-runner-table [runners]="runners()"></app-runner-table>

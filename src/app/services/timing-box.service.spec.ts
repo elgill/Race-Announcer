@@ -1,4 +1,4 @@
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { TimingBoxService } from './timing-box.service';
 import { SettingsService, DEFAULT_SETTINGS, Settings } from './settings.service';
@@ -59,7 +59,11 @@ describe('TimingBoxService', () => {
     service = TestBed.inject(TimingBoxService);
   }
 
+  // Mock clock drives the reconnect setInterval
+  beforeEach(() => jasmine.clock().install());
+
   afterEach(() => {
+    jasmine.clock().uninstall();
     delete (window as any).require;
     TestBed.resetTestingModule();
   });
@@ -109,27 +113,27 @@ describe('TimingBoxService', () => {
 
   // ── Reconnect state machine ─────────────────────────────────────────────────
 
-  it('starts auto-reconnect when an enabled mat disconnects unexpectedly', fakeAsync(() => {
+  it('starts auto-reconnect when an enabled mat disconnects unexpectedly', () => {
     createService();
     ipc.ipcRenderer.send.calls.reset();
 
     ipc.emit('timing-box-status', { matId: MAT_ID, status: 'Disconnected' });
     expect(service.getCurrentStatus(MAT_ID).status).toBe(ConnectionStatus.RECONNECTING);
 
-    tick(FAST_SETTINGS.reconnectDelay);
+    jasmine.clock().tick(FAST_SETTINGS.reconnectDelay);
     expect(ipc.ipcRenderer.send).toHaveBeenCalledWith('connect-timing-box',
       jasmine.objectContaining({ matId: MAT_ID }));
 
     // Clean up interval
     service.disconnect(MAT_ID);
-    tick(FAST_SETTINGS.reconnectDelay * FAST_SETTINGS.numReconnectAttempts);
-  }));
+    jasmine.clock().tick(FAST_SETTINGS.reconnectDelay * FAST_SETTINGS.numReconnectAttempts);
+  });
 
-  it('sets status to CONNECTING immediately after firing a reconnect attempt (prevents duplicate attempts)', fakeAsync(() => {
+  it('sets status to CONNECTING immediately after firing a reconnect attempt (prevents duplicate attempts)', () => {
     createService();
     ipc.emit('timing-box-status', { matId: MAT_ID, status: 'Disconnected' });
 
-    tick(FAST_SETTINGS.reconnectDelay);
+    jasmine.clock().tick(FAST_SETTINGS.reconnectDelay);
     // After the first attempt, status should be CONNECTING — not RECONNECTING —
     // so the very next tick does not send a second connect-timing-box before the
     // first one resolves.
@@ -137,52 +141,52 @@ describe('TimingBoxService', () => {
 
     // Confirm the next tick is silent while we're still CONNECTING.
     ipc.ipcRenderer.send.calls.reset();
-    tick(FAST_SETTINGS.reconnectDelay);
+    jasmine.clock().tick(FAST_SETTINGS.reconnectDelay);
     expect(ipc.ipcRenderer.send).not.toHaveBeenCalledWith('connect-timing-box',
       jasmine.any(Object));
 
     service.disconnect(MAT_ID);
-    tick(FAST_SETTINGS.reconnectDelay * FAST_SETTINGS.numReconnectAttempts);
-  }));
+    jasmine.clock().tick(FAST_SETTINGS.reconnectDelay * FAST_SETTINGS.numReconnectAttempts);
+  });
 
-  it('stops auto-reconnect and resets status when connected', fakeAsync(() => {
+  it('stops auto-reconnect and resets status when connected', () => {
     createService();
     ipc.emit('timing-box-status', { matId: MAT_ID, status: 'Disconnected' });
-    tick(FAST_SETTINGS.reconnectDelay);
+    jasmine.clock().tick(FAST_SETTINGS.reconnectDelay);
 
     ipc.ipcRenderer.send.calls.reset();
     ipc.emit('timing-box-status', { matId: MAT_ID, status: 'Connected' });
 
-    tick(FAST_SETTINGS.reconnectDelay * 2);
+    jasmine.clock().tick(FAST_SETTINGS.reconnectDelay * 2);
     // No further connect attempts after connection established.
     expect(ipc.ipcRenderer.send).not.toHaveBeenCalledWith('connect-timing-box',
       jasmine.any(Object));
     expect(service.getCurrentStatus(MAT_ID).status).toBe(ConnectionStatus.CONNECTED);
-  }));
+  });
 
-  it('gives up after numReconnectAttempts and sets status to Disconnected', fakeAsync(() => {
+  it('gives up after numReconnectAttempts and sets status to Disconnected', () => {
     createService();
     ipc.emit('timing-box-status', { matId: MAT_ID, status: 'Disconnected' });
 
     // Each tick fires one attempt, then main responds with Disconnected again.
     for (let i = 0; i < FAST_SETTINGS.numReconnectAttempts; i++) {
-      tick(FAST_SETTINGS.reconnectDelay);
+      jasmine.clock().tick(FAST_SETTINGS.reconnectDelay);
       ipc.emit('timing-box-status', { matId: MAT_ID, status: 'Disconnected' });
     }
 
-    tick(FAST_SETTINGS.reconnectDelay);
+    jasmine.clock().tick(FAST_SETTINGS.reconnectDelay);
     expect(service.getCurrentStatus(MAT_ID).status).toBe(ConnectionStatus.DISCONNECTED);
 
     // No more sends after giving up.
     ipc.ipcRenderer.send.calls.reset();
-    tick(FAST_SETTINGS.reconnectDelay * 2);
+    jasmine.clock().tick(FAST_SETTINGS.reconnectDelay * 2);
     expect(ipc.ipcRenderer.send).not.toHaveBeenCalledWith('connect-timing-box',
       jasmine.any(Object));
-  }));
+  });
 
   // ── Manual disconnect ───────────────────────────────────────────────────────
 
-  it('does not auto-reconnect after an explicit disconnect()', fakeAsync(() => {
+  it('does not auto-reconnect after an explicit disconnect()', () => {
     createService();
     // Simulate a prior successful connection.
     ipc.emit('timing-box-status', { matId: MAT_ID, status: 'Connected' });
@@ -193,10 +197,33 @@ describe('TimingBoxService', () => {
     // Main process confirms disconnect.
     ipc.emit('timing-box-status', { matId: MAT_ID, status: 'Disconnected' });
 
-    tick(FAST_SETTINGS.reconnectDelay * (FAST_SETTINGS.numReconnectAttempts + 1));
+    jasmine.clock().tick(FAST_SETTINGS.reconnectDelay * (FAST_SETTINGS.numReconnectAttempts + 1));
     expect(ipc.ipcRenderer.send).not.toHaveBeenCalledWith('connect-timing-box',
       jasmine.any(Object));
-  }));
+  });
+
+  it('shows Disconnected when disconnect() is called while waiting to reconnect', () => {
+    createService();
+    ipc.emit('timing-box-status', { matId: MAT_ID, status: 'Disconnected' });
+    expect(service.getCurrentStatus(MAT_ID).status).toBe(ConnectionStatus.RECONNECTING);
+
+    // Main has no socket at this point, so it sends no status back
+    service.disconnect(MAT_ID);
+
+    expect(service.getCurrentStatus(MAT_ID).status).toBe(ConnectionStatus.DISCONNECTED);
+    expect(service.getCurrentReconnectStatus(MAT_ID)).toBe('');
+    jasmine.clock().tick(FAST_SETTINGS.reconnectDelay * 2);
+    expect(service.getCurrentStatus(MAT_ID).status).toBe(ConnectionStatus.DISCONNECTED);
+  });
+
+  it('shows Disconnected for reconnecting mats when disconnectAll() is called', () => {
+    createService();
+    ipc.emit('timing-box-status', { matId: MAT_ID, status: 'Disconnected' });
+
+    service.disconnectAll();
+
+    expect(service.getCurrentStatus(MAT_ID).status).toBe(ConnectionStatus.DISCONNECTED);
+  });
 
   it('sends disconnect-timing-box IPC when disconnect() is called', () => {
     createService();
@@ -235,7 +262,7 @@ describe('TimingBoxService', () => {
 
   // ── Disabled mat ────────────────────────────────────────────────────────────
 
-  it('does not auto-reconnect a disabled mat', fakeAsync(() => {
+  it('does not auto-reconnect a disabled mat', () => {
     const settingsWithDisabledMat: Settings = {
       ...FAST_SETTINGS,
       matConnections: [{ ...MAT, enabled: false }],
@@ -245,8 +272,8 @@ describe('TimingBoxService', () => {
 
     ipc.emit('timing-box-status', { matId: MAT_ID, status: 'Disconnected' });
 
-    tick(FAST_SETTINGS.reconnectDelay * (FAST_SETTINGS.numReconnectAttempts + 1));
+    jasmine.clock().tick(FAST_SETTINGS.reconnectDelay * (FAST_SETTINGS.numReconnectAttempts + 1));
     expect(ipc.ipcRenderer.send).not.toHaveBeenCalledWith('connect-timing-box',
       jasmine.any(Object));
-  }));
+  });
 });

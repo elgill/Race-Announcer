@@ -76,8 +76,8 @@ export class RunnerDataService {
         this.activeRunners.unshift(runner);
       }
     }
-    this.activeRunners$.next(this.activeRunners);
-    this.pausedQueue$.next(this.pausedQueue);
+    this.activeRunners$.next([...this.activeRunners]);
+    this.pausedQueue$.next([...this.pausedQueue]);
   }
 
   async loadXrefDataFromDB() {
@@ -217,10 +217,12 @@ export class RunnerDataService {
 
         // Update the existing entry in activeRunners to show it was confirmed by alternate method
         if (entrySource) {
-          const existingEntry = this.activeRunners.find(r => r.bib === bib);
+          const existingIndex = this.activeRunners.findIndex(r => r.bib === bib);
+          const existingEntry = this.activeRunners[existingIndex];
           if (existingEntry && existingEntry.entrySource && existingEntry.entrySource !== entrySource) {
-            existingEntry.entrySource = 'both';
-            this.activeRunners$.next(this.activeRunners);
+            // Replace rather than mutate so OnPush views see the change
+            this.activeRunners[existingIndex] = {...existingEntry, entrySource: 'both'};
+            this.activeRunners$.next([...this.activeRunners]);
             console.debug(`Updated bib ${bib} entry to 'both' (confirmed by ${entrySource})`);
           }
         }
@@ -261,11 +263,11 @@ export class RunnerDataService {
 
     if (this.paused && !overridePause) {
       this.pausedQueue.push(runner);
-      this.pausedQueue$.next(this.pausedQueue);
+      this.pausedQueue$.next([...this.pausedQueue]);
     } else {
       this.activeRunners.unshift(runner); // Add runner to the start of the array
     }
-    this.activeRunners$.next(this.activeRunners);
+    this.activeRunners$.next([...this.activeRunners]);
   }
 
   removeLastRunner() {
@@ -273,7 +275,7 @@ export class RunnerDataService {
       this.activeRunners.shift();
     }
 
-    this.activeRunners$.next(this.activeRunners);
+    this.activeRunners$.next([...this.activeRunners]);
   }
 
   loadRunners(newRunners: Runner[]): string {
@@ -366,7 +368,7 @@ export class RunnerDataService {
 
   clearActiveRunners() {
     this.activeRunners = [];
-    this.activeRunners$.next(this.activeRunners);
+    this.activeRunners$.next([...this.activeRunners]);
     this.lastEntryTimes.clear();
 
     // Optionally clear bib history based on configuration toggle
@@ -381,7 +383,7 @@ export class RunnerDataService {
   clearAllRunners() {
     this.allRunners.clear();
     this.activeRunners = [];
-    this.activeRunners$.next(this.activeRunners);
+    this.activeRunners$.next([...this.activeRunners]);
     this.lastEntryTimes.clear();
 
     this.db.deleteAllRunners().then(() => {
