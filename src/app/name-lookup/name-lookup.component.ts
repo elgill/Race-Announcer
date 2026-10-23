@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import {RunnerDataService} from "../services/runner-data.service";
 import {Runner} from "../interfaces/runner";
 import {RunnerTableComponent} from "../runner-table/runner-table.component";
@@ -8,16 +8,15 @@ import {RunnerTableComponent} from "../runner-table/runner-table.component";
     templateUrl: './name-lookup.component.html',
     styleUrls: ['./name-lookup.component.css'],
     standalone: true,
-    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [RunnerTableComponent]
 })
 export class NameLookupComponent {
   private runnerDataService = inject(RunnerDataService);
 
-  runners: Runner[] = [];
+  runners = signal<Runner[]>([]);
 
   async searchRunners(firstName?: string, lastName?: string) {
-    this.runners = await this.runnerDataService.getRunnersByName(firstName, lastName);
+    this.runners.set(await this.runnerDataService.getRunnersByName(firstName, lastName));
   }
 }
 

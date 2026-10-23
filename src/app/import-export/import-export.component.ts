@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 import { CsvImportComponent } from '../csv-import/csv-import.component';
 import { CsvExportComponent } from '../csv-export/csv-export.component';
 
@@ -7,7 +7,6 @@ import { CsvExportComponent } from '../csv-export/csv-export.component';
     templateUrl: './import-export.component.html',
     styleUrls: ['./import-export.component.css'],
     standalone: true,
-    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [CsvImportComponent, CsvExportComponent]
 })
 export class ImportExportComponent {

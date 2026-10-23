@@ -1,6 +1,7 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CsvColumnMappingService } from '../services/csv-column-mapping.service';
-import {DEFAULT_SETTINGS, Settings, SettingsService} from "../services/settings.service";
+import {DEFAULT_SETTINGS, SettingsService} from "../services/settings.service";
 
 import {FormsModule} from "@angular/forms";
 
@@ -9,18 +10,17 @@ import {FormsModule} from "@angular/forms";
     templateUrl: './csv-import.component.html',
     styleUrls: ['./csv-import.component.css'],
     standalone: true,
-    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [FormsModule]
 })
 export class CsvImportComponent {
   private csvService = inject(CsvColumnMappingService);
   private settingsService = inject(SettingsService);
 
-  settings: Settings = DEFAULT_SETTINGS;
-  errorMessage: string = '';
+  settings = toSignal(this.settingsService.getSettings(), { initialValue: DEFAULT_SETTINGS });
+  errorMessage = signal('');
   file: File | null = null;
-  headers: string[] = [];
-  importStatus = '';
+  headers = signal<string[]>([]);
+  importStatus = signal('');
   mappedColumns: { [key: string]: string } = {};
   possibleHeaders: { [key: string]: string[] } = {
     'bib': ['Bib', 'Bib Number', 'Bib#', 'bib #'],
@@ -32,16 +32,10 @@ export class CsvImportComponent {
     'state': ['State', 'state', 'Province'],
   };
 
-  constructor() {
-    this.settingsService.getSettings().subscribe(settings => {
-      this.settings = settings;
-    });
-  }
-
   onFileSelected(event: any) {
-    this.errorMessage = '';
+    this.errorMessage.set('');
     this.file = event.target.files[0];
-    this.importStatus = '';
+    this.importStatus.set('');
     if (this.file !== null) {
       this.csvService.getHeaders(this.file)
         .then(headers => {
@@ -60,12 +54,12 @@ export class CsvImportComponent {
             }
           }
 
-          this.headers = headers;
+          this.headers.set(headers);
 
         })
         .catch(error => {
           console.error('Error getting headers from CSV file:', error);
-          this.errorMessage = 'There was an error getting headers from the CSV file. Please verify file';
+          this.errorMessage.set('There was an error getting headers from the CSV file. Please verify file');
           this.clear();
         });
 
@@ -74,7 +68,7 @@ export class CsvImportComponent {
 
   private clear(){
     this.file = null;
-    this.headers = [];
+    this.headers.set([]);
   }
 
   importCsv() {
@@ -90,12 +84,12 @@ export class CsvImportComponent {
         .then(runners => {
           // The promise was fulfilled, so you can do something with the runners here.
           console.log('Import successful, runners:', runners);
-          this.importStatus = 'success';
+          this.importStatus.set('success');
         })
         .catch(error => {
           // The promise was rejected, so you can handle the error here.
           console.log('Import failed, error:', error);
-          this.errorMessage = 'Import failed, please verify file';
+          this.errorMessage.set('Import failed, please verify file');
         });
       this.clear();
     }

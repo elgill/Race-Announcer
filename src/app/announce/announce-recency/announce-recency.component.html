@@ -1,12 +1,12 @@
 <div class="recency-container">
-  @if (paused) {
+  @if (paused()) {
     <div class="pause-indicator">
-      PAUSED @if (pausedQueueLength > 0) { ({{pausedQueueLength}} in queue) }
+      PAUSED @if (pausedQueueLength() > 0) { ({{pausedQueueLength()}} in queue) }
     </div>
   }
 
   <div class="runner-list">
-    @for (runner of recencyRunners; track trackByBib($index, runner); let i = $index) {
+    @for (runner of recencyRunners(); track trackByBib($index, runner); let i = $index) {
       <div class="runner-entry">
         <span class="source-badge"
               [class.manual-badge]="runner.entrySource === 'manual'"
@@ -23,7 +23,7 @@
         <span class="runnerAttribute">{{runner.gender}}</span>
         <span class="runnerAttribute">{{runner.town}}</span>
         <span class="runnerAttribute">{{runner.state}}</span>
-        @for (field of customFields; track field) {
+        @for (field of customFields(); track field) {
           <span class="runnerAttribute">
             {{runner.customFields[field.name]}}
           </span>

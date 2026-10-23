@@ -1,4 +1,5 @@
-import { Component, Input, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, Input, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormsModule } from '@angular/forms';
 import { ElectronService } from '../services/electron.service';
@@ -22,78 +23,85 @@ import {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './ethernet-setup.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./ethernet-setup.component.css']
 })
 export class EthernetSetupComponent implements OnInit {
   @Input({ required: true }) matConnections!: FormArray;
 
   private electronService = inject(ElectronService);
+  private changeDetectorRef = inject(ChangeDetectorRef);
+  private destroyRef = inject(DestroyRef);
 
   readonly subnetMask = TIMING_SUBNET_MASK;
   readonly describeAdapterStatus = describeAdapterStatus;
   readonly describeIpv4Mode = describeIpv4Mode;
   readonly formatAddresses = formatAddresses;
 
-  supported = false;
-  loading = false;
-  adapters: NetworkAdapter[] = [];
-  recommended: NetworkAdapter | null = null;
-  loadError = '';
+  // Signals for state set after awaiting the main process
+  supported = signal(false);
+  loading = signal(false);
+  adapters = signal<NetworkAdapter[]>([]);
+  recommended = signal<NetworkAdapter | null>(null);
+  loadError = signal('');
 
   dialogOpen = false;
   showAllAdapters = false;
-  selectedIfIndex: number | null = null;
+  selectedIfIndex = signal<number | null>(null);
   staticIp = '';
-  applying = false;
-  applyMessage = '';
-  applyError = '';
+  applying = signal(false);
+  applyMessage = signal('');
+  applyError = signal('');
 
   ngOnInit(): void {
+    // Mat IPs come from the parent's FormArray; re-render when they change
+    this.matConnections.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.changeDetectorRef.markForCheck());
+
     if (this.electronService.isElectron) {
       this.refresh();
     }
   }
 
   async refresh(): Promise<void> {
-    this.loading = true;
-    this.loadError = '';
+    this.loading.set(true);
+    this.loadError.set('');
     try {
       const result = await this.electronService.invoke<NetworkAdapterList>('network-adapters-list');
-      this.supported = result.supported;
-      this.adapters = result.adapters;
-      this.recommended = pickRecommendedAdapter(this.adapters, this.subnetPrefix);
-      if (this.selectedIfIndex === null || !this.selectedAdapter) {
-        this.selectedIfIndex = this.recommended?.ifIndex ?? null;
+      this.supported.set(result.supported);
+      this.adapters.set(result.adapters);
+      this.recommended.set(pickRecommendedAdapter(this.adapters(), this.subnetPrefix));
+      if (this.selectedIfIndex() === null || !this.selectedAdapter) {
+        this.selectedIfIndex.set(this.recommended()?.ifIndex ?? null);
       }
     } catch (err: any) {
-      this.loadError = `Could not read network adapters: ${err?.message ?? err}`;
+      this.loadError.set(`Could not read network adapters: ${err?.message ?? err}`);
     } finally {
-      this.loading = false;
+      this.loading.set(false);
     }
   }
 
   openDialog(): void {
-    this.applyMessage = '';
-    this.applyError = '';
-    this.selectedIfIndex = this.recommended?.ifIndex ?? this.selectedIfIndex;
-    this.showAllAdapters = !this.recommended;
+    this.applyMessage.set('');
+    this.applyError.set('');
+    this.selectedIfIndex.set(this.recommended()?.ifIndex ?? this.selectedIfIndex());
+    this.showAllAdapters = !this.recommended();
     this.staticIp = this.defaultStaticIpFor(this.selectedAdapter);
     this.dialogOpen = true;
     this.refresh();
   }
 
   closeDialog(): void {
-    if (!this.applying) {
+    if (!this.applying()) {
       this.dialogOpen = false;
     }
   }
 
   selectAdapter(adapter: NetworkAdapter): void {
-    this.selectedIfIndex = adapter.ifIndex;
+    this.selectedIfIndex.set(adapter.ifIndex);
     this.staticIp = this.defaultStaticIpFor(adapter);
-    this.applyMessage = '';
-    this.applyError = '';
+    this.applyMessage.set('');
+    this.applyError.set('');
   }
 
   async setManual(): Promise<void> {
@@ -120,15 +128,15 @@ export class EthernetSetupComponent implements OnInit {
   }
 
   get visibleAdapters(): NetworkAdapter[] {
-    return this.showAllAdapters ? this.adapters : this.adapters.filter(a => a.kind === 'wired');
+    return this.showAllAdapters ? this.adapters() : this.adapters().filter(a => a.kind === 'wired');
   }
 
   get hiddenAdapterCount(): number {
-    return this.adapters.length - this.visibleAdapters.length;
+    return this.adapters().length - this.visibleAdapters.length;
   }
 
   get selectedAdapter(): NetworkAdapter | undefined {
-    return this.adapters.find(a => a.ifIndex === this.selectedIfIndex);
+    return this.adapters().find(a => a.ifIndex === this.selectedIfIndex());
   }
 
   get subnetPrefix(): string {
@@ -136,10 +144,11 @@ export class EthernetSetupComponent implements OnInit {
   }
 
   get subnetConflicts(): NetworkAdapter[] {
-    if (this.selectedIfIndex === null) {
+    const selectedIfIndex = this.selectedIfIndex();
+    if (selectedIfIndex === null) {
       return [];
     }
-    return findSubnetConflicts(this.adapters, this.selectedIfIndex, this.subnetPrefix);
+    return findSubnetConflicts(this.adapters(), selectedIfIndex, this.subnetPrefix);
   }
 
   get staticIpError(): string {
@@ -166,7 +175,7 @@ export class EthernetSetupComponent implements OnInit {
   }
 
   isRecommended(adapter: NetworkAdapter): boolean {
-    return adapter.ifIndex === this.recommended?.ifIndex;
+    return adapter.ifIndex === this.recommended()?.ifIndex;
   }
 
   private get matIps(): string[] {
@@ -184,17 +193,17 @@ export class EthernetSetupComponent implements OnInit {
   }
 
   private async apply(action: () => Promise<unknown>, successMessage: string): Promise<void> {
-    this.applying = true;
-    this.applyMessage = '';
-    this.applyError = '';
+    this.applying.set(true);
+    this.applyMessage.set('');
+    this.applyError.set('');
     try {
       await action();
-      this.applyMessage = successMessage;
+      this.applyMessage.set(successMessage);
     } catch (err: any) {
       // Electron prefixes errors from ipcMain.handle with "Error invoking remote method '...': Error: ".
-      this.applyError = String(err?.message ?? err).replace(/^Error invoking remote method '[^']+': (Error: )?/, '');
+      this.applyError.set(String(err?.message ?? err).replace(/^Error invoking remote method '[^']+': (Error: )?/, ''));
     } finally {
-      this.applying = false;
+      this.applying.set(false);
     }
     await this.refresh();
   }

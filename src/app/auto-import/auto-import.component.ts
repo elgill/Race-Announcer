@@ -1,6 +1,7 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {BibScrapeService} from "../services/bib-scrape.service";
-import {DEFAULT_SETTINGS, SettingsService, Settings} from "../services/settings.service";
+import {DEFAULT_SETTINGS, SettingsService} from "../services/settings.service";
 
 
 @Component({
@@ -8,27 +9,20 @@ import {DEFAULT_SETTINGS, SettingsService, Settings} from "../services/settings.
     templateUrl: './auto-import.component.html',
     styleUrls: ['./auto-import.component.css'],
     standalone: true,
-    changeDetection: ChangeDetectionStrategy.Eager,
     imports: []
 })
 export class AutoImportComponent {
   private bibScrapeService = inject(BibScrapeService);
   private settingsService = inject(SettingsService);
 
-  private settings: Settings= DEFAULT_SETTINGS;
+  private settings = toSignal(this.settingsService.getSettings(), { initialValue: DEFAULT_SETTINGS });
 
-  importStatus = '';
-
-  constructor() {
-    this.settingsService.getSettings().subscribe(settings => {
-      this.settings = settings;
-    });
-  }
+  importStatus = signal('');
 
   async importRunners() {
-    this.importStatus = 'Processing...';
-    const url = "https://www.elitefeats.com/Bibs/?ID="+this.settings.raceId+"&csv=yesplease";
-    this.importStatus = await this.bibScrapeService.processRunners(url);
+    this.importStatus.set('Processing...');
+    const url = "https://www.elitefeats.com/Bibs/?ID="+this.settings().raceId+"&csv=yesplease";
+    this.importStatus.set(await this.bibScrapeService.processRunners(url));
 
   }
 }

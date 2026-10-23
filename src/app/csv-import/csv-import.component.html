@@ -3,11 +3,11 @@
 
   <input type="file" (change)="onFileSelected($event)" accept=".csv">
 
-  @if (headers.length) {
+  @if (headers().length) {
     <div>
       <h3>Column Mapping</h3>
       <div class="mapping-grid">
-        @for (header of headers; track header) {
+        @for (header of headers(); track header) {
           <div class="mapping-row">
             <label class="mapping-label">{{ header.trim() }}</label>
             <select class="mapping-select" [(ngModel)]="mappedColumns[header]">
@@ -19,7 +19,7 @@
               <option value="gender">Gender</option>
               <option value="town">Town</option>
               <option value="state">State</option>
-              @for (field of settings.customFields; track field) {
+              @for (field of settings().customFields; track field) {
                 <option [value]="field.name">{{field.name}}</option>
               }
             </select>
@@ -29,8 +29,8 @@
       <button (click)="importCsv()">Import</button>
     </div>
   }
-  @if (importStatus === 'success') {
+  @if (importStatus() === 'success') {
     <p class="success-message">Import successful!</p>
   }
-  <p class="error-message">{{ errorMessage }}</p>
+  <p class="error-message">{{ errorMessage() }}</p>
 </div>

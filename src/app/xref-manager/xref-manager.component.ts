@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RunnerDataService } from '../services/runner-data.service';
 import { FormsModule } from '@angular/forms';
 
@@ -10,7 +10,6 @@ import { ShowXrefComponent } from '../show-xref/show-xref.component';
     templateUrl: './xref-manager.component.html',
     styleUrls: ['./xref-manager.component.css'],
     standalone: true,
-    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [FormsModule, ImportXrefComponent, ShowXrefComponent]
 })
 export class XrefManagerComponent {

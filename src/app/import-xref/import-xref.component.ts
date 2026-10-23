@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { DEFAULT_SETTINGS, Settings, SettingsService } from "../services/settings.service";
 import * as Papa from 'papaparse';
 import { RunnerDataService } from "../services/runner-data.service";
@@ -9,7 +9,6 @@ import { RunnerDataService } from "../services/runner-data.service";
     templateUrl: './import-xref.component.html',
     styleUrls: ['./import-xref.component.css'],
     standalone: true,
-    changeDetection: ChangeDetectionStrategy.Eager,
     imports: []
 })
 export class ImportXrefComponent {
@@ -18,8 +17,8 @@ export class ImportXrefComponent {
 
   settings: Settings = DEFAULT_SETTINGS;
   errorMessage: string = '';
-  file: File | null = null;
-  importStatus = '';
+  file = signal<File | null>(null);
+  importStatus = signal('');
 
   constructor() {
     this.settingsService.getSettings().subscribe(settings => {
@@ -28,11 +27,12 @@ export class ImportXrefComponent {
   }
 
   onFileSelected(event: any): void {
-    this.file = event.target.files[0];
+    this.file.set(event.target.files[0] ?? null);
   }
 
   importFile(): void {
-    if (this.file) {
+    const file = this.file();
+    if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
         const csv = e.target?.result as string;
@@ -44,14 +44,14 @@ export class ImportXrefComponent {
         const xrefData = parsedData.map(row => ({ bib: row[0], chipId: row[1] }));
         this.runnerDataService.importXref(xrefData);
 
-        this.importStatus = 'success';
+        this.importStatus.set('success');
         this.clear();
       };
-      reader.readAsText(this.file);
+      reader.readAsText(file);
     }
   }
 
   private clear(): void {
-    this.file = null;
+    this.file.set(null);
   }
 }

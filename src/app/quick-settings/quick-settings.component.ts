@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { DEFAULT_SETTINGS, Settings, SettingsService } from "../services/settings.service";
 import { RaceService } from "../services/race.service";
@@ -19,7 +19,6 @@ interface Race {
     templateUrl: './quick-settings.component.html',
     styleUrl: './quick-settings.component.css',
     standalone: true,
-    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [ReactiveFormsModule, MatConnectionsEditorComponent]
 })
 export class QuickSettingsComponent implements OnInit, OnDestroy {
@@ -28,9 +27,9 @@ export class QuickSettingsComponent implements OnInit, OnDestroy {
   private raceService = inject(RaceService);
 
   quickSetupForm: FormGroup = new FormGroup({});
-  races: Race[] = [];
-  isLoading = false;
-  errorMessage = '';
+  races = signal<Race[]>([]);
+  isLoading = signal(false);
+  errorMessage = signal('');
   settings = DEFAULT_SETTINGS;
   readonly maxMatConnections = 3;
   private formChangesSub?: Subscription;
@@ -162,17 +161,17 @@ export class QuickSettingsComponent implements OnInit, OnDestroy {
   }
 
   fetchRaces(): void {
-    this.isLoading = true;
-    this.errorMessage = '';
+    this.isLoading.set(true);
+    this.errorMessage.set('');
     this.raceService.fetchRaces().subscribe(
       (races) => {
-        this.races = races;
-        this.isLoading = false;
+        this.races.set(races);
+        this.isLoading.set(false);
       },
       (error) => {
-        this.errorMessage = 'Failed to fetch races. Please try again.';
+        this.errorMessage.set('Failed to fetch races. Please try again.');
         console.log(error);
-        this.isLoading = false;
+        this.isLoading.set(false);
       }
     );
   }

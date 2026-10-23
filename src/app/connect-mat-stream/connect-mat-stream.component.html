@@ -1,11 +1,11 @@
 <div class="mat-connections-container">
   <div class="heading" [hidden]="true">Mat Connections</div>
 
-  @if (matStatuses.length === 0) {
+  @if (matStatuses().length === 0) {
     <p>No timing mats configured. Go to Settings to add timing mat connections.</p>
   } @else {
     <div class="mat-list">
-      @for (mat of matStatuses; track mat.id) {
+      @for (mat of matStatuses(); track mat.id) {
         <div class="mat-item"
              [attr.title]="mat.label + '\n' + mat.ip + ':' + mat.port + (mat.reconnectionStatus ? '\n' + mat.reconnectionStatus : '')">
           <span class="mat-label">{{ mat.label }}</span>

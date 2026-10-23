@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {FormsModule} from "@angular/forms";
 import {RunnerDataService} from "../services/runner-data.service";
@@ -11,20 +11,19 @@ import {RunnerEditorComponent} from "../runner-editor/runner-editor.component";
     templateUrl: './browse-runners.component.html',
     styleUrls: ['./browse-runners.component.css'],
     standalone: true,
-    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [FormsModule, RunnerTableComponent, RunnerEditorComponent]
 })
 export class BrowseRunnersComponent implements OnInit {
   private runnerDataService = inject(RunnerDataService);
   private destroyRef = inject(DestroyRef);
 
-  runners: Runner[] = [];
-  filteredRunners: Runner[] = [];
+  runners = signal<Runner[]>([]);
+  filteredRunners = signal<Runner[]>([]);
   filterText = '';
 
   // undefined = editor closed, null = adding a new runner
-  editingRunner: Runner | null | undefined = undefined;
-  statusMessage = '';
+  editingRunner = signal<Runner | null | undefined>(undefined);
+  statusMessage = signal('');
 
   ngOnInit() {
     // Refresh whenever the runner count changes (initial DB load, imports, adds, deletes)
@@ -36,44 +35,44 @@ export class BrowseRunnersComponent implements OnInit {
   applyFilter() {
     const terms = this.filterText.trim().toLowerCase().split(/\s+/).filter(Boolean);
     if (terms.length === 0) {
-      this.filteredRunners = this.runners;
+      this.filteredRunners.set(this.runners());
       return;
     }
-    this.filteredRunners = this.runners.filter(runner => {
+    this.filteredRunners.set(this.runners().filter(runner => {
       const haystack = [runner.bib, runner.firstName, runner.lastName, runner.town, runner.state]
         .join(' ').toLowerCase();
       return terms.every(term => haystack.includes(term));
-    });
+    }));
   }
 
   addRunner() {
-    this.editingRunner = null;
-    this.statusMessage = '';
+    this.editingRunner.set(null);
+    this.statusMessage.set('');
   }
 
   editRunner(runner: Runner) {
-    this.editingRunner = runner;
-    this.statusMessage = '';
+    this.editingRunner.set(runner);
+    this.statusMessage.set('');
   }
 
   onSaved(runner: Runner) {
-    this.statusMessage = `Saved runner ${runner.bib}.`;
+    this.statusMessage.set(`Saved runner ${runner.bib}.`);
     this.closeEditor();
     this.refresh();
   }
 
   onDeleted(bib: string) {
-    this.statusMessage = `Deleted runner ${bib}.`;
+    this.statusMessage.set(`Deleted runner ${bib}.`);
     this.closeEditor();
     this.refresh();
   }
 
   closeEditor() {
-    this.editingRunner = undefined;
+    this.editingRunner.set(undefined);
   }
 
   private refresh() {
-    this.runners = this.runnerDataService.getSortedRunners();
+    this.runners.set(this.runnerDataService.getSortedRunners());
     this.applyFilter();
   }
 }

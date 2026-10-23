@@ -3,13 +3,13 @@
 
   <input type="file" (change)="onFileSelected($event)" accept=".csv">
 
-  @if (file !== null) {
+  @if (file() !== null) {
     <div>
       <button (click)="importFile()">Import</button>
     </div>
   }
 
-  @if (importStatus === 'success') {
+  @if (importStatus() === 'success') {
     <p class="success-message">Import successful!</p>
   }
   <p class="error-message">{{ errorMessage }}</p>

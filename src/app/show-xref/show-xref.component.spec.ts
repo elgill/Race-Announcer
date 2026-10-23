@@ -62,21 +62,21 @@ describe('ShowXrefComponent', () => {
     it('finds an exact bib', () => {
       component.searchBib = '2';
       component.applySearch();
-      expect(component.xrefRanges.map(r => r.startChip)).toEqual(['000000000102']);
+      expect(component.xrefRanges().map(r => r.startChip)).toEqual(['000000000102']);
     });
 
     it('finds a chip code without its leading zeros', () => {
       component.searchChip = '103';
       component.applySearch();
-      expect(component.xrefRanges.map(r => r.startBib)).toEqual(['3']);
+      expect(component.xrefRanges().map(r => r.startBib)).toEqual(['3']);
     });
 
     it('shows all ranges again after clearing', () => {
       component.searchBib = '2';
       component.applySearch();
       component.clearSearch();
-      expect(component.xrefRanges.length).toBe(1);
-      expect(component.xrefRanges[0].count).toBe(3);
+      expect(component.xrefRanges().length).toBe(1);
+      expect(component.xrefRanges()[0].count).toBe(3);
     });
   });
 });

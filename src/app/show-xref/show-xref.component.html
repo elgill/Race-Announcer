@@ -2,8 +2,8 @@
   <div class="xref-header">
     <h3>XREF Ranges</h3>
     <span class="xref-summary">
-      {{ totalEntries }} chip{{ totalEntries !== 1 ? 's' : '' }} in
-      {{ xrefRanges.length }} range{{ xrefRanges.length !== 1 ? 's' : '' }}
+      {{ totalEntries() }} chip{{ totalEntries() !== 1 ? 's' : '' }} in
+      {{ xrefRanges().length }} range{{ xrefRanges().length !== 1 ? 's' : '' }}
     </span>
   </div>
   <div class="xref-search">
@@ -11,7 +11,7 @@
     <input type="text" placeholder="Search chip code" [(ngModel)]="searchChip" (ngModelChange)="applySearch()" autocomplete="off">
     <button (click)="clearSearch()" [disabled]="!isSearching">Clear</button>
   </div>
-  @if (xrefRanges.length > 0) {
+  @if (xrefRanges().length > 0) {
     <table class="xref-table">
       <thead>
         <tr>
@@ -21,7 +21,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (range of xrefRanges; track range.startChip) {
+        @for (range of xrefRanges(); track range.startChip) {
           <tr>
             <td>{{ formatRange(range.startBib, range.endBib) }}</td>
             <td class="chip">{{ formatRange(range.startChip, range.endChip) }}</td>

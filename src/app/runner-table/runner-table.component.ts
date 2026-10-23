@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import {CustomField} from "../interfaces/custom-field";
 import {SettingsService} from "../services/settings.service";
 import {Runner} from "../interfaces/runner";
@@ -11,7 +11,6 @@ import {CommonModule} from "@angular/common";
     templateUrl: './runner-table.component.html',
     styleUrls: ['./runner-table.component.css'],
     standalone: true,
-    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [CommonModule]
 })
 export class RunnerTableComponent {

@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, OnChanges, Output, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, inject, signal } from '@angular/core';
+import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {FormsModule} from "@angular/forms";
 import {Runner} from "../interfaces/runner";
 import {RunnerDataService} from "../services/runner-data.service";
@@ -9,7 +10,6 @@ import {SettingsService} from "../services/settings.service";
     templateUrl: './runner-editor.component.html',
     styleUrls: ['./runner-editor.component.css'],
     standalone: true,
-    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [FormsModule]
 })
 export class RunnerEditorComponent implements OnChanges {
@@ -23,14 +23,14 @@ export class RunnerEditorComponent implements OnChanges {
   @Output() closed = new EventEmitter<void>();
 
   draft: Runner = emptyRunner();
-  customFieldNames: string[] = [];
-  errorMessage = '';
+  customFieldNames = signal<string[]>([]);
+  errorMessage = signal('');
   confirmingDelete = false;
 
   private settingsFieldNames: string[] = [];
 
   constructor() {
-    this.settingsService.getSettings().subscribe(settings => {
+    this.settingsService.getSettings().pipe(takeUntilDestroyed()).subscribe(settings => {
       this.settingsFieldNames = settings.customFields.map(field => field.name);
       this.updateCustomFieldNames();
     });
@@ -44,13 +44,13 @@ export class RunnerEditorComponent implements OnChanges {
     this.draft = this.runner
       ? {...this.runner, customFields: {...this.runner.customFields}}
       : emptyRunner();
-    this.errorMessage = '';
+    this.errorMessage.set('');
     this.confirmingDelete = false;
     this.updateCustomFieldNames();
   }
 
   async save() {
-    this.errorMessage = '';
+    this.errorMessage.set('');
     const runner: Runner = {
       ...this.draft,
       bib: String(this.draft.bib ?? '').trim(),
@@ -60,7 +60,7 @@ export class RunnerEditorComponent implements OnChanges {
       await this.runnerDataService.saveRunner(runner, this.runner?.bib);
       this.saved.emit(runner);
     } catch (err) {
-      this.errorMessage = err instanceof Error ? err.message : String(err);
+      this.errorMessage.set(err instanceof Error ? err.message : String(err));
     }
   }
 
@@ -76,14 +76,14 @@ export class RunnerEditorComponent implements OnChanges {
       await this.runnerDataService.deleteRunner(this.runner.bib);
       this.deleted.emit(this.runner.bib);
     } catch (err) {
-      this.errorMessage = err instanceof Error ? err.message : String(err);
+      this.errorMessage.set(err instanceof Error ? err.message : String(err));
     }
   }
 
   private updateCustomFieldNames() {
     // Show configured fields plus any extra fields this runner already carries
     const names = new Set([...this.settingsFieldNames, ...Object.keys(this.draft.customFields)]);
-    this.customFieldNames = Array.from(names);
+    this.customFieldNames.set(Array.from(names));
   }
 }
 

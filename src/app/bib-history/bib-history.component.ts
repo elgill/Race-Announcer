@@ -1,8 +1,9 @@
-import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 import { FormsModule } from '@angular/forms';
 import { RunnerDataService } from '../services/runner-data.service';
-import { SettingsService, Settings, DEFAULT_SETTINGS } from '../services/settings.service';
+import { SettingsService, DEFAULT_SETTINGS } from '../services/settings.service';
 import { EntryAttempt } from '../interfaces/entry-attempt';
 
 @Component({
@@ -10,29 +11,20 @@ import { EntryAttempt } from '../interfaces/entry-attempt';
   templateUrl: './bib-history.component.html',
   styleUrls: ['./bib-history.component.css'],
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule]
 })
-export class BibHistoryComponent implements OnInit {
+export class BibHistoryComponent {
   private runnerDataService = inject(RunnerDataService);
   private settingsService = inject(SettingsService);
 
   searchBib: string = '';
   entryAttempts: EntryAttempt[] = [];
   hasSearched: boolean = false;
-  settings: Settings = DEFAULT_SETTINGS;
-  raceStartTime: Date | null = null;
-
-  ngOnInit(): void {
-    this.settingsService.getSettings().subscribe(settings => {
-      this.settings = settings;
-      if (settings.raceStartTime) {
-        this.raceStartTime = new Date(settings.raceStartTime);
-      } else {
-        this.raceStartTime = null;
-      }
-    });
-  }
+  private settings = toSignal(this.settingsService.getSettings(), { initialValue: DEFAULT_SETTINGS });
+  private raceStartTime = computed(() => {
+    const raceStartTime = this.settings().raceStartTime;
+    return raceStartTime ? new Date(raceStartTime) : null;
+  });
 
   onSearch(): void {
     if (!this.searchBib.trim()) {
@@ -77,11 +69,12 @@ export class BibHistoryComponent implements OnInit {
   }
 
   getNetTime(timestamp: Date): string {
-    if (!this.raceStartTime) {
+    const raceStartTime = this.raceStartTime();
+    if (!raceStartTime) {
       return 'N/A (no race start time set)';
     }
 
-    const netTimeMs = timestamp.getTime() - this.raceStartTime.getTime();
+    const netTimeMs = timestamp.getTime() - raceStartTime.getTime();
 
     if (netTimeMs < 0) {
       return 'N/A (before race start)';

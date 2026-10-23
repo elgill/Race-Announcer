@@ -20,7 +20,7 @@
             <span class="mat-details">
               {{ matGroup.get('ip')?.value }}:{{ matGroup.get('port')?.value }}
             </span>
-            <span class="mat-type">{{ typeLabel($safeNavigationMigration(matGroup.get('type')?.value)) }}</span>
+            <span class="mat-type">{{ typeLabel(matGroup.get('type')?.value) }}</span>
             <span class="mat-state">
               {{ matGroup.get('enabled')?.value ? 'Enabled' : 'Disabled' }}
             </span>

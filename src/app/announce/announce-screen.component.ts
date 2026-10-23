@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { BibEntryComponent } from '../bib-entry/bib-entry.component';
 import { RaceClockComponent } from '../race-clock/race-clock.component';
@@ -15,7 +15,6 @@ import { AnnounceBaseComponent } from './announce-base.component';
     templateUrl: './announce-screen.component.html',
     styleUrls: ['./announce-screen.component.css'],
     standalone: true,
-    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [BibEntryComponent, RaceClockComponent, ConnectMatStreamComponent, AnnounceGridComponent, AnnounceFreeformComponent, AnnounceTimerComponent, AnnounceRecencyComponent, ErrorComponent]
 })
 export class AnnounceScreenComponent extends AnnounceBaseComponent {

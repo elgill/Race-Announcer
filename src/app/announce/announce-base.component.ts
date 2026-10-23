@@ -1,79 +1,40 @@
-import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Component, HostListener, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs/operators';
 import {RunnerDataService} from '../services/runner-data.service';
-import {DEFAULT_SETTINGS, Settings, SettingsService} from "../services/settings.service";
-import {CustomField} from "../interfaces/custom-field";
-import {Runner} from "../interfaces/runner";
+import {DEFAULT_SETTINGS, SettingsService} from "../services/settings.service";
 import {ElectronService} from "../services/electron.service";
 
 @Component({
   template: '',
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
-export class AnnounceBaseComponent implements OnInit, OnDestroy {
+export class AnnounceBaseComponent {
   protected runnerDataService = inject(RunnerDataService);
   protected settingsService = inject(SettingsService);
   protected electronService = inject(ElectronService);
 
-  settings: Settings= DEFAULT_SETTINGS;
-  runStartTime: Date | undefined;
-  isElectron = this.electronService.isElectron;
+  readonly isElectron = this.electronService.isElectron;
 
-  runnerList: Runner[] = [];
-  reverseRunnerList: Runner[] = [];
-  isNumLockOff = false;
-  customFields: CustomField[] = [];
+  // Signals so OnPush views update even when entries arrive from IPC (outside the Angular zone)
+  readonly settings = toSignal(this.settingsService.getSettings(), { initialValue: DEFAULT_SETTINGS });
+  readonly runnerList = toSignal(this.runnerDataService.getActiveRunners(), { initialValue: [] });
+  readonly paused = toSignal(this.runnerDataService.getPausedStatus(), { initialValue: false });
+  readonly pausedQueueLength = toSignal(
+    this.runnerDataService.getPausedQueue().pipe(map(queue => queue.length)),
+    { initialValue: 0 }
+  );
+  readonly isNumLockOff = signal(false);
 
-  paused = false;
-  pausedQueueLength = 0;
+  readonly reverseRunnerList = computed(() => [...this.runnerList()].reverse());
+  readonly customFields = computed(() => this.settings().customFields.filter(field => field.showInAnnounce));
+  readonly runStartTime = computed(() => {
+    const raceStartTime = this.settings().raceStartTime;
+    return raceStartTime ? new Date(raceStartTime) : undefined;
+  });
 
-  // PERFORMANCE FIX: Add destroy$ subject for subscription cleanup
-  private destroy$ = new Subject<void>();
-
-  ngOnInit(): void {
-    // PERFORMANCE FIX: Use takeUntil to automatically unsubscribe
-    this.runnerDataService.getActiveRunners()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(runners => {
-        this.runnerList = runners;
-        this.reverseRunnerList = [...runners].reverse();
-      });
-
-    this.settingsService.getSettings()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(settings => {
-        this.settings = settings;
-        if(settings.raceStartTime){
-          this.runStartTime = new Date(settings.raceStartTime);
-        } else {
-          this.runStartTime = undefined
-        }
-      });
-
-    window.addEventListener('keydown', (event: KeyboardEvent) => {
-      this.isNumLockOff = event.getModifierState && !event.getModifierState('NumLock');
-    });
-
-    this.customFields = this.settings.customFields.filter(field => field.showInAnnounce)
-
-    this.runnerDataService.getPausedStatus()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(paused => {
-        this.paused = paused;
-      });
-
-    this.runnerDataService.getPausedQueue()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(queue => {
-        this.pausedQueueLength = queue.length;
-      });
-  }
-
-  // PERFORMANCE FIX: Clean up all subscriptions on component destroy
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+  @HostListener('window:keydown', ['$event'])
+  trackNumLock(event: KeyboardEvent): void {
+    this.isNumLockOff.set(event.getModifierState && !event.getModifierState('NumLock'));
   }
 }
