@@ -22,6 +22,9 @@ export class AppComponent implements OnInit {
   title = 'Race Announcer';
   updateAvailable = false;
   updateDownloaded = false;
+  updateDismissed = false;
+  updateVersion = '';
+  updatePercent = 0;
 
   constructor() {
     (window as any).visualLoadTestService = this.visualLoadTestService;
@@ -40,15 +43,29 @@ export class AppComponent implements OnInit {
     this.electronService.on('report-menu-clicked', (event: any, report: string) => {
       this.reportingService.runReport(report);
     });
-    this.electronService.on('update-available', () => {
-      this.zone.run(() => { this.updateAvailable = true; });
+    this.electronService.on('update-available', (event: any, info?: { version?: string }) => {
+      this.zone.run(() => {
+        this.updateAvailable = true;
+        this.updateVersion = info?.version ?? '';
+      });
     });
-    this.electronService.on('update-downloaded', () => {
-      this.zone.run(() => { this.updateDownloaded = true; });
+    this.electronService.on('update-progress', (event: any, progress: { percent: number }) => {
+      this.zone.run(() => { this.updatePercent = Math.round(progress.percent); });
+    });
+    this.electronService.on('update-downloaded', (event: any, info?: { version?: string }) => {
+      this.zone.run(() => {
+        this.updateDownloaded = true;
+        this.updateDismissed = false;
+        this.updateVersion = info?.version ?? this.updateVersion;
+      });
     });
   }
 
   installUpdate(): void {
     this.electronService.send('install-update');
+  }
+
+  dismissUpdate(): void {
+    this.updateDismissed = true;
   }
 }

@@ -11,14 +11,30 @@
     <a routerLink="/xref" routerLinkActive="active">XREF Manager</a>
   </nav>
 </header>
-@if (updateDownloaded) {
-  <div class="update-banner">
-    A new version has been downloaded. <button (click)="installUpdate()">Restart to update</button>
-  </div>
-} @else if (updateAvailable) {
-  <div class="update-banner">
-    A new update is downloading in the background&hellip;
-  </div>
+@if (!updateDismissed) {
+  @if (updateDownloaded) {
+    <div class="update-banner ready" role="status">
+      <span class="update-message">
+        <strong>Update ready.</strong>
+        {{ updateVersion ? 'Version ' + updateVersion : 'The new version' }} will be installed when you restart.
+      </span>
+      <span class="update-actions">
+        <button class="update-primary" (click)="installUpdate()">Restart now</button>
+        <button class="update-secondary" (click)="dismissUpdate()">Later</button>
+      </span>
+    </div>
+  } @else if (updateAvailable) {
+    <div class="update-banner" role="status">
+      <span class="update-message">
+        Downloading update{{ updateVersion ? ' (v' + updateVersion + ')' : '' }}&hellip;
+      </span>
+      <span class="update-progress" aria-hidden="true">
+        <span class="update-progress-fill" [style.width.%]="updatePercent"></span>
+      </span>
+      <span class="update-percent">{{ updatePercent }}%</span>
+      <button class="update-close" (click)="dismissUpdate()" aria-label="Hide">&times;</button>
+    </div>
+  }
 }
 <main class="app-container">
   <router-outlet></router-outlet>

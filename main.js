@@ -169,7 +169,7 @@ function setupAutoUpdater() {
 
   autoUpdater.on('update-available', (info) => {
     log.info('Auto-updater: update-available', info);
-    sendToRenderer('update-available');
+    sendToRenderer('update-available', { version: info.version });
   });
 
   autoUpdater.on('update-not-available', (info) => {
@@ -183,11 +183,12 @@ function setupAutoUpdater() {
       total: progress.total,
       bytesPerSecond: Math.round(progress.bytesPerSecond)
     });
+    sendToRenderer('update-progress', { percent: progress.percent });
   });
 
   autoUpdater.on('update-downloaded', (info) => {
     log.info('Auto-updater: update-downloaded', info);
-    sendToRenderer('update-downloaded');
+    sendToRenderer('update-downloaded', { version: info.version });
   });
 
   autoUpdater.on('error', (err) => {

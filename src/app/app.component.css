@@ -2,22 +2,85 @@
   padding-top: 10px;
 }
 .update-banner {
-  background-color: #2c7be5;
-  color: white;
+  /* Bleed to the window edges to line up with the header */
+  margin: 0 -8px;
   padding: 8px 16px;
-  font-size: 0.95em;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 12px;
+  gap: 8px 12px;
+  background-color: #eef4fd;
+  border-bottom: 1px solid #c9dcf7;
+  color: #1d4f91;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.9em;
+}
+.update-banner.ready {
+  background-color: #2c7be5;
+  border-bottom-color: #1f63c0;
+  color: white;
+}
+.update-message {
+  flex: 1 1 auto;
+}
+.update-actions {
+  display: flex;
+  gap: 8px;
 }
 .update-banner button {
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.update-primary {
   background: white;
   color: #2c7be5;
-  border: none;
+  border: 1px solid white;
   padding: 4px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
+  font-weight: 600;
+}
+.update-primary:hover {
+  background: #eef4fd;
+}
+.update-secondary {
+  background: transparent;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  padding: 4px 12px;
+}
+.update-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+.update-progress {
+  width: 140px;
+  height: 6px;
+  border-radius: 3px;
+  background-color: #c9dcf7;
+  overflow: hidden;
+}
+.update-progress-fill {
+  display: block;
+  height: 100%;
+  background-color: #2c7be5;
+  transition: width 0.3s ease;
+}
+.update-percent {
+  min-width: 3ch;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.update-close {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 1.2em;
+  line-height: 1;
+  padding: 0 4px;
+  opacity: 0.7;
+}
+.update-close:hover {
+  opacity: 1;
 }
 header {
   /* Bleed past the default body margin so the bar spans the window */
