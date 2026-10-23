@@ -198,6 +198,29 @@ describe('TimingBoxService', () => {
       jasmine.any(Object));
   }));
 
+  it('shows Disconnected when disconnect() is called while waiting to reconnect', fakeAsync(() => {
+    createService();
+    ipc.emit('timing-box-status', { matId: MAT_ID, status: 'Disconnected' });
+    expect(service.getCurrentStatus(MAT_ID).status).toBe(ConnectionStatus.RECONNECTING);
+
+    // Main has no socket at this point, so it sends no status back
+    service.disconnect(MAT_ID);
+
+    expect(service.getCurrentStatus(MAT_ID).status).toBe(ConnectionStatus.DISCONNECTED);
+    expect(service.getCurrentReconnectStatus(MAT_ID)).toBe('');
+    tick(FAST_SETTINGS.reconnectDelay * 2);
+    expect(service.getCurrentStatus(MAT_ID).status).toBe(ConnectionStatus.DISCONNECTED);
+  }));
+
+  it('shows Disconnected for reconnecting mats when disconnectAll() is called', () => {
+    createService();
+    ipc.emit('timing-box-status', { matId: MAT_ID, status: 'Disconnected' });
+
+    service.disconnectAll();
+
+    expect(service.getCurrentStatus(MAT_ID).status).toBe(ConnectionStatus.DISCONNECTED);
+  });
+
   it('sends disconnect-timing-box IPC when disconnect() is called', () => {
     createService();
     service.disconnect(MAT_ID);
