@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CsvColumnMappingService } from '../services/csv-column-mapping.service';
 import {DEFAULT_SETTINGS, Settings, SettingsService} from "../services/settings.service";
 
@@ -9,6 +9,7 @@ import {FormsModule} from "@angular/forms";
     templateUrl: './csv-import.component.html',
     styleUrls: ['./csv-import.component.css'],
     standalone: true,
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [FormsModule]
 })
 export class CsvImportComponent {

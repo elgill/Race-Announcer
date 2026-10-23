@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { DEFAULT_SETTINGS, Settings, SettingsService } from "../services/settings.service";
 import { RaceService } from "../services/race.service";
@@ -19,6 +19,7 @@ interface Race {
     templateUrl: './quick-settings.component.html',
     styleUrl: './quick-settings.component.css',
     standalone: true,
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [ReactiveFormsModule, MatConnectionsEditorComponent]
 })
 export class QuickSettingsComponent implements OnInit, OnDestroy {

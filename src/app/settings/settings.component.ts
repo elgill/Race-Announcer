@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule } from '@angular/forms';
 import { ANNOUNCE_TEMPLATE_OPTIONS, DEFAULT_SETTINGS, Settings, SettingsService } from '../services/settings.service';
 import { MatConnection } from "../interfaces/mat-connection";
@@ -12,6 +12,7 @@ import { Subscription, debounceTime, filter } from "rxjs";
     templateUrl: './settings.component.html',
     styleUrls: ['./settings.component.css'],
     standalone: true,
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [ReactiveFormsModule, MatConnectionsEditorComponent]
 })
 export class SettingsComponent implements OnInit, AfterViewInit, OnDestroy {

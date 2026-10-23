@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormsModule } from '@angular/forms';
 import { ElectronService } from '../services/electron.service';
@@ -22,6 +22,7 @@ import {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './ethernet-setup.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./ethernet-setup.component.css']
 })
 export class EthernetSetupComponent implements OnInit {

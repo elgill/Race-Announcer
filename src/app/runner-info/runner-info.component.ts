@@ -1,11 +1,12 @@
 // runner-info.component.ts
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RunnerDataService } from '../services/runner-data.service';
 
 @Component({
     selector: 'app-runner-info',
     templateUrl: './runner-info.component.html',
     styleUrls: ['./runner-info.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: true
 })
 export class RunnerInfoComponent implements OnInit {

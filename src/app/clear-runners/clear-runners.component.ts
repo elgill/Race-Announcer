@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import {RunnerDataService} from "../services/runner-data.service";
 
 
@@ -7,6 +7,7 @@ import {RunnerDataService} from "../services/runner-data.service";
     templateUrl: './clear-runners.component.html',
     styleUrls: ['./clear-runners.component.css'],
     standalone: true,
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: []
 })
 export class ClearRunnersComponent {

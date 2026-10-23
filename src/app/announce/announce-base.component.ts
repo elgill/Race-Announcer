@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import {RunnerDataService} from '../services/runner-data.service';
@@ -9,6 +9,7 @@ import {ElectronService} from "../services/electron.service";
 
 @Component({
   template: '',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
 export class AnnounceBaseComponent implements OnInit, OnDestroy {

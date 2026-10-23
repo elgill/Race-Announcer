@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import {RunnerDataService} from "../services/runner-data.service";
@@ -16,6 +16,7 @@ export interface XrefRange {
     templateUrl: './show-xref.component.html',
     styleUrls: ['./show-xref.component.css'],
     standalone: true,
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [FormsModule]
 })
 export class ShowXrefComponent {

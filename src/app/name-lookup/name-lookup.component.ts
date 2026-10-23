@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import {RunnerDataService} from "../services/runner-data.service";
 import {Runner} from "../interfaces/runner";
 import {RunnerTableComponent} from "../runner-table/runner-table.component";
@@ -8,6 +8,7 @@ import {RunnerTableComponent} from "../runner-table/runner-table.component";
     templateUrl: './name-lookup.component.html',
     styleUrls: ['./name-lookup.component.css'],
     standalone: true,
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [RunnerTableComponent]
 })
 export class NameLookupComponent {

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { RunnerDataService } from '../services/runner-data.service';
@@ -10,6 +10,7 @@ import { EntryAttempt } from '../interfaces/entry-attempt';
   templateUrl: './bib-history.component.html',
   styleUrls: ['./bib-history.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule]
 })
 export class BibHistoryComponent implements OnInit {

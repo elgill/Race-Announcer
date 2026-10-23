@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, inject, ChangeDetectionStrategy } from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {Runner} from "../interfaces/runner";
 import {RunnerDataService} from "../services/runner-data.service";
@@ -9,6 +9,7 @@ import {SettingsService} from "../services/settings.service";
     templateUrl: './runner-editor.component.html',
     styleUrls: ['./runner-editor.component.css'],
     standalone: true,
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [FormsModule]
 })
 export class RunnerEditorComponent implements OnChanges {

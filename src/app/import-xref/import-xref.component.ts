@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { DEFAULT_SETTINGS, Settings, SettingsService } from "../services/settings.service";
 import * as Papa from 'papaparse';
 import { RunnerDataService } from "../services/runner-data.service";
@@ -9,6 +9,7 @@ import { RunnerDataService } from "../services/runner-data.service";
     templateUrl: './import-xref.component.html',
     styleUrls: ['./import-xref.component.css'],
     standalone: true,
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: []
 })
 export class ImportXrefComponent {

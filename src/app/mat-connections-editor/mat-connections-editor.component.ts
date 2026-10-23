@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatConnection } from '../interfaces/mat-connection';
@@ -21,6 +21,7 @@ interface MatTypeOption {
   standalone: true,
   imports: [ReactiveFormsModule, EthernetSetupComponent],
   templateUrl: './mat-connections-editor.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./mat-connections-editor.component.css']
 })
 export class MatConnectionsEditorComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 import { interval, Subscription } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 import {DEFAULT_SETTINGS, Settings, SettingsService} from "../services/settings.service";
@@ -9,6 +9,7 @@ import {TimeDurationPipe} from "../time-duration.pipe";
     templateUrl: './race-clock.component.html',
     styleUrls: ['./race-clock.component.css'],
     standalone: true,
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [TimeDurationPipe]
 })
 export class RaceClockComponent implements OnInit, OnDestroy {

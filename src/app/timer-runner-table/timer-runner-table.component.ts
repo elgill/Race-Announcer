@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input, inject, ChangeDetectionStrategy } from '@angular/core';
 import {Runner} from "../interfaces/runner";
 import {Observable} from "rxjs";
 import {CustomField} from "../interfaces/custom-field";
@@ -13,6 +13,7 @@ import {AnnounceTimerComponent} from "../announce/announce-timer/announce-timer.
     templateUrl: './timer-runner-table.component.html',
     styleUrls: ['./timer-runner-table.component.css'],
     standalone: true,
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [BibEntryComponent, RaceClockComponent, AnnounceTimerComponent]
 })
 export class TimerRunnerTableComponent {

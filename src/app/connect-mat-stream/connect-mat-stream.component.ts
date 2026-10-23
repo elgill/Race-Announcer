@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import {TimingBoxService} from "../services/timing-box.service";
 import {DEFAULT_SETTINGS, SettingsService} from "../services/settings.service";
 import {ConnectionStatus} from "../models/connection.enum";
@@ -16,6 +16,7 @@ interface MatConnectionStatus extends MatConnection {
     templateUrl: './connect-mat-stream.component.html',
     styleUrls: ['./connect-mat-stream.component.css'],
     standalone: true,
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [CommonModule]
 })
 export class ConnectMatStreamComponent implements OnInit {

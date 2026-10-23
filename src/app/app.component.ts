@@ -1,4 +1,4 @@
-import {Component, inject, NgZone, OnInit} from '@angular/core';
+import {Component, inject, NgZone, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {ElectronService} from "./services/electron.service";
 import {Router, RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
 import {VisualLoadTestService} from "./services/visual-load-test.service";
@@ -9,6 +9,7 @@ import {ReportingService} from "./reporting.service";
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css'],
     standalone: true,
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [RouterLink, RouterLinkActive, RouterOutlet]
 })
 

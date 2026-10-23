@@ -18,5 +18,5 @@
 
 <p class="hint">Click a runner to edit. Runners marked * were edited here and won't be overwritten by imports.</p>
 
-<app-runner-table [runners]="filteredRunners" [selectable]="true" [selectedBib]="editingRunner?.bib"
+<app-runner-table [runners]="filteredRunners" [selectable]="true" [selectedBib]="$safeNavigationMigration(editingRunner?.bib)"
                   (runnerSelected)="editRunner($event)"></app-runner-table>

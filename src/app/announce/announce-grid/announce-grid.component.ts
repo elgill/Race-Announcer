@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { AnnounceBaseComponent } from "../announce-base.component";
 
 
@@ -7,6 +7,7 @@ import { AnnounceBaseComponent } from "../announce-base.component";
     templateUrl: './announce-grid.component.html',
     styleUrls: ['./announce-grid.component.css'],
     standalone: true,
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: []
 })
 export class AnnounceGridComponent extends AnnounceBaseComponent {

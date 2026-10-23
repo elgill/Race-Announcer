@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import {BibScrapeService} from "../services/bib-scrape.service";
 import {DEFAULT_SETTINGS, SettingsService, Settings} from "../services/settings.service";
 
@@ -8,6 +8,7 @@ import {DEFAULT_SETTINGS, SettingsService, Settings} from "../services/settings.
     templateUrl: './auto-import.component.html',
     styleUrls: ['./auto-import.component.css'],
     standalone: true,
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: []
 })
 export class AutoImportComponent {

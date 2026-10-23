@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {FormsModule} from "@angular/forms";
 import {RunnerDataService} from "../services/runner-data.service";
@@ -11,6 +11,7 @@ import {RunnerEditorComponent} from "../runner-editor/runner-editor.component";
     templateUrl: './browse-runners.component.html',
     styleUrls: ['./browse-runners.component.css'],
     standalone: true,
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [FormsModule, RunnerTableComponent, RunnerEditorComponent]
 })
 export class BrowseRunnersComponent implements OnInit {

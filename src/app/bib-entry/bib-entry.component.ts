@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RunnerDataService } from '../services/runner-data.service';
 import {SettingsService, Settings, DEFAULT_SETTINGS} from "../services/settings.service";
 import {FormsModule} from "@angular/forms";
@@ -8,6 +8,7 @@ import {FormsModule} from "@angular/forms";
     templateUrl: './bib-entry.component.html',
     styleUrls: ['./bib-entry.component.css'],
     standalone: true,
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [FormsModule]
 })
 export class BibEntryComponent implements OnInit, AfterViewInit  {
