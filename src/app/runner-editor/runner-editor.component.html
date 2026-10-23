@@ -1,0 +1,30 @@
+<form class="runner-editor" (ngSubmit)="save()">
+  <h3>{{ isNew ? 'Add Runner' : 'Edit Runner ' + runner?.bib }}</h3>
+
+  <div class="fields">
+    <label>Bib <input name="bib" [(ngModel)]="draft.bib" required autocomplete="off"></label>
+    <label>First Name <input name="firstName" [(ngModel)]="draft.firstName" autocomplete="off"></label>
+    <label>Last Name <input name="lastName" [(ngModel)]="draft.lastName" autocomplete="off"></label>
+    <label>Age <input name="age" type="number" min="0" [(ngModel)]="draft.age" autocomplete="off"></label>
+    <label>Gender <input name="gender" [(ngModel)]="draft.gender" autocomplete="off"></label>
+    <label>Town <input name="town" [(ngModel)]="draft.town" autocomplete="off"></label>
+    <label>State <input name="state" [(ngModel)]="draft.state" autocomplete="off"></label>
+    @for (name of customFieldNames; track name) {
+      <label>{{ name }} <input [name]="'custom-' + name" [(ngModel)]="draft.customFields[name]" autocomplete="off"></label>
+    }
+  </div>
+
+  <div class="actions">
+    <button type="submit">{{ isNew ? 'Add' : 'Save' }}</button>
+    <button type="button" (click)="closed.emit()">Cancel</button>
+    @if (!isNew) {
+      <button type="button" class="delete" (click)="delete()">
+        {{ confirmingDelete ? 'Click again to delete' : 'Delete' }}
+      </button>
+    }
+  </div>
+
+  @if (errorMessage) {
+    <p class="error-message">{{ errorMessage }}</p>
+  }
+</form>

@@ -279,11 +279,14 @@ export class RunnerDataService {
   loadRunners(newRunners: Runner[]): string {
     let updatedCount = 0;
     let addedCount = 0;
+    let keptLocalCount = 0;
 
     newRunners.forEach(newRunner => {
       const bib = newRunner.bib;
       const existingRunner = this.allRunners.get(bib);
-      if (existingRunner) {
+      if (existingRunner?.localEdit) {
+        keptLocalCount++; // Don't clobber changes made in the app
+      } else if (existingRunner) {
         this.allRunners.set(bib, { ...existingRunner, ...newRunner }); // Update the existing entry
         updatedCount++;
       } else {
@@ -301,7 +304,38 @@ export class RunnerDataService {
     });
 
     this.updateRunnerCount(); // Update runner count
-    return `${updatedCount} updated, ${addedCount} added`;
+    const keptLocal = keptLocalCount ? `, ${keptLocalCount} kept local edits` : '';
+    return `${updatedCount} updated, ${addedCount} added${keptLocal}`;
+  }
+
+  /**
+   * Adds or updates a single runner from a local edit. Pass originalBib when editing
+   * so a changed bib replaces the old record instead of duplicating it.
+   */
+  async saveRunner(runner: Runner, originalBib?: string): Promise<void> {
+    const bib = runner.bib.trim();
+    if (!bib) {
+      throw new Error('Bib is required.');
+    }
+    if (bib !== originalBib && this.allRunners.has(bib)) {
+      throw new Error(`Bib ${bib} is already assigned to another runner.`);
+    }
+
+    const saved: Runner = {...runner, bib, id: runner.id || this.generateUniqueId(), localEdit: true};
+
+    if (originalBib && originalBib !== bib) {
+      this.allRunners.delete(originalBib);
+      await this.db.deleteRunner(originalBib);
+    }
+    this.allRunners.set(bib, saved);
+    await this.db.saveRunners([saved]);
+    this.updateRunnerCount();
+  }
+
+  async deleteRunner(bib: string): Promise<void> {
+    this.allRunners.delete(bib);
+    await this.db.deleteRunner(bib);
+    this.updateRunnerCount();
   }
 
   getSortedRunners() {

@@ -1,0 +1,31 @@
+.runner-editor {
+  border: 1px solid #e2e2e2;
+  border-radius: 6px;
+  background-color: #fafafa;
+  padding: 8px 16px 12px;
+  margin-bottom: 12px;
+}
+.runner-editor h3 {
+  margin: 4px 0 10px;
+}
+.fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 8px 12px;
+}
+.fields label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85em;
+  color: #555;
+  gap: 2px;
+}
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+.actions .delete {
+  margin-left: auto;
+  color: #c0392b;
+}

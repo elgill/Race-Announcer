@@ -11,6 +11,7 @@ export interface Runner {
   state: string;
   timeEntered?: Date;
   entrySource?: 'manual' | 'automated' | 'both';
+  localEdit?: boolean; // Added or edited in the app; imports won't overwrite it
   customFields: { [key: string]: string };
 }
 

@@ -1,0 +1,21 @@
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.toolbar input {
+  min-width: 260px;
+}
+.count {
+  color: #666;
+  font-size: 0.9em;
+}
+.toolbar button {
+  margin-left: auto;
+}
+.hint {
+  color: #777;
+  font-size: 0.85em;
+  margin: 4px 0 8px;
+}

@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import {CustomField} from "../interfaces/custom-field";
 import {SettingsService} from "../services/settings.service";
 import {Runner} from "../interfaces/runner";
@@ -17,6 +17,9 @@ export class RunnerTableComponent {
   private settingsService = inject(SettingsService);
 
   @Input() runners: Runner[] = [];
+  @Input() selectable = false;
+  @Input() selectedBib?: string;
+  @Output() runnerSelected = new EventEmitter<Runner>();
 
   startTime = 0;
   customFields$: Observable<CustomField[]>;

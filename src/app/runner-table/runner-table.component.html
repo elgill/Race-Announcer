@@ -19,8 +19,11 @@
   </thead>
   <tbody>
     @for (runner of runners.slice(0, displayLimit); track runner) {
-      <tr>
-        <td>{{runner.bib}}</td>
+      <tr [class.selectable]="selectable"
+          [class.selected]="selectable && runner.bib === selectedBib"
+          [attr.title]="runner.localEdit ? 'Edited locally' : null"
+          (click)="selectable && runnerSelected.emit(runner)">
+        <td>{{runner.bib}}@if (runner.localEdit) {<span class="local-edit-marker">*</span>}</td>
         <td>{{runner.firstName}}</td>
         <td>{{runner.lastName}}</td>
         <td>{{runner.age}}</td>

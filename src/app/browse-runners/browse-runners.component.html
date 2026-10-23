@@ -1,1 +1,22 @@
-<app-runner-table [runners]="this.runners"></app-runner-table>
+<div class="toolbar">
+  <input type="search" placeholder="Filter by bib, name, or town" [(ngModel)]="filterText"
+         (ngModelChange)="applyFilter()" autocomplete="off">
+  <span class="count">{{ filteredRunners.length }} of {{ runners.length }} runners</span>
+  <button (click)="addRunner()">Add Runner</button>
+</div>
+
+@if (editingRunner !== undefined) {
+  <app-runner-editor [runner]="editingRunner"
+                     (saved)="onSaved($event)"
+                     (deleted)="onDeleted($event)"
+                     (closed)="closeEditor()"></app-runner-editor>
+}
+
+@if (statusMessage) {
+  <p class="success-message">{{ statusMessage }}</p>
+}
+
+<p class="hint">Click a runner to edit. Runners marked * were edited here and won't be overwritten by imports.</p>
+
+<app-runner-table [runners]="filteredRunners" [selectable]="true" [selectedBib]="editingRunner?.bib"
+                  (runnerSelected)="editRunner($event)"></app-runner-table>
