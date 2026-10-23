@@ -16,7 +16,7 @@ export class AnnounceBaseComponent {
 
   readonly isElectron = this.electronService.isElectron;
 
-  // Signals so OnPush views update even when entries arrive from IPC (outside the Angular zone)
+  // Signals so OnPush views update when entries arrive from IPC
   readonly settings = toSignal(this.settingsService.getSettings(), { initialValue: DEFAULT_SETTINGS });
   readonly runnerList = toSignal(this.runnerDataService.getActiveRunners(), { initialValue: [] });
   readonly paused = toSignal(this.runnerDataService.getPausedStatus(), { initialValue: false });

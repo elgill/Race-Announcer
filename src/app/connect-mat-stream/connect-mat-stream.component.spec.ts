@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NgZone } from '@angular/core';
 
 import { ConnectMatStreamComponent } from './connect-mat-stream.component';
 import { DEFAULT_SETTINGS, SettingsService } from '../services/settings.service';
@@ -28,15 +27,13 @@ describe('ConnectMatStreamComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('updates the status badge when mat status arrives outside the Angular zone', () => {
+  it('updates the status badge when mat status arrives over IPC', () => {
     const badge = () => fixture.nativeElement.querySelector('.status-badge') as HTMLElement;
     expect(badge().textContent).toContain(ConnectionStatus.DISCONNECTED);
 
     // Same path the timing-box-status IPC listener takes
     const timingBoxService = TestBed.inject(TimingBoxService) as any;
-    TestBed.inject(NgZone).runOutsideAngular(() => {
-      timingBoxService.getOrCreateStatusSubject('mat-a').next({ status: ConnectionStatus.CONNECTED });
-    });
+    timingBoxService.getOrCreateStatusSubject('mat-a').next({ status: ConnectionStatus.CONNECTED });
     fixture.detectChanges();
 
     expect(badge().textContent).toContain(ConnectionStatus.CONNECTED);

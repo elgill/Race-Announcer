@@ -26,7 +26,7 @@ export class ConnectMatStreamComponent {
 
   private settings = toSignal(this.settingsService.getSettings(), { initialValue: DEFAULT_SETTINGS });
 
-  // Status updates arrive over IPC (outside the Angular zone), so this is a signal that
+  // Status updates arrive over IPC, so this is a signal that
   // re-subscribes to each enabled mat's status whenever the mat list changes.
   matStatuses = toSignal(
     this.settingsService.getSettings().pipe(

@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
   private reportingService = inject(ReportingService);
 
   title = 'Race Announcer';
-  // Signals because these are set from IPC callbacks, which run outside the Angular zone
+  // Signals because these are set from IPC callbacks
   updateAvailable = signal(false);
   updateDownloaded = signal(false);
   updateDismissed = signal(false);

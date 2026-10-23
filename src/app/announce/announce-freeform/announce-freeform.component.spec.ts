@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NgZone } from '@angular/core';
 
 import { AnnounceFreeformComponent } from './announce-freeform.component';
 import { RunnerDataService } from '../../services/runner-data.service';
@@ -21,11 +20,9 @@ describe('AnnounceTestComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('renders entries that arrive outside the Angular zone (timing mat IPC path)', () => {
+  it('renders entries that arrive from the timing mat service', () => {
     const runnerDataService = TestBed.inject(RunnerDataService);
-    TestBed.inject(NgZone).runOutsideAngular(() => {
-      runnerDataService.enterBib('4242', true, true, 'automated');
-    });
+    runnerDataService.enterBib('4242', true, true, 'automated');
     fixture.detectChanges();
 
     expect(fixture.nativeElement.textContent).toContain('4242');
