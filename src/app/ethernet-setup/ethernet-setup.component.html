@@ -1,0 +1,139 @@
+@if (supported) {
+  <div class="ethernet-status">
+    <span class="status-label">Ethernet:</span>
+    @if (recommended) {
+      <span class="adapter-name" [attr.title]="recommended.description">{{ recommended.name }}</span>
+      <span class="mode-badge" [ngClass]="'mode-' + recommended.ipv4Mode">{{ describeIpv4Mode(recommended) }}</span>
+      <span class="adapter-detail">{{ formatAddresses(recommended) }}</span>
+      @if (recommended.status !== 'Up') {
+        <span class="adapter-detail warning-text">{{ describeAdapterStatus(recommended) }}</span>
+      }
+    } @else if (loading) {
+      <span class="adapter-detail">Checking network adapters…</span>
+    } @else {
+      <span class="adapter-detail">No wired Ethernet adapter found</span>
+    }
+    <button type="button" class="setup-button" (click)="openDialog()">Set Up Ethernet…</button>
+  </div>
+}
+
+@if (dialogOpen) {
+  <div class="dialog-backdrop">
+    <div class="dialog">
+      <h3>Ethernet Setup</h3>
+      <p class="intro">
+        Timing boxes need the laptop's Ethernet port set to a manual address on
+        <strong>{{ subnetPrefix }}.x</strong>. Pick the port the timing box is plugged into.
+      </p>
+
+      <div class="adapter-list-header">
+        <span class="section-title">Network adapters</span>
+        <button type="button" class="link-button" (click)="refresh()" [disabled]="loading || applying">
+          {{ loading ? 'Refreshing…' : 'Refresh' }}
+        </button>
+      </div>
+
+      @if (loadError) {
+        <p class="error-text">{{ loadError }}</p>
+      }
+
+      <div class="adapter-list">
+        @for (adapter of visibleAdapters; track adapter.ifIndex) {
+          <label class="adapter-row" [class.selected]="adapter.ifIndex === selectedIfIndex">
+            <input type="radio"
+                   name="ethernetAdapter"
+                   [checked]="adapter.ifIndex === selectedIfIndex"
+                   [disabled]="applying"
+                   (change)="selectAdapter(adapter)">
+            <div class="adapter-info">
+              <div class="adapter-title">
+                <span class="adapter-name">{{ adapter.name }}</span>
+                @if (isRecommended(adapter)) {
+                  <span class="recommended-tag">Likely timing port</span>
+                }
+                @if (adapter.kind !== 'wired') {
+                  <span class="kind-tag">{{ adapter.kind === 'wireless' ? 'Wi-Fi' : adapter.kind === 'virtual' ? 'Virtual / VPN' : 'Other' }}</span>
+                }
+              </div>
+              <div class="adapter-detail">{{ adapter.description }}</div>
+              <div class="adapter-meta">
+                <span class="mode-badge" [ngClass]="'mode-' + adapter.ipv4Mode">{{ describeIpv4Mode(adapter) }}</span>
+                <span class="adapter-detail">{{ formatAddresses(adapter) }}</span>
+                <span class="adapter-detail" [class.warning-text]="adapter.status !== 'Up'">{{ describeAdapterStatus(adapter) }}</span>
+              </div>
+            </div>
+          </label>
+        } @empty {
+          @if (!loading) {
+            <p class="adapter-detail">No wired Ethernet adapters found. Plug in the USB Ethernet adapter, then Refresh.</p>
+          }
+        }
+      </div>
+
+      @if (hiddenAdapterCount > 0 || showAllAdapters) {
+        <label class="show-all">
+          <input type="checkbox" [(ngModel)]="showAllAdapters" [ngModelOptions]="{ standalone: true }" [disabled]="applying">
+          Show all adapters (Wi-Fi, VPN, virtual){{ showAllAdapters ? '' : ' — ' + hiddenAdapterCount + ' hidden' }}
+        </label>
+      }
+
+      @if (selectedAdapter; as adapter) {
+        @if (adapter.kind !== 'wired') {
+          <p class="warning-box">"{{ adapter.name }}" doesn't look like a wired Ethernet port. Only change it if you're sure.</p>
+        }
+        @if (adapter.kind === 'wired' && adapter.status === 'Disconnected') {
+          <p class="warning-box">No cable detected on "{{ adapter.name }}". You can still set it up; it applies once the timing box is plugged in.</p>
+        }
+        @for (conflict of subnetConflicts; track conflict.ifIndex) {
+          <p class="warning-box">
+            "{{ conflict.name }}" is also on {{ subnetPrefix }}.x ({{ formatAddresses(conflict) }}).
+            Setting a manual IP makes Windows prefer Ethernet for that range, but if mats won't connect, disconnect from that network.
+          </p>
+        }
+
+        <div class="ip-fields">
+          <div class="field">
+            <label for="ethernetIp">IP Address</label>
+            <input id="ethernetIp" type="text" [(ngModel)]="staticIp" [ngModelOptions]="{ standalone: true }" [disabled]="applying" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="ethernetMask">Subnet Mask</label>
+            <input id="ethernetMask" type="text" [value]="subnetMask" disabled>
+          </div>
+        </div>
+        @if (staticIpError) {
+          <p class="error-text">{{ staticIpError }}</p>
+        } @else if (staticIpWarning) {
+          <p class="warning-text">{{ staticIpWarning }}</p>
+        }
+      }
+
+      @if (applying) {
+        <p class="info-text">Waiting for Windows administrator approval…</p>
+      }
+      @if (applyMessage) {
+        <p class="success-text">{{ applyMessage }}</p>
+      }
+      @if (applyError) {
+        <p class="error-text">{{ applyError }}</p>
+      }
+
+      <div class="dialog-actions">
+        <button type="button"
+                (click)="setAutomatic()"
+                [disabled]="!selectedAdapter || applying || selectedAdapter.ipv4Mode !== 'manual'"
+                title="Return this adapter to automatic (DHCP) for normal networks">
+          Use Automatic
+        </button>
+        <span class="spacer"></span>
+        <button type="button" (click)="closeDialog()" [disabled]="applying">Close</button>
+        <button type="button"
+                class="primary"
+                (click)="setManual()"
+                [disabled]="!selectedAdapter || applying || !!staticIpError">
+          Set Manual IP
+        </button>
+      </div>
+    </div>
+  </div>
+}

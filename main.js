@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, Menu, net: electronNet, powerMonitor, shell
 const { autoUpdater } = require('electron-updater');
 const log = require('electron-log');
 const net = require('net');
+const networkSetup = require('./network-setup');
 
 log.initialize();
 
@@ -133,6 +134,20 @@ function setupIPCListeners() {
       throw new Error(`HTTP ${response.status} fetching ${url}`);
     }
     return response.text();
+  });
+
+  ipcMain.handle('network-adapters-list', async () => {
+    return networkSetup.listAdapters();
+  });
+
+  ipcMain.handle('network-adapter-set-static', async (event, { ifIndex, ip, prefixLength }) => {
+    log.info('IPC: network-adapter-set-static', { ifIndex, ip, prefixLength });
+    await networkSetup.setStaticAddress({ ifIndex, ip, prefixLength });
+  });
+
+  ipcMain.handle('network-adapter-set-automatic', async (event, { ifIndex }) => {
+    log.info('IPC: network-adapter-set-automatic', { ifIndex });
+    await networkSetup.setAutomatic({ ifIndex });
   });
 
   ipcMain.on('install-update', () => {

@@ -1,0 +1,255 @@
+.ethernet-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  padding: 6px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+  font-size: 0.85rem;
+}
+
+.status-label {
+  font-weight: 600;
+}
+
+.adapter-name {
+  font-weight: 600;
+}
+
+.adapter-detail {
+  color: #555;
+  font-size: 0.8rem;
+}
+
+.setup-button {
+  margin-left: auto;
+  padding: 3px 8px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.mode-badge {
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+.mode-manual {
+  background-color: #e6f4ea;
+  color: #1e7a34;
+}
+
+.mode-automatic {
+  background-color: #eef2ff;
+  color: #3b4cca;
+}
+
+.mode-unknown {
+  background-color: #f3f4f6;
+  color: #555;
+}
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.dialog {
+  background-color: #fff;
+  padding: 18px;
+  border-radius: 6px;
+  width: 520px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  font-size: 0.85rem;
+}
+
+.dialog h3 {
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+.intro {
+  margin-top: 0;
+  color: #333;
+}
+
+.adapter-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.section-title {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: #3b4cca;
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 0;
+}
+
+.link-button[disabled] {
+  color: #999;
+  cursor: default;
+}
+
+.adapter-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.adapter-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.adapter-row.selected {
+  border-color: #3b4cca;
+  background-color: #f7f8ff;
+}
+
+.adapter-row input {
+  margin-top: 3px;
+}
+
+.adapter-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.adapter-title,
+.adapter-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.recommended-tag {
+  font-size: 0.7rem;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background-color: #fff4d6;
+  color: #8a5a00;
+}
+
+.kind-tag {
+  font-size: 0.7rem;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background-color: #f3f4f6;
+  color: #555;
+}
+
+.show-all {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: #555;
+}
+
+.warning-box {
+  margin: 10px 0 0;
+  padding: 6px 8px;
+  border-radius: 4px;
+  background-color: #fff8e6;
+  border: 1px solid #f0d58c;
+  color: #6b4b00;
+}
+
+.ip-fields {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.field label {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.field input {
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.field input[disabled] {
+  background-color: #f3f4f6;
+}
+
+.warning-text {
+  color: #8a5a00;
+}
+
+.error-text {
+  color: #b42318;
+  margin: 6px 0 0;
+}
+
+.success-text {
+  color: #1e7a34;
+  margin: 6px 0 0;
+}
+
+.info-text {
+  color: #333;
+  margin: 6px 0 0;
+}
+
+.dialog-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.dialog-actions .spacer {
+  flex: 1;
+}
+
+.dialog-actions button {
+  padding: 4px 12px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.dialog-actions button.primary {
+  font-weight: 600;
+}

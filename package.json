@@ -39,7 +39,8 @@
     "files": [
       "dist/**/*",
       "node_modules/**/*",
-      "main.js"
+      "main.js",
+      "network-setup.js"
     ],
     "directories": {
       "buildResources": "assets",
