@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { RunnerDataService } from '../services/runner-data.service';
 import { SettingsService, Settings, DEFAULT_SETTINGS } from '../services/settings.service';
@@ -10,7 +10,7 @@ import { EntryAttempt } from '../interfaces/entry-attempt';
   templateUrl: './bib-history.component.html',
   styleUrls: ['./bib-history.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  imports: [FormsModule]
 })
 export class BibHistoryComponent implements OnInit {
   private runnerDataService = inject(RunnerDataService);

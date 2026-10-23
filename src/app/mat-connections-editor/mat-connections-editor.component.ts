@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatConnection } from '../interfaces/mat-connection';
 import { EthernetSetupComponent } from '../ethernet-setup/ethernet-setup.component';
@@ -19,7 +19,7 @@ interface MatTypeOption {
 @Component({
   selector: 'app-mat-connections-editor',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, EthernetSetupComponent],
+  imports: [ReactiveFormsModule, EthernetSetupComponent],
   templateUrl: './mat-connections-editor.component.html',
   styleUrls: ['./mat-connections-editor.component.css']
 })
